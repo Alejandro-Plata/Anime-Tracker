@@ -1,0 +1,134 @@
+/* --- FOOTER ESTILO ABISMO --- */
+.kairo-footer {
+    position: relative;
+    background-color: #050505;
+    /* Casi negro absoluto */
+    padding-top: 4rem;
+    margin-top: 6rem;
+    /* Separación del contenido principal */
+    border-top: 1px solid rgba(197, 165, 114, 0.1);
+    z-index: 10;
+}
+
+/* Línea decorativa superior (Gradiente dorado) */
+.footer-golden-thread {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg,
+            var(--kairo-dark) 0%,
+            var(--kairo-gold-dark) 20%,
+            var(--kairo-gold) 50%,
+            var(--kairo-gold-dark) 80%,
+            var(--kairo-dark) 100%);
+    box-shadow: 0 0 10px rgba(197, 165, 114, 0.4);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    /* Marca ocupa más espacio */
+    gap: 4rem;
+}
+
+/* Columna de Marca */
+.footer-logo {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    color: var(--kairo-gold);
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+}
+
+.footer-tagline {
+    color: var(--kairo-cream);
+    opacity: 0.6;
+    font-size: 0.9rem;
+    max-width: 300px;
+    margin-bottom: 2rem;
+}
+
+.social-icons {
+    display: flex;
+    gap: 1rem;
+}
+
+.social-icons a {
+    color: var(--kairo-gold-dark);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border: 1px solid var(--kairo-gold-dark);
+    padding: 6px 12px;
+    transition: 0.3s;
+}
+
+.social-icons a:hover {
+    background: var(--kairo-gold-dark);
+    color: #000;
+}
+
+/* Columnas de Enlaces */
+.footer-links-col h3 {
+    font-family: var(--font-serif);
+    color: var(--kairo-cream);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.footer-links-col ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links-col li {
+    margin-bottom: 0.8rem;
+}
+
+.footer-links-col a {
+    text-decoration: none;
+    color: rgba(242, 238, 226, 0.5);
+    /* Crema apagado */
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.footer-links-col a:hover {
+    color: var(--kairo-gold);
+    text-shadow: 0 0 5px rgba(197, 165, 114, 0.4);
+}
+
+/* Bottom Copyright */
+.footer-bottom {
+    text-align: center;
+    padding: 1.5rem;
+    background: #000;
+    color: #444;
+    font-size: 0.75rem;
+    border-top: 1px solid #111;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .footer-links-col h3 {
+        display: block;
+        border-bottom: none;
+    }
+
+    .social-icons {
+        justify-content: center;
+    }
+}

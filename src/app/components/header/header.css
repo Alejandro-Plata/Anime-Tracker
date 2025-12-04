@@ -1,0 +1,278 @@
+/* --- HEADER ESTILO CRISTAL OSCURO --- */
+.kairo-header-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 1000;
+    background: rgba(10, 10, 10, 0.85);
+    /* Un poco más opaco para legibilidad */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(197, 165, 114, 0.1);
+}
+
+.nav-content {
+    max-width: 1400px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- LOGO CENTRAL --- */
+.nav-logo-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 45px;
+    /* Ajuste seguro */
+    filter: drop-shadow(0 0 15px rgba(197, 165, 114, 0.3));
+    z-index: 1002;
+    /* Encima de todo */
+    transition: all 0.3s ease;
+}
+
+.logo-img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* --- MENÚ DE NAVEGACIÓN (Desktop por defecto) --- */
+.nav-links-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.kairo-nav-link {
+    text-decoration: none;
+    font-family: var(--font-serif);
+    color: var(--kairo-cream);
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    position: relative;
+    transition: color 0.3s;
+    opacity: 0.8;
+}
+
+.kairo-nav-link:hover,
+.kairo-nav-link.active {
+    color: var(--kairo-gold);
+    opacity: 1;
+    text-shadow: 0 0 8px rgba(197, 165, 114, 0.6);
+}
+
+/* Subrayado animado links */
+.kairo-nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--kairo-gold);
+    transition: width 0.3s;
+}
+
+.kairo-nav-link:hover::after {
+    width: 100%;
+}
+
+/* --- BUSCADOR --- */
+.nav-actions-right {
+    display: flex;
+    align-items: center;
+    z-index: 1002;
+}
+
+.kairo-search-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--kairo-gold-dark);
+    border-radius: 4px;
+    padding: 4px 8px;
+    transition: 0.3s;
+}
+
+.kairo-search-wrapper:focus-within {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: var(--kairo-gold);
+}
+
+.kairo-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--kairo-cream);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    width: 150px;
+    transition: width 0.3s;
+}
+
+.kairo-search-input::placeholder {
+    color: rgba(242, 238, 226, 0.4);
+}
+
+.kairo-search-btn {
+    background: transparent;
+    border: none;
+    color: var(--kairo-gold);
+    cursor: pointer;
+    padding: 2px;
+    display: flex;
+}
+
+.kairo-search-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- LÍNEA INFERIOR --- */
+.header-glow-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--kairo-gold-dark), transparent);
+    opacity: 0.5;
+}
+
+/* =========================================
+   ELEMENTOS MÓVILES (Ocultos en Desktop)
+   ========================================= */
+.nav-checkbox {
+    display: none;
+}
+
+/* El input siempre oculto */
+.nav-hamburger {
+    display: none;
+}
+
+/* El botón hamburguesa oculto en desktop */
+
+/* =========================================
+   RESPONSIVE MÓVIL (Max-width: 900px)
+   ========================================= */
+@media (max-width: 900px) {
+
+    .nav-content {
+        padding: 0 1rem;
+    }
+
+    /* 1. MOSTRAR BOTÓN HAMBURGUESA */
+    .nav-hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+        z-index: 1005;
+        /* Encima del menú abierto */
+    }
+
+    .nav-hamburger .line {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background: var(--kairo-gold);
+        border-radius: 2px;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* 2. TRANSFORMACIÓN DEL MENÚ (Drawer) */
+    .nav-links-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: #080808;
+        /* Fondo sólido oscuro */
+
+        /* Centrado vertical de links */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 2.5rem;
+
+        /* Animación de entrada */
+        transform: translateY(-100%);
+        /* Oculto arriba */
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1001;
+        /* Debajo del logo/hamburguesa */
+
+        /* Textura de fondo opcional */
+        background-image: radial-gradient(circle at center, rgba(47, 92, 79, 0.1) 0%, transparent 70%);
+    }
+
+    /* Estilo de links en móvil (Más grandes) */
+    .kairo-nav-link {
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    /* 3. LÓGICA DE APERTURA (Checkbox Checked) */
+    .nav-checkbox:checked~.nav-links-container {
+        transform: translateY(0);
+        /* Deslizar hacia abajo */
+    }
+
+    /* Animación del icono hamburguesa a 'X' */
+    .nav-checkbox:checked~.nav-hamburger .line:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+
+    .nav-checkbox:checked~.nav-hamburger .line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-checkbox:checked~.nav-hamburger .line:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* 4. AJUSTES DEL BUSCADOR EN MÓVIL */
+    .kairo-search-input {
+        width: 0;
+        /* Ocultar texto inicialmente para ahorrar espacio */
+        padding: 0;
+        opacity: 0;
+    }
+
+    .kairo-search-wrapper {
+        border-color: transparent;
+        background: transparent;
+    }
+
+    /* Al enfocar, expandir (si el usuario toca la lupa o el input invisible) */
+    .kairo-search-wrapper:focus-within {
+        background: #000;
+        border-color: var(--kairo-gold);
+        position: absolute;
+        right: 1rem;
+        width: 200px;
+        z-index: 1006;
+    }
+
+    .kairo-search-wrapper:focus-within .kairo-search-input {
+        width: 100%;
+        padding: 0 5px;
+        opacity: 1;
+    }
+
+    /* Ajuste de posición del logo en móvil para que no choque con la X */
+    .nav-logo-center {
+        height: 35px;
+    }
+}

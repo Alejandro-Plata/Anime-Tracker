@@ -1,0 +1,535 @@
+.kairo-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow-x: hidden;
+    /* Vital para evitar scroll lateral indeseado en móvil */
+}
+
+/* --- UTILIDADES DE TEXTO --- */
+.gold-text {
+    color: var(--kairo-gold);
+    text-shadow: 0 0 10px rgba(197, 165, 114, 0.3);
+}
+
+/* --- HERO SECTION --- */
+.kairo-hero {
+    position: relative;
+    width: 100%;
+    min-height: 85vh;
+    /* Altura base */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    overflow: hidden;
+    background: radial-gradient(circle at center, rgba(47, 92, 79, 0.2) 0%, transparent 70%);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 900px;
+    width: 100%;
+}
+
+.hero-title {
+    font-family: var(--font-serif);
+    /* Ajustado el clamp para que no sea tan agresivo en pantallas muy pequeñas */
+    font-size: clamp(2.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--kairo-gold);
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Animación Color Cycle */
+.color-cycle {
+    display: inline-block;
+    animation: kairoColorCycle 8s infinite alternate ease-in-out;
+}
+
+@keyframes kairoColorCycle {
+    0% {
+        color: var(--kairo-gold);
+        text-shadow: 0 0 20px rgba(197, 165, 114, 0.4);
+    }
+
+    50% {
+        color: var(--kairo-cream);
+        text-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+    }
+
+    100% {
+        color: #4a8e7a;
+        text-shadow: 0 0 20px rgba(74, 142, 122, 0.6);
+    }
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(242, 238, 226, 0.8);
+    margin-bottom: 3rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem;
+    /* Margen de seguridad para texto en móvil */
+}
+
+.gold-text {
+    color: var(--kairo-gold);
+    font-weight: bold;
+}
+
+/* --- SEPARADOR DE OLA --- */
+.hero-wave-divider {
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    /* Reducido un poco para móvil por defecto */
+    z-index: 5;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%238c734b' fill-opacity='0.4'/%3E%3Cpath d='M985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83Z' transform='translate(0, 15)' fill='%238c734b'/%3E%3C/svg%3E");
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 -5px 10px rgba(0, 0, 0, 0.5));
+}
+
+/* --- MARCO DE ESTADÍSTICAS --- */
+.ornate-stats-frame {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    background: var(--kairo-dark);
+    border: 3px solid var(--kairo-gold-dark);
+    outline: 2px solid var(--kairo-dark);
+    outline-offset: -5px;
+    padding: 1.5rem 3rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8);
+    position: relative;
+    max-width: 90%;
+    /* Evita que se salga en pantallas estrechas */
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--kairo-gold);
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--kairo-cream);
+}
+
+.stat-separator-wave {
+    color: var(--kairo-green);
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+}
+
+/* --- SECCIONES COMUNES --- */
+.kairo-section {
+    padding: 4rem 2rem;
+}
+
+.section-header-ornate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.section-header-ornate h2 {
+    font-size: 2rem;
+    color: var(--kairo-gold);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Decoraciones laterales */
+.header-deco-left,
+.header-deco-right {
+    height: 2px;
+    flex: 1;
+    max-width: 150px;
+    background: linear-gradient(to right, transparent, var(--kairo-gold-dark));
+    position: relative;
+}
+
+.header-deco-right {
+    background: linear-gradient(to left, transparent, var(--kairo-gold-dark));
+}
+
+.header-deco-left::after,
+.header-deco-right::after {
+    content: '❖';
+    position: absolute;
+    color: var(--kairo-gold-dark);
+    top: -7px;
+    font-size: 14px;
+}
+
+.header-deco-left::after {
+    right: -10px;
+}
+
+.header-deco-right::after {
+    left: -10px;
+}
+
+.section-divider-ornament {
+    height: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath fill='none' stroke='%238c734b' stroke-width='2' d='M0 10 C 20 20, 30 0, 50 10 C 70 20, 80 0, 100 10' /%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: center;
+    opacity: 0.6;
+    margin: 2rem 0;
+}
+
+/* --- SCROLL CONTAINERS --- */
+.kairo-scroll-container {
+    display: flex;
+    gap: 1.5rem;
+    /* Reducido ligeramente para móvil */
+    overflow-x: auto;
+    padding: 1rem 1rem 2rem 1rem;
+    /* Padding lateral para que no se corte al borde */
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    /* Efecto magnético */
+    -webkit-overflow-scrolling: touch;
+    /* Scroll suave en iOS */
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+.kairo-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.kairo-scroll-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* --- CARDS --- */
+.ornate-card-portrait {
+    min-width: 200px;
+    /* Ligeramente más estrecho para pantallas pequeñas */
+    cursor: pointer;
+    scroll-snap-align: center;
+    /* Centrar al hacer scroll */
+}
+
+/* Estilos de marcos (igual que antes) */
+.card-frame-outer {
+    border: 3px solid var(--kairo-gold-dark);
+    outline: 2px solid var(--kairo-dark);
+    outline-offset: -5px;
+    background: var(--kairo-dark);
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.card-frame-inner {
+    position: relative;
+    border: 1px solid var(--kairo-gold-dark);
+    aspect-ratio: 2/3;
+    overflow: hidden;
+}
+
+.card-frame-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+    filter: sepia(20%) contrast(1.1);
+}
+
+.ornate-card-portrait:hover .card-frame-outer {
+    border-color: var(--kairo-gold);
+    transform: translateY(-5px);
+}
+
+.ornate-card-portrait:hover img {
+    transform: scale(1.05);
+    filter: sepia(0%) contrast(1.2);
+}
+
+.card-score-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--kairo-green);
+    color: var(--kairo-gold);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    padding: 4px 10px;
+    border: 1px solid var(--kairo-gold);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.card-info-panel {
+    background: var(--kairo-panel);
+    border: 2px solid var(--kairo-gold-dark);
+    border-top: none;
+    padding: 1rem;
+    text-align: center;
+    margin-top: -2px;
+    position: relative;
+    z-index: 2;
+}
+
+.card-info-panel h3 {
+    font-size: 1rem;
+    color: var(--kairo-cream);
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-info-panel p {
+    font-size: 0.8rem;
+    color: rgba(242, 238, 226, 0.6);
+}
+
+/* Landscape Cards */
+.ornate-card-landscape {
+    min-width: 280px;
+    /* Ajuste para móviles estrechos */
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--kairo-gold-dark);
+    background: var(--kairo-panel);
+    scroll-snap-align: center;
+}
+
+.landscape-frame-outer {
+    border-bottom: 2px solid var(--kairo-gold-dark);
+    height: 150px;
+    overflow: hidden;
+    position: relative;
+}
+
+.landscape-frame-outer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(10%);
+    transition: 0.5s;
+}
+
+.landscape-info-panel {
+    padding: 1.2rem;
+    position: relative;
+}
+
+.landscape-info-panel h3 {
+    font-size: 1.1rem;
+    color: var(--kairo-cream);
+}
+
+.landscape-info-panel p {
+    color: var(--kairo-gold);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.kairo-btn-small {
+    background: transparent;
+    border: 1px solid var(--kairo-gold);
+    color: var(--kairo-gold);
+    padding: 6px 12px;
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+/* Grid Top 30 */
+.ornate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem;
+}
+
+.rank-tablet {
+    display: flex;
+    align-items: center;
+    background: var(--kairo-panel);
+    border: 2px solid var(--kairo-gold-dark);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    padding: 0.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.rank-plate {
+    font-family: var(--font-serif);
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--kairo-dark);
+    background: linear-gradient(135deg, var(--kairo-gold), var(--kairo-gold-dark));
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    border: 1px solid var(--kairo-cream);
+    margin-right: 1rem;
+}
+
+.rank-thumb-frame {
+    width: 50px;
+    height: 70px;
+    min-width: 50px;
+    border: 2px solid var(--kairo-gold-dark);
+    margin-right: 1rem;
+    overflow: hidden;
+}
+
+.rank-thumb-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(30%);
+}
+
+.rank-info h4 {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+    color: var(--kairo-cream);
+}
+
+.ornate-tags span {
+    font-size: 0.7rem;
+    color: var(--kairo-gold);
+    border: 1px solid var(--kairo-gold-dark);
+    padding: 2px 6px;
+    margin-right: 4px;
+    text-transform: uppercase;
+}
+
+.rank-score-gold {
+    margin-left: auto;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--kairo-gold);
+}
+
+/* =========================================
+   MEDIA QUERIES - RESPONSIVE MÓVIL (FINAL)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* Ajustes Hero */
+    .kairo-hero {
+        min-height: auto;
+        /* Reducimos el padding drásticamente para aprovechar espacio */
+        padding: 7rem 1rem 4rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Stats Frame Vertical */
+    .ornate-stats-frame {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        /* Ancho máximo agradable en móvil */
+        gap: 1.2rem;
+        padding: 1.5rem 1rem;
+    }
+
+    .stat-item {
+        width: 100%;
+        /* Añadimos bordes separadores entre items en lugar de la ola horizontal */
+        border-bottom: 1px solid rgba(197, 165, 114, 0.2);
+        padding-bottom: 1rem;
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .stat-separator-wave {
+        display: none;
+        /* Ocultamos la ola separadora horizontal */
+    }
+
+    /* Ajustes Secciones */
+    .kairo-section {
+        padding: 3rem 0;
+        /* Quitamos padding lateral del contenedor para que el scroll llegue al borde */
+    }
+
+    /* Headers de Sección compactos */
+    .section-header-ornate {
+        padding: 0 1rem;
+        flex-direction: column;
+        /* Apilamos decoraciones si el título es largo */
+        gap: 10px;
+        margin-bottom: 2rem;
+    }
+
+    .header-deco-left,
+    .header-deco-right {
+        width: 50%;
+        /* Líneas más cortas */
+        max-width: 100px;
+    }
+
+    .section-header-ornate h2 {
+        font-size: 1.6rem;
+    }
+
+    /* Grid Top 30 a 1 Columna */
+    .ornate-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+
+    .rank-tablet {
+        padding: 0.6rem;
+    }
+
+    .rank-info h4 {
+        font-size: 0.9rem;
+        /* Texto un poco más pequeño */
+    }
+
+    /* Ajuste de botones y links */
+    .kairo-btn-small {
+        width: 100%;
+        /* Botón ancho completo en móvil es más fácil de pulsar */
+        text-align: center;
+        margin-top: 0.5rem;
+        padding: 10px;
+    }
+}

@@ -1,0 +1,112 @@
+<main class="kairo-main">
+
+    <section class="kairo-hero">
+        <div class="hero-particles"></div>
+
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Explora los Mares del <span class="color-cycle">Anime</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                Navega a través de una colección legendaria con la precisión de <span class="gold-text">Jikan
+                    API</span>. Tu odisea comienza ahora.
+            </p>
+
+            <div class="ornate-stats-frame">
+                <div class="stat-item">
+                    <span class="stat-number">24k+</span>
+                    <span class="stat-label">Títulos</span>
+                </div>
+                <div class="stat-separator-wave">~</div>
+                <div class="stat-item">
+                    <span class="stat-number">Fast</span>
+                    <span class="stat-label">Jikan API</span>
+                </div>
+                <div class="stat-separator-wave">~</div>
+                <div class="stat-item">
+                    <span class="stat-number">99%</span>
+                    <span class="stat-label">Precisión</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-wave-divider"></div>
+    </section>
+
+    <section class="kairo-section">
+        <div class="section-header-ornate">
+            <span class="header-deco-left"></span>
+            <h2>Tesoros en Tendencia</h2>
+            <span class="header-deco-right"></span>
+        </div>
+
+        <div class="kairo-scroll-container">
+            <div class="ornate-card-portrait" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+                <div class="card-frame-outer">
+                    <div class="card-frame-inner">
+                        <img src="https://placehold.co/225x320/0f1e19/c5a572?text=KAIRO+Anime" alt="Cover"
+                            loading="lazy">
+                        <div class="card-score-badge">9.{{i}}</div>
+                    </div>
+                </div>
+                <div class="card-info-panel">
+                    <h3>Vinland Saga: Season 2</h3>
+                    <p>TV • 24 Episodios</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider-ornament"></div>
+
+
+    <section class="kairo-section">
+        <div class="section-header-ornate">
+            <span class="header-deco-left"></span>
+            <h2>Travesías Recomendadas</h2>
+            <span class="header-deco-right"></span>
+        </div>
+
+        <div class="kairo-scroll-container">
+            <div class="ornate-card-landscape" *ngFor="let i of [1,2,3,4]">
+                <div class="landscape-frame-outer">
+                    <img src="https://placehold.co/300x160/0f1e19/c5a572?text=Viaje+Epico" alt="Cover" loading="lazy">
+                </div>
+                <div class="landscape-info-panel">
+                    <h3>Frieren: Beyond Journey's End</h3>
+                    <p>Aventura • Fantasía</p>
+                    <button class="kairo-btn-small">Ver Detalles</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider-ornament"></div>
+
+    <section class="kairo-section">
+        <div class="section-header-ornate">
+            <span class="header-deco-left"></span>
+            <h2>El Panteón (Top 30)</h2>
+            <span class="header-deco-right"></span>
+        </div>
+
+        <div class="ornate-grid">
+            <div class="rank-tablet" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+                <div class="rank-plate">#{{i}}</div>
+                <div class="rank-thumb-frame">
+                    <img src="https://placehold.co/50x70/222/c5a572" alt="Mini" class="rank-img">
+                </div>
+                <div class="rank-info">
+                    <h4>Fullmetal Alchemist: Brotherhood</h4>
+                    <div class="ornate-tags">
+                        <span>Militar</span>
+                        <span>Aventura</span>
+                    </div>
+                </div>
+                <div class="rank-score-gold">9.14</div>
+            </div>
+        </div>
+    </section>
+
+</main>

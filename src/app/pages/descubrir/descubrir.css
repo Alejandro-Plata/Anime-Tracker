@@ -1,0 +1,501 @@
+/* =========================================
+       ESTILOS GLOBALES & VARIABLES (KAIRO)
+       ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Lato:wght@300;400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+    --kairo-gold: #c5a572;
+    --kairo-gold-dark: #8c734b;
+    --kairo-green: #2f5c4f;
+    --kairo-cream: #f2eee2;
+    --kairo-dark: #121212;
+    --kairo-panel: #1f1f1f;
+    --kairo-red: #8c3b3b;
+    --font-serif: 'Cinzel Decorative', serif;
+    --font-sans: 'Inter', sans-serif;
+}
+
+/* Reset básico para el componente */
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: var(--kairo-dark);
+    color: var(--kairo-cream);
+    font-family: var(--font-sans);
+    background-image:
+        radial-gradient(circle at 50% 30%, rgba(47, 92, 79, 0.1) 0%, transparent 50%),
+        linear-gradient(to bottom, #141414 0%, #050505 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+
+/* Textura de ruido */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: overlay;
+}
+
+/* Utilidades */
+.gold-text {
+    color: var(--kairo-gold);
+}
+
+.kairo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(140, 115, 75, 0.3);
+}
+
+.logo {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+/* =========================================
+       SECCIÓN DISCOVER & SWIPE UI
+       ========================================= */
+.discover-section {
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.section-header-ornate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.section-header-ornate h2 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    color: var(--kairo-gold);
+    margin: 0;
+}
+
+.instruction-text {
+    color: rgba(242, 238, 226, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.header-deco-left,
+.header-deco-right {
+    height: 2px;
+    flex: 1;
+    width: 60px;
+    background: linear-gradient(to right, transparent, var(--kairo-gold-dark));
+    position: relative;
+}
+
+.header-deco-right {
+    background: linear-gradient(to left, transparent, var(--kairo-gold-dark));
+}
+
+/* CARD STACK CONTAINER */
+.card-stack-container {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    height: 550px;
+    /* Altura fija para el área de swipe */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ESTILO DE CARTA BASE (Kairo Style) */
+.kairo-card {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--kairo-dark);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    transform-origin: 50% 100%;
+    /* Evita selección de texto durante drag */
+    user-select: none;
+    touch-action: none;
+}
+
+/* Capa de la carta siguiente (fondo) */
+.next-card {
+    z-index: 1;
+    transform: scale(0.95) translateY(10px);
+    opacity: 0.6;
+    filter: blur(1px) brightness(0.5);
+}
+
+/* Capa de la carta actual (frontal) */
+.current-card {
+    z-index: 10;
+    cursor: grab;
+}
+
+.current-card:active {
+    cursor: grabbing;
+}
+
+/* MARCO INTERNO & IMAGEN */
+.card-frame-outer {
+    flex: 1;
+    border: 3px solid var(--kairo-gold-dark);
+    outline: 2px solid var(--kairo-dark);
+    outline-offset: -6px;
+    padding: 6px;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-frame-inner {
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--kairo-gold-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.card-frame-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    /* Crucial para evitar drag nativo de imagen */
+}
+
+.card-score-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--kairo-green);
+    color: var(--kairo-gold);
+    font-family: var(--font-serif);
+    font-weight: 700;
+    padding: 4px 10px;
+    border: 1px solid var(--kairo-gold);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* PANEL INFO INFERIOR */
+.card-info-panel {
+    background: var(--kairo-panel);
+    border: 3px solid var(--kairo-gold-dark);
+    border-top: none;
+    padding: 1.2rem;
+    text-align: center;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-info-panel h3 {
+    color: var(--kairo-cream);
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tags-row {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.tags-row span {
+    font-size: 0.7rem;
+    color: var(--kairo-gold);
+    border: 1px solid var(--kairo-gold-dark);
+    padding: 2px 6px;
+    text-transform: uppercase;
+}
+
+/* BOTONES */
+.kairo-btn-small {
+    background: transparent;
+    border: 1px solid var(--kairo-gold);
+    color: var(--kairo-gold);
+    padding: 8px 12px;
+    font-family: var(--font-serif);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.kairo-btn-small:hover {
+    background: rgba(197, 165, 114, 0.1);
+}
+
+.full-width {
+    width: 100%;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+/* SELLOS DE DECISIÓN (STAMPS) */
+.stamp {
+    position: absolute;
+    top: 40px;
+    font-family: var(--font-serif);
+    font-weight: 900;
+    font-size: 2rem;
+    border: 4px solid;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transform: rotate(-15deg);
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.stamp-like {
+    left: 20px;
+    color: var(--kairo-gold);
+    border-color: var(--kairo-gold);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    transform: rotate(-15deg);
+}
+
+.stamp-nope {
+    right: 20px;
+    color: var(--kairo-red);
+    border-color: var(--kairo-red);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    transform: rotate(15deg);
+}
+
+/* CONTROLES FLOTANTES */
+.swipe-controls {
+    margin-top: 2rem;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--kairo-panel);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* BOTÓN ROJO SÓLIDO */
+.reject-btn {
+    border-color: var(--kairo-red);
+    background-color: var(--kairo-red);
+    color: white;
+    box-shadow: 0 4px 15px rgba(140, 59, 59, 0.4);
+}
+
+.reject-btn:hover {
+    background-color: #a94444;
+    /* Rojo más brillante */
+    box-shadow: 0 0 20px rgba(140, 59, 59, 0.8);
+    /* Resplandor */
+    transform: scale(1.15);
+}
+
+.like-btn {
+    border-color: var(--kairo-green);
+    color: var(--kairo-green);
+}
+
+.like-btn:hover {
+    background: var(--kairo-green);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* LOADING SPINNER */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--kairo-gold);
+}
+
+.spinner-gold {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(197, 165, 114, 0.3);
+    border-top-color: var(--kairo-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================
+       MODAL DE DETALLES
+       ========================================= */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: var(--kairo-dark);
+    border: 2px solid var(--kairo-gold);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 0 30px rgba(197, 165, 114, 0.2);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--kairo-gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-header h2 {
+    font-family: var(--font-serif);
+    color: var(--kairo-gold);
+    margin-bottom: 0.5rem;
+}
+
+.modal-meta {
+    font-size: 0.85rem;
+    color: rgba(242, 238, 226, 0.7);
+    border-bottom: 1px solid var(--kairo-gold-dark);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.synopsis {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.genres-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+}
+
+.genre-tag {
+    background: rgba(47, 92, 79, 0.3);
+    border: 1px solid var(--kairo-green);
+    color: #8edec6;
+    padding: 4px 8px;
+    border-radius: 2px;
+    font-size: 0.8rem;
+}
+
+.kairo-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(45deg, var(--kairo-gold-dark), var(--kairo-gold));
+    color: var(--kairo-dark);
+    padding: 10px 20px;
+    font-weight: 700;
+    font-family: var(--font-serif);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+.kairo-btn:hover {
+    filter: brightness(1.2);
+    box-shadow: 0 0 15px rgba(197, 165, 114, 0.5);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Scrollbar Modal */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--kairo-gold-dark);
+}
+
+@media (min-width: 768px) {
+    .modal-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+        background: var(--kairo-gold-dark);
+    }
+}

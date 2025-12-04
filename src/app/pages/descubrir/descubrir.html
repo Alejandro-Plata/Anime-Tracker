@@ -1,0 +1,123 @@
+<main class="kairo-main">
+    <!-- Fondo de ruido global -->
+    <div class="noise-overlay"></div>
+
+    <!-- HEADER SIMPLE -->
+    <header class="kairo-header">
+        <div class="logo">KAIRO <span class="gold-text">DISCOVER</span></div>
+        <div class="favorites-count">
+            <span class="gold-text">Saved:</span> 8
+        </div>
+    </header>
+
+    <!-- SECCIÓN DESCUBRIR (SWIPE) -->
+    <section class="discover-section">
+        <div class="container">
+            <div class="section-header-ornate">
+                <span class="header-deco-left"></span>
+                <h2>La Brújula del Destino</h2>
+                <span class="header-deco-right"></span>
+            </div>
+
+            <p class="instruction-text">Desliza para navegar. Encuentra tu próximo tesoro.</p>
+
+            <!-- CONTENEDOR DE CARTAS -->
+            <div class="card-stack-container">
+
+                <!-- CARTA DE FONDO (NEXT) -->
+                <div class="kairo-card next-card">
+                    <div class="card-frame-outer">
+                        <div class="card-frame-inner">
+                            <img src="https://www.imdb.com/es/title/tt13706018/" alt="Next Anime">
+                        </div>
+                    </div>
+                    <div class="card-info-panel">
+                        <h3>Next Anime</h3>
+                    </div>
+                </div>
+
+                <!-- CARTA ACTUAL (DRAGGABLE) -->
+                <div class="kairo-card current-card">
+
+                    <!-- Sellos de decisión (Overlay) -->
+                    <div class="stamp stamp-like">INTERESA</div>
+                    <div class="stamp stamp-nope">DESCARTAR</div>
+
+                    <div class="card-frame-outer">
+                        <div class="card-frame-inner">
+                            <img src="https://www.imdb.com/es/title/tt13706018/" alt="Current Anime">
+                            <div class="card-score-badge">
+                                8.5
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-info-panel">
+                        <h3>Current Anime</h3>
+                        <div class="tags-row">
+                            <span>Genre 1</span>
+                            <span>Genre 2</span>
+                            <span>Genre 3</span>
+                        </div>
+
+                        <button class="kairo-btn-small full-width mt-2">
+                            Ver Detalles 📜
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONTROLES MANUALES -->
+
+
+                <div class="loading-state">
+                    <div class="spinner-gold"></div>
+                    <p>Consultando los astros...</p>
+                </div>
+
+            </div>
+            <div>
+                <div class="swipe-controls">
+                    <button class="control-btn reject-btn">
+                        ✕
+                    </button>
+                    <button class="control-btn like-btn">
+                        ♥
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL DE DETALLES -->
+    <!-- <div class="modal-backdrop">
+        <div class="modal-content ornate-border">
+            <button class="close-modal">✕</button>
+
+            <div class="modal-header">
+                <h2>Current Anime</h2>
+                <div class="modal-meta">
+                    <span>2025</span> •
+                    <span>12 Episodios</span> •
+                    <span class="gold-text">En emisión</span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <p class="synopsis">Sin descripción disponible en los archivos.</p>
+
+                <div class="genres-list">
+                    <span class="genre-tag">Genre 1</span>
+                    <span class="genre-tag">Genre 2</span>
+                    <span class="genre-tag">Genre 3</span>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <a href="https://myanimelist.net/anime/" target="_blank" class="kairo-btn">
+                    Ver en MyAnimeList
+                </a>
+            </div>
+        </div>
+    </div> -->
+
+</main>
