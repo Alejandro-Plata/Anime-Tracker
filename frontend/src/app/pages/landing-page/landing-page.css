@@ -230,13 +230,11 @@
 /* --- CARDS --- */
 .ornate-card-portrait {
     min-width: 200px;
-    /* Ligeramente más estrecho para pantallas pequeñas */
     cursor: pointer;
     scroll-snap-align: center;
-    /* Centrar al hacer scroll */
 }
 
-/* Estilos de marcos (igual que antes) */
+/* --- Marcos (Sin cambios) --- */
 .card-frame-outer {
     border: 3px solid var(--kairo-gold-dark);
     outline: 2px solid var(--kairo-dark);
@@ -263,6 +261,7 @@
     filter: sepia(20%) contrast(1.1);
 }
 
+/* --- Hover del Card --- */
 .ornate-card-portrait:hover .card-frame-outer {
     border-color: var(--kairo-gold);
     transform: translateY(-5px);
@@ -273,17 +272,35 @@
     filter: sepia(0%) contrast(1.2);
 }
 
+/* --- NUEVO: Badge con estrella --- */
 .card-score-badge {
     position: absolute;
     top: 10px;
     right: 10px;
     background: var(--kairo-green);
+    /* Fondo oscuro */
     color: var(--kairo-gold);
+    /* Texto dorado */
     font-family: var(--font-serif);
     font-weight: 700;
-    padding: 4px 10px;
+    padding: 4px 8px;
+    /* Ajustado ligeramente */
     border: 1px solid var(--kairo-gold);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+    /* Flexbox para alinear estrella y número */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    z-index: 10;
+}
+
+/* Estilo para el SVG de la estrella */
+.card-score-badge svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
 }
 
 .card-info-panel {
@@ -297,6 +314,11 @@
     z-index: 2;
 }
 
+.card-info-panel a {
+    text-decoration: none;
+    display: block;
+}
+
 .card-info-panel h3 {
     font-size: 1rem;
     color: var(--kairo-cream);
@@ -304,6 +326,16 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    /* Transición suave para el efecto elegante */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* Efecto al pasar el mouse sobre el enlace */
+.card-info-panel a:hover h3 {
+    color: var(--kairo-gold);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    /* Un brillo sutil dorado */
 }
 
 .card-info-panel p {

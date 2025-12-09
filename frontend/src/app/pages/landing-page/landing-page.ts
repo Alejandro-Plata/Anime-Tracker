@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { BusquedaEndpoint } from '../../services/endpoints/busqueda-endpoint';
+import { Endpoints } from '../../services/endpoints/endpoints';
 import type { Anime } from '../../types/anime';
 
 @Component({
@@ -10,12 +10,16 @@ import type { Anime } from '../../types/anime';
 })
 export class LandingPage implements OnInit {
 
-  private busquedaEndpoint = inject(BusquedaEndpoint);
+  // Inyectamos el servicio Endpoints
+  private endpoints = inject(Endpoints);
+
+  topAnimesSeason: Anime[] = [];
 
   ngOnInit(): void {
-    this.busquedaEndpoint.getAnimesSeason().then((animes) => {
-      console.log(animes);
+    this.endpoints.getAnimesSeason().then((animes) => {
+      this.topAnimesSeason = animes.sort((a, b) => b.score - a.score); // Ordenamos los animes por score
     });
   }
+
 
 }

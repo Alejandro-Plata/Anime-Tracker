@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { BusquedaEndpoint } from './busqueda-endpoint';
+import { Endpoints } from './endpoints';
 
-describe('BusquedaEndpoint', () => {
-  let service: BusquedaEndpoint;
+describe('Endpoints', () => {
+  let service: Endpoints;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BusquedaEndpoint);
+    service = TestBed.inject(Endpoints);
   });
 
   it('should be created', () => {

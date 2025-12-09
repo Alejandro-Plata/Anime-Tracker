@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators'; // <--- Importante: Importar map
 import type { Anime } from '../../types/anime';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BusquedaEndpoint {
+export class Endpoints {
 
   urlBase = 'https://api.jikan.moe/v4/';
 
@@ -23,8 +21,9 @@ export class BusquedaEndpoint {
       const anime = animesData[animeId]; // Obtenemos todo el objeto del anime
       animes.push({ // Nos quedamos solo con las propiedades que nos interesan
         url: anime.url,
-        image_url: anime.image_url,
+        image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
+        score: anime.score,
       });
     }
 
@@ -42,11 +41,13 @@ export class BusquedaEndpoint {
       const anime = animesData[animeId];
       animes.push({
         url: anime.url,
-        image_url: anime.image_url,
+        image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
+        score: anime.score,
       });
     }
     return animes;
   }
+
 
 }
