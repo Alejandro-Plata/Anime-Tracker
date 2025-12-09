@@ -1,0 +1,583 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background-color: var(--kairo-bg-dark);
+    color: var(--kairo-cream);
+    font-family: var(--font-sans);
+}
+
+.detail-layout {
+    position: relative;
+    padding-top: 120px;
+    padding-bottom: 60px;
+}
+
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #141414 0%, #050505 100%);
+    z-index: 0;
+}
+
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.content-container {
+    position: relative;
+    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    /* Sidebar fijo, contenido fluido */
+    gap: 40px;
+    align-items: start;
+}
+
+/* =========================================
+       ASIDE (SIDEBAR)
+       ========================================= */
+.anime-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Portada Enmarcada */
+.poster-frame-outer {
+    border: 3px solid var(--kairo-gold-dark);
+    outline: 2px solid var(--kairo-panel);
+    outline-offset: -6px;
+    padding: 5px;
+    background: var(--kairo-panel);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.poster-frame-inner {
+    position: relative;
+    border: 1px solid var(--kairo-gold);
+    aspect-ratio: 2/3;
+    overflow: hidden;
+}
+
+.poster-frame-inner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(10%);
+    transition: filter 0.3s;
+}
+
+.poster-frame-outer:hover img {
+    filter: sepia(0%);
+}
+
+.status-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--kairo-gold);
+    text-align: center;
+    padding: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border-top: 1px solid var(--kairo-gold-dark);
+}
+
+/* Score Box */
+.score-box {
+    background: var(--kairo-panel);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.ornate-border {
+    border: 1px solid var(--kairo-gold-dark);
+}
+
+.ornate-border::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border: 1px solid rgba(197, 165, 114, 0.3);
+    pointer-events: none;
+}
+
+.score-label {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: rgba(242, 238, 226, 0.7);
+    margin-bottom: 5px;
+}
+
+.score-value {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--kairo-gold);
+    line-height: 1;
+    text-shadow: 0 0 15px rgba(197, 165, 114, 0.2);
+}
+
+.score-rank {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--kairo-green);
+    margin-top: 5px;
+}
+
+/* Tech Info */
+.tech-info {
+    background: rgba(31, 31, 31, 0.5);
+    border-left: 2px solid var(--kairo-gold-dark);
+    padding: 15px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed rgba(140, 115, 75, 0.3);
+    padding-bottom: 4px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.label {
+    color: rgba(242, 238, 226, 0.6);
+}
+
+.value {
+    width: fit-content;
+    color: var(--kairo-cream);
+    text-align: right;
+}
+
+/* Botones Externos */
+.external-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.kairo-btn-outline {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid var(--kairo-gold-dark);
+    color: var(--kairo-gold);
+    padding: 10px;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.kairo-btn-outline:hover {
+    background: var(--kairo-gold);
+    color: var(--kairo-dark);
+}
+
+/* =========================================
+       MAIN CONTENT
+       ========================================= */
+.anime-content {
+    padding-top: 10px;
+}
+
+/* Header */
+.anime-title {
+    font-family: var(--font-serif);
+    font-size: 3rem;
+    margin: 0;
+    color: var(--kairo-gold);
+    line-height: 1.1;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.anime-subtitle {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    color: rgba(242, 238, 226, 0.6);
+    margin: 5px 0 15px 0;
+    font-weight: 300;
+}
+
+.genres-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.genre-tag {
+    background: rgba(47, 92, 79, 0.2);
+    border: 1px solid var(--kairo-green);
+    color: #8edec6;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Separator */
+.separator-ornament {
+    color: var(--kairo-gold-dark);
+    margin: 2rem 0;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.separator-ornament::before,
+.separator-ornament::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    background: linear-gradient(90deg, transparent, var(--kairo-gold-dark), transparent);
+    margin: 0 15px;
+}
+
+/* Synopsis */
+.synopsis-container h3,
+.synopsis-container h4 {
+    font-family: var(--font-serif);
+    color: var(--kairo-cream);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--kairo-gold-dark);
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.synopsis-container p {
+    line-height: 1.7;
+    color: rgba(242, 238, 226, 0.9);
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+}
+
+.background-info {
+    background: rgba(197, 165, 114, 0.05);
+    padding: 1.5rem;
+    border-left: 3px solid var(--kairo-gold);
+    font-style: italic;
+}
+
+/* =========================================
+       EPISODES SECTION & PLAY BUTTON
+       ========================================= */
+.episodes-section {
+    background: var(--kairo-panel);
+    border: 1px solid var(--kairo-gold-dark);
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--kairo-gold-dark);
+    padding-bottom: 15px;
+}
+
+.section-header h3 {
+    font-family: var(--font-serif);
+    margin: 0;
+    color: var(--kairo-gold);
+    font-size: 1.4rem;
+}
+
+.episode-count-badge {
+    font-family: var(--font-mono);
+    background: rgba(47, 92, 79, 0.3);
+    border: 1px solid var(--kairo-green);
+    color: #8edec6;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.episodes-list {
+    display: flex;
+    flex-direction: column;
+    /* Asegura uno debajo del otro */
+    gap: 15px;
+    /* Espacio entre episodios */
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--kairo-gold-dark);
+    border-radius: 3px;
+}
+
+/* --- TARJETA DE EPISODIO MEJORADA --- */
+.episode-card {
+    display: grid;
+    /* Aumentamos el ancho de la columna 1 para dar espacio a la rotación */
+    grid-template-columns: 70px 1fr auto auto;
+    align-items: center;
+    gap: 15px;
+
+    width: 100%;
+    /* Asegura que ocupe todo el ancho */
+    box-sizing: border-box;
+    /* Previene problemas de padding */
+
+    background: linear-gradient(90deg, rgba(20, 20, 20, 0.8) 0%, rgba(30, 30, 30, 0.8) 100%);
+    padding: 15px 20px;
+    border: 1px solid rgba(140, 115, 75, 0.2);
+    border-left: 3px solid var(--kairo-gold-dark);
+
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    /* Quitamos overflow: hidden por si la sombra de la runa se corta */
+    /* overflow: hidden; */
+}
+
+/* Efecto Hover */
+.episode-card:hover {
+    background: linear-gradient(90deg, rgba(47, 92, 79, 0.15) 0%, rgba(30, 30, 30, 0.9) 100%);
+    border-color: var(--kairo-gold);
+    transform: translateX(5px);
+    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    /* Asegura que esté por encima al hacer hover */
+}
+
+/* Número del episodio (Runa) */
+.ep-index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    /* Ancho fijo aumentado para la rotación */
+    height: 60px;
+}
+
+.ep-rune-box {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--kairo-gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(45deg);
+    /* Runa Romboidal */
+    background: rgba(20, 20, 20, 0.8);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animación de la runa al pasar el ratón */
+.episode-card:hover .ep-rune-box {
+    border-color: var(--kairo-gold);
+    background: rgba(47, 92, 79, 0.3);
+    box-shadow: 0 0 15px rgba(197, 165, 114, 0.6);
+    transform: rotate(225deg);
+    /* Rotación mística completa */
+}
+
+.ep-num {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--kairo-gold);
+    font-weight: 700;
+    transform: rotate(-45deg);
+    /* Contrarrestar rotación caja */
+    transition: all 0.4s ease;
+}
+
+.episode-card:hover .ep-num {
+    color: #fff;
+    transform: rotate(-225deg);
+    /* Contrarrestar nueva rotación */
+}
+
+/* Información de texto */
+.ep-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+    /* Para texto largo */
+}
+
+.ep-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    color: var(--kairo-cream);
+    font-size: 1rem;
+    transition: color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.episode-card:hover .ep-title {
+    color: #fff;
+}
+
+.ep-date {
+    font-size: 0.75rem;
+    color: rgba(242, 238, 226, 0.4);
+    font-family: var(--font-mono);
+}
+
+/* Separador decorativo vertical */
+.ep-separator {
+    width: 1px;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, var(--kairo-gold-dark), transparent);
+    opacity: 0.5;
+}
+
+/* --- BOTÓN PLAY --- */
+.play-btn-custom {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    opacity: 0.8;
+}
+
+.play-btn-custom:hover {
+    transform: scale(1.15) rotate(90deg);
+    /* Pequeña rotación al hover */
+    opacity: 1;
+}
+
+.play-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.svg-frame {
+    stroke: var(--kairo-gold-dark);
+    stroke-width: 1.5px;
+    fill: rgba(0, 0, 0, 0.2);
+    transition: all 0.4s;
+}
+
+/* Al hacer hover en la CARD completa, el botón también reacciona */
+.episode-card:hover .svg-frame {
+    stroke: var(--kairo-gold);
+    fill: rgba(47, 92, 79, 0.8);
+    filter: drop-shadow(0 0 8px var(--kairo-gold));
+}
+
+.svg-triangle {
+    fill: var(--kairo-gold);
+    transition: all 0.3s;
+}
+
+.episode-card:hover .svg-triangle {
+    fill: #fff;
+}
+
+/* =========================================
+       RESPONSIVE
+       ========================================= */
+@media (max-width: 768px) {
+    .content-container {
+        grid-template-columns: 1fr;
+        /* Columna única */
+        gap: 20px;
+    }
+
+    .anime-sidebar {
+        position: relative;
+        /* Ya no es sticky */
+        flex-direction: row;
+        /* Horizontal en móvil si cabe, o column */
+        flex-wrap: wrap;
+        top: 0;
+    }
+
+    .poster-frame-outer {
+        max-width: 200px;
+        margin: 0 auto;
+    }
+
+    .anime-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 550px) {
+    .anime-sidebar {
+        flex-direction: column;
+    }
+
+    .poster-frame-outer {
+        max-width: 100%;
+    }
+
+    /* Ajuste móvil para episodios */
+    .episode-card {
+        grid-template-columns: 1fr auto;
+        /* Texto | Botón */
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .ep-index,
+    .ep-separator {
+        display: none;
+    }
+
+    /* Ocultar detalles en muy pequeño */
+    .play-btn-custom {
+        width: 36px;
+        height: 36px;
+    }
+}

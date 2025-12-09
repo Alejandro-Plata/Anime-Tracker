@@ -1,0 +1,126 @@
+<main class="kairo-main detail-layout">
+    <!-- Fondo y Ruido -->
+    <div class="bg-overlay"></div>
+    <div class="noise-overlay"></div>
+    @if (animeDetail) {
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="content-container">
+
+        <!-- === ASIDE (Izquierda) === -->
+        <aside class="anime-sidebar">
+
+            <!-- Portada Enmarcada -->
+            <div class="poster-frame-outer">
+                <div class="poster-frame-inner">
+                    <img [src]="animeDetail.image_url" [alt]="animeDetail.title">
+                    <div class="status-badge">{{ animeDetail.status }}</div>
+                </div>
+            </div>
+
+            <!-- Puntuación -->
+            <div class="score-box ornate-border">
+                <div class="score-label">Puntuación</div>
+                <div class="score-value">{{ animeDetail.score }}</div>
+                <div class="score-rank">#{{ animeDetail.rank }} en el top</div>
+            </div>
+
+            <!-- Información Técnica -->
+            <div class="tech-info">
+                <div class="info-row">
+                    <span class="label">Formato:</span>
+                    <span class="value">{{ animeDetail.source }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Episodios:</span>
+                    <span class="value">{{ animeDetail.episodes_count }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Duración por episodio:</span>
+                    <span class="value">{{ animeDetail.duration.split(' per')[0] }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Estudio/s:</span>
+                    <span class="value">{{ studios }}</span>
+                </div>
+            </div>
+
+        </aside>
+
+
+        <!-- === MAIN (Derecha) === -->
+        <section class="anime-content">
+
+            <!-- Cabecera del Anime -->
+            <header class="anime-header">
+                <h1 class="anime-title">{{ animeDetail.title }}</h1>
+                <h2 class="anime-subtitle">{{ animeDetail.title_japanese }} • {{ animeDetail.year }}</h2>
+
+                <div class="genres-row">
+                    @for (genre of animeDetail.genres; track $index) {
+                    <span class="genre-tag">{{ genre.name }}</span>
+                    }
+                </div>
+            </header>
+
+            <div class="separator-ornament">❖</div>
+
+            <!-- Sinopsis -->
+            <div class="synopsis-container">
+                <h3>Sinopsis</h3>
+                <p>{{ animeDetail.synopsis }}</p>
+
+                @if (animeDetail.background) {
+                <div class="background-info">
+                    <h4>Antecedentes</h4>
+                    <p>{{ animeDetail.background }}</p>
+                </div>
+                }
+            </div>
+
+            <div class="separator-ornament">❖</div>
+
+            <!-- Sección de Episodios -->
+            <div class="episodes-section">
+                <div class="section-header">
+                    <h3>Episodios</h3>
+                    <span class="episode-count-badge">{{ animeDetail.episodes_count }} Disponibles</span>
+                </div>
+
+                <div class="episodes-list custom-scrollbar">
+
+                    @for (ep of animeDetail.episodes_list; track $index) {
+                    <div class="episode-card">
+                        <div class="ep-index">
+                            <div class="ep-rune-box">
+                                <span class="ep-num">{{ $index + 1 }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Información -->
+                        <div class="ep-info">
+                            <span class="ep-title">{{ ep.title }}</span>
+                        </div>
+
+                        <!-- Separador vertical decorativo -->
+                        <div class="ep-separator"></div>
+
+                        <!-- Botón Play -->
+                        <button class="play-btn-custom" title="Ver Episodio">
+                            <a [href]="ep.url">
+                                <svg viewBox="0 0 50 50" class="play-svg">
+                                    <path class="svg-frame" d="M25 2 L48 25 L25 48 L2 25 Z" fill="none"
+                                        stroke-width="2" />
+                                    <path class="svg-triangle" d="M20 15 L35 25 L20 35 Z" />
+                                </svg>
+                            </a>
+                        </button>
+                    </div>
+                    }
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+    }
+</main>

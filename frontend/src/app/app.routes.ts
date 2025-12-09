@@ -5,6 +5,7 @@ import { BuscadorAvanzado } from './pages/buscador-avanzado/buscador-avanzado';
 import { MiLista } from './pages/mi-lista/mi-lista';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
+import { AnimeDetailPage } from './pages/anime-detail/anime-detail';
 
 export const routes: Routes = [
     { path: '', component: LandingPage },
@@ -13,4 +14,5 @@ export const routes: Routes = [
     { path: 'mi-lista', component: MiLista },
     { path: 'login', component: Login },
     { path: 'register', component: Register },
+    { path: 'anime-detail/:id', component: AnimeDetailPage },
 ];

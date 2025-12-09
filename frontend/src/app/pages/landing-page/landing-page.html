@@ -43,10 +43,10 @@
 
         <div class="kairo-scroll-container">
             @for(anime of topAnimesSeason; track $index) {
-            <div class="ornate-card-portrait">
+            <div class="ornate-card-portrait" (click)="navigateToAnimeDetail(anime.mal_id)">
                 <div class="card-frame-outer">
-                    <div class="card-frame-inner">
-                        <img src="{{anime.image_url}}" alt="{{anime.title}}" loading="lazy">
+                    <div class="card-frame-inner cursor-pointer">
+                        <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
 
                         <div class="card-score-badge">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -55,14 +55,15 @@
                             </svg>
                             <span>{{anime.score}}</span>
                         </div>
-
                     </div>
                 </div>
                 <div class="card-info-panel">
-                    <a href="{{anime.url}}">
+                    <a [routerLink]="['/anime-detail', anime.mal_id]">
                         <h3>{{anime.title}}</h3>
                     </a>
-                    <button class="kairo-btn-small">Ver Detalles</button>
+                    <button class="kairo-btn-small" (click)="navigateToAnimeDetail(anime.mal_id)">
+                        Ver Detalles
+                    </button>
                 </div>
             </div>
             }
@@ -70,7 +71,6 @@
     </section>
 
     <div class="section-divider-ornament"></div>
-
 
     <section class="kairo-section">
         <div class="section-header-ornate">
@@ -81,13 +81,26 @@
 
         <div class="kairo-scroll-container">
             @for(anime of topAnimesSeason; track $index) {
-            <div class="ornate-card-landscape">
-                <div class="landscape-frame-outer">
-                    <img src={{anime.image_url}} alt={{anime.title}} loading="lazy">
+            <div class="ornate-card-portrait">
+                <div class="card-frame-outer">
+                    <div class="card-frame-inner cursor-pointer" (click)="navigateToAnimeDetail(anime.mal_id)">
+                        <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
+                        <div class="card-score-badge">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                            </svg>
+                            <span>{{anime.score}}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="landscape-info-panel">
-                    <h3>{{anime.title}}</h3>
-                    <button class="kairo-btn-small">Ver Detalles</button>
+                <div class="card-info-panel">
+                    <a [routerLink]="['/anime-detail', anime.mal_id]">
+                        <h3>{{anime.title}}</h3>
+                    </a>
+                    <button class="kairo-btn-small" (click)="navigateToAnimeDetail(anime.mal_id)">
+                        Ver Detalles
+                    </button>
                 </div>
             </div>
             }
@@ -104,7 +117,8 @@
         </div>
 
         <div class="ornate-grid">
-            <div class="rank-tablet" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12]">
+            @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track $index) {
+            <div class="rank-tablet">
                 <div class="rank-plate">#{{i}}</div>
                 <div class="rank-thumb-frame">
                     <img src="" alt="" class="rank-img">
@@ -118,6 +132,7 @@
                 </div>
                 <div class="rank-score-gold">9.14</div>
             </div>
+            }
         </div>
     </section>
 
