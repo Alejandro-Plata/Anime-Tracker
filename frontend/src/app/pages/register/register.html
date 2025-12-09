@@ -1,0 +1,77 @@
+<main class="register-layout">
+
+    <!-- CAPA DE FONDO (Imagen + Ruido) -->
+    <div class="bg-image"></div>
+    <div class="noise-overlay"></div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="register-container">
+
+        <!-- TARJETA DE REGISTRO (Glassmorphism) -->
+        <div class="register-card ornate-border">
+
+            <div class="card-header">
+                <h1 class="title">Únete a la <span class="gold-text">Odisea</span></h1>
+                <p class="subtitle">Crea tu grimorio personal de anime</p>
+                <div class="separator-ornament">❖</div>
+            </div>
+
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="kairo-form">
+
+                <!-- USUARIO -->
+                <div class="form-group">
+                    <label for="username">Nombre de Viajero</label>
+                    <input id="username" type="text" formControlName="username" placeholder="Ej. KairoExplorer"
+                        [class.invalid]="isFieldInvalid('username')">
+                    <div class="error-msg" *ngIf="isFieldInvalid('username')">
+                        El nombre es requerido (min 3 caracteres).
+                    </div>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input id="email" type="email" formControlName="email" placeholder="tucorreo@ejemplo.com"
+                        [class.invalid]="isFieldInvalid('email')">
+                    <div class="error-msg" *ngIf="isFieldInvalid('email')">
+                        Ingresa un correo válido.
+                    </div>
+                </div>
+
+                <!-- CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input id="password" type="password" formControlName="password" placeholder="••••••••"
+                        [class.invalid]="isFieldInvalid('password')">
+                    <div class="error-msg" *ngIf="isFieldInvalid('password')">
+                        Mínimo 6 caracteres.
+                    </div>
+                </div>
+
+                <!-- CONFIRMAR CONTRASEÑA -->
+                <div class="form-group">
+                    <label for="confirmPassword">Verificar Contraseña</label>
+                    <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="••••••••"
+                        [class.invalid]="registerForm.hasError('notMatching') && registerForm.get('confirmPassword')?.touched">
+                    <div class="error-msg"
+                        *ngIf="registerForm.hasError('notMatching') && registerForm.get('confirmPassword')?.touched">
+                        Las contraseñas no coinciden.
+                    </div>
+                </div>
+
+                <!-- BOTÓN DE ACCIÓN -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-register" [disabled]="registerForm.invalid">
+                        <span class="btn-text">Comenzar Aventura</span>
+                        <span class="btn-deco">✦</span>
+                    </button>
+                </div>
+
+                <div class="form-footer">
+                    <p>¿Ya tienes cuenta? <a href="#" class="gold-link">Inicia Sesión</a></p>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>

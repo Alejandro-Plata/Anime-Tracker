@@ -1,0 +1,268 @@
+:host {
+    display: block;
+    height: 100vh;
+    /* Altura completa */
+    font-family: var(--font-sans);
+    color: var(--kairo-cream);
+    box-sizing: border-box;
+}
+
+.register-layout {
+    margin-top: 40px;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+    /* Scroll vertical si es necesario */
+    padding: 80px 20px 40px 20px;
+    /* Padding superior para evitar header */
+    box-sizing: border-box;
+}
+
+/* IMAGEN DE FONDO */
+.bg-image {
+    position: fixed;
+    /* Fijo para que no scrollee */
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    /* Imagen generada anteriormente */
+    background-image: url('../../../../public/bg_auth.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    /* Blur intenso y oscurecimiento */
+    filter: blur(15px) brightness(0.5);
+    transform: scale(1.05);
+    /* Escalar para evitar bordes blancos por el blur */
+}
+
+/* TEXTURA DE RUIDO */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+}
+
+/* =========================================
+       TARJETA DE REGISTRO
+       ========================================= */
+.register-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    /* Centrado automático en flex */
+}
+
+.register-card {
+    background: var(--kairo-panel);
+    /* EFECTO BLUR / GLASSMORPHISM */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 2px solid var(--kairo-gold-dark);
+    padding: 3rem 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+/* Decoración de esquinas del borde */
+.ornate-border::before,
+.ornate-border::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border: 1px solid var(--kairo-gold);
+    opacity: 0.3;
+    pointer-events: none;
+    transform: scale(0.96);
+}
+
+/* =========================================
+       CONTENIDO
+       ========================================= */
+.card-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.title {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: 1px;
+    color: var(--kairo-cream);
+}
+
+.subtitle {
+    color: rgba(242, 238, 226, 0.7);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.gold-text {
+    color: var(--kairo-gold);
+    text-shadow: 0 0 10px rgba(197, 165, 114, 0.3);
+}
+
+.separator-ornament {
+    color: var(--kairo-gold-dark);
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.separator-ornament::before,
+.separator-ornament::after {
+    content: '';
+    height: 1px;
+    width: 50px;
+    background: linear-gradient(90deg, transparent, var(--kairo-gold-dark), transparent);
+    margin: 0 10px;
+}
+
+/* =========================================
+       FORMULARIO
+       ========================================= */
+.kairo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    color: var(--kairo-gold);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+input {
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-bottom: 2px solid var(--kairo-gold-dark);
+    padding: 12px 10px;
+    color: var(--kairo-cream);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgba(242, 238, 226, 0.2);
+}
+
+input:focus {
+    border-color: var(--kairo-gold);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 10px -2px rgba(197, 165, 114, 0.1);
+}
+
+/* Validación */
+input.invalid {
+    border-color: var(--kairo-red);
+}
+
+.error-msg {
+    font-size: 0.75rem;
+    color: var(--kairo-red);
+    margin-top: 2px;
+}
+
+/* =========================================
+       BOTONES Y FOOTER
+       ========================================= */
+.form-actions {
+    margin-top: 1rem;
+}
+
+.btn-register {
+    width: 100%;
+    background: linear-gradient(135deg, var(--kairo-gold-dark) 0%, var(--kairo-gold) 100%);
+    border: none;
+    padding: 14px;
+    color: var(--kairo-dark);
+    font-family: var(--font-serif);
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-register:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(197, 165, 114, 0.4);
+    filter: brightness(1.1);
+}
+
+.btn-register:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+}
+
+.btn-deco {
+    font-size: 1.2rem;
+}
+
+.form-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    color: rgba(242, 238, 226, 0.6);
+}
+
+.gold-link {
+    color: var(--kairo-gold);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+
+.gold-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .register-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+}

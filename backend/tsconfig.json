@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        // File Layout
+        "rootDir": "./src", // Donde se encuentra el código 
+        "outDir": "./dist", // Donde se va a compilar este proyecto cuando hagamos el build a producción
+        "lib": [
+            "ESNext"
+        ], // Indicas la lista de biblioteca de JS que quieres que estén disponibles en el código de javascript
+        "module": "nodenext", // Indica el tipo de módulo que quieres que use el código
+        "moduleResolution": "NodeNext", // En typescript tenemos una sintaxis propia para importar y exportar módulos, pero cuando queremos usar módulos de nodejs, debemos indicar que queremos que use la sintaxis de nodejs
+        "target": "ESNext", // Indica la versión de JS que quieres que use el código
+        "experimentalDecorators": true, // Obligatorio para sequelize-typescript
+        "emitDecoratorMetadata": true, // Obligatorio para sequelize-typescript
+        "useDefineForClassFields": false, // <--- ¡ESTA ES LA CLAVE!
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "types": [
+            "node"
+        ], // Indica los tipos de datos que quieres que use el código
+        "sourceMap": true, // Archivo que nos permite debuggear la aplicación, da una referencia al codigo original de typescript
+        "declaration": true, // Genera archivos .d.ts, ya que una vez que se convierte a javascript, se pierden los tipados, pero dan referencia de qué es lo que espera cierta función
+        "strict": false,
+    },
+    "include": [ // Qué archivos quieres incluir en la compilación del proyecto typescript a javascript
+        "src/**/*.ts" // Todos los archivo en todas las carpetas de src que tengan .ts
+    ]
+}
