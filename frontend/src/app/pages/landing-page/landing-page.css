@@ -16,7 +16,6 @@
     position: relative;
     width: 100%;
     min-height: 85vh;
-    /* Altura base */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -30,13 +29,12 @@
     position: relative;
     z-index: 10;
     text-align: center;
-    max-width: 900px;
+    max-width: 1200px;
     width: 100%;
 }
 
 .hero-title {
     font-family: var(--font-serif);
-    /* Ajustado el clamp para que no sea tan agresivo en pantallas muy pequeñas */
     font-size: clamp(2.5rem, 8vw, 5.5rem);
     font-weight: 700;
     line-height: 1.1;
@@ -76,12 +74,6 @@
     margin-left: auto;
     margin-right: auto;
     padding: 0 1rem;
-    /* Margen de seguridad para texto en móvil */
-}
-
-.gold-text {
-    color: var(--kairo-gold);
-    font-weight: bold;
 }
 
 /* --- SEPARADOR DE OLA --- */
@@ -91,7 +83,6 @@
     left: 0;
     width: 100%;
     height: 60px;
-    /* Reducido un poco para móvil por defecto */
     z-index: 5;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%238c734b' fill-opacity='0.4'/%3E%3Cpath d='M985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83Z' transform='translate(0, 15)' fill='%238c734b'/%3E%3C/svg%3E");
     background-size: cover;
@@ -112,7 +103,6 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.8);
     position: relative;
     max-width: 90%;
-    /* Evita que se salga en pantallas estrechas */
 }
 
 .stat-item {
@@ -140,6 +130,103 @@
     font-family: var(--font-serif);
 }
 
+/* --- SEARCH BOX --- */
+.hero-search-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 3rem auto;
+    position: relative;
+    z-index: 20;
+}
+
+.search-box-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(10, 10, 10, 0.7);
+    border: 1px solid var(--kairo-gold-dark);
+    padding: 5px 5px 5px 20px;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.search-box-wrapper:focus-within {
+    border-color: var(--kairo-gold);
+    box-shadow: 0 0 20px rgba(197, 165, 114, 0.2);
+    transform: translateY(-2px);
+}
+
+.kairo-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--kairo-cream);
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    padding: 12px 0;
+    outline: none;
+}
+
+.kairo-search-input::placeholder {
+    color: rgba(242, 238, 226, 0.4);
+    font-style: italic;
+    font-size: 1rem;
+}
+
+.search-btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--kairo-gold);
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-btn-icon svg {
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
+.search-btn-icon:hover {
+    color: #fff;
+    transform: scale(1.1);
+    text-shadow: 0 0 10px var(--kairo-gold);
+}
+
+.corner-deco {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 2px solid var(--kairo-gold);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.corner-deco.top-left {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-deco.bottom-right {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+}
+
+.search-box-wrapper:focus-within .corner-deco {
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+}
+
 /* --- SECCIONES COMUNES --- */
 .kairo-section {
     padding: 4rem 2rem;
@@ -162,7 +249,6 @@
     line-height: 1.2;
 }
 
-/* Decoraciones laterales */
 .header-deco-left,
 .header-deco-right {
     height: 2px;
@@ -202,39 +288,47 @@
     margin: 2rem 0;
 }
 
-/* --- SCROLL CONTAINERS --- */
+/* =========================================================
+   SCROLL CONTAINERS & CARDS
+   ========================================================= */
+
 .kairo-scroll-container {
     display: flex;
     gap: 1.5rem;
-    /* Reducido ligeramente para móvil */
     overflow-x: auto;
     padding: 1rem 1rem 2rem 1rem;
-    /* Padding lateral para que no se corte al borde */
-    scroll-behavior: smooth;
-    scroll-snap-type: x mandatory;
-    /* Efecto magnético */
-    -webkit-overflow-scrolling: touch;
-    /* Scroll suave en iOS */
+    scrollbar-width: auto;
+    scrollbar-color: var(--kairo-gold-dark) var(--kairo-dark);
 }
 
-/* Ocultar scrollbar pero mantener funcionalidad */
 .kairo-scroll-container::-webkit-scrollbar {
-    display: none;
+    height: 10px;
 }
 
-.kairo-scroll-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+.kairo-scroll-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin: 0 1rem;
 }
 
-/* --- CARDS --- */
+.kairo-scroll-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--kairo-gold-dark), var(--kairo-gold));
+    border-radius: 5px;
+    border: 2px solid var(--kairo-dark);
+}
+
+.kairo-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: var(--kairo-gold);
+}
+
+/* --- CARDS STANDARDS --- */
 .ornate-card-portrait {
-    min-width: 200px;
+    min-width: 260px;
     cursor: pointer;
-    scroll-snap-align: center;
+    scroll-snap-align: start;
+    transition: transform 0.3s ease;
 }
 
-/* --- Marcos (Sin cambios) --- */
 .card-frame-outer {
     border: 3px solid var(--kairo-gold-dark);
     outline: 2px solid var(--kairo-dark);
@@ -244,12 +338,14 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
     position: relative;
+    aspect-ratio: 2/3;
 }
 
 .card-frame-inner {
     position: relative;
     border: 1px solid var(--kairo-gold-dark);
-    aspect-ratio: 2/3;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -261,7 +357,6 @@
     filter: sepia(20%) contrast(1.1);
 }
 
-/* --- Hover del Card --- */
 .ornate-card-portrait:hover .card-frame-outer {
     border-color: var(--kairo-gold);
     transform: translateY(-5px);
@@ -272,23 +367,30 @@
     filter: sepia(0%) contrast(1.2);
 }
 
-/* --- NUEVO: Badge con estrella --- */
+.card-subtitle {
+    font-size: 0.9rem;
+    margin: 0;
+    color: rgba(242, 238, 226, 0.7);
+    line-height: 1.4;
+    transition: color 0.3s ease;
+}
+
+/* Efecto hover suave cuando se pasa el ratón por toda la tarjeta */
+.ornate-card-portrait:hover .card-subtitle {
+    color: rgba(242, 238, 226, 0.9);
+}
+
 .card-score-badge {
     position: absolute;
     top: 10px;
     right: 10px;
     background: var(--kairo-green);
-    /* Fondo oscuro */
     color: var(--kairo-gold);
-    /* Texto dorado */
     font-family: var(--font-serif);
     font-weight: 700;
     padding: 4px 8px;
-    /* Ajustado ligeramente */
     border: 1px solid var(--kairo-gold);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-
-    /* Flexbox para alinear estrella y número */
     display: flex;
     align-items: center;
     gap: 4px;
@@ -296,7 +398,6 @@
     z-index: 10;
 }
 
-/* Estilo para el SVG de la estrella */
 .card-score-badge svg {
     width: 12px;
     height: 12px;
@@ -314,7 +415,7 @@
     z-index: 2;
 }
 
-.card-info-panel a {
+.card-title-link {
     text-decoration: none;
     display: block;
 }
@@ -322,13 +423,21 @@
 .card-info-panel h3 {
     font-size: 1rem;
     color: var(--kairo-cream);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-    /* Transición suave para el efecto elegante */
     transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.card-title-link:hover h3 {
+    color: var(--kairo-gold);
+    text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+}
+
+.card-info-panel a {
+    text-decoration: none;
+    display: block;
 }
 
 /* Efecto al pasar el mouse sobre el enlace */
@@ -336,53 +445,6 @@
     color: var(--kairo-gold);
     text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
     /* Un brillo sutil dorado */
-}
-
-.card-info-panel p {
-    font-size: 0.8rem;
-    color: rgba(242, 238, 226, 0.6);
-}
-
-/* Landscape Cards */
-.ornate-card-landscape {
-    min-width: 280px;
-    /* Ajuste para móviles estrechos */
-    display: flex;
-    flex-direction: column;
-    border: 2px solid var(--kairo-gold-dark);
-    background: var(--kairo-panel);
-    scroll-snap-align: center;
-}
-
-.landscape-frame-outer {
-    border-bottom: 2px solid var(--kairo-gold-dark);
-    height: 150px;
-    overflow: hidden;
-    position: relative;
-}
-
-.landscape-frame-outer img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: sepia(10%);
-    transition: 0.5s;
-}
-
-.landscape-info-panel {
-    padding: 1.2rem;
-    position: relative;
-}
-
-.landscape-info-panel h3 {
-    font-size: 1.1rem;
-    color: var(--kairo-cream);
-}
-
-.landscape-info-panel p {
-    color: var(--kairo-gold);
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
 }
 
 .kairo-btn-small {
@@ -395,7 +457,108 @@
     cursor: pointer;
 }
 
-/* Grid Top 30 */
+/* =========================================
+   ESTILOS ESPECIALES PARA RESULTADOS DE BÚSQUEDA
+   (Sobreescribe la rejilla por defecto para que sea
+   un scroll horizontal de 2 filas)
+   ========================================= */
+.search-results-section .ornate-grid {
+    display: grid;
+    /* Fuerza exactamente 2 filas */
+    grid-template-rows: repeat(2, auto);
+    /* Flujo en columnas (horizontal) en lugar de filas */
+    grid-auto-flow: column;
+    /* Espaciado */
+    gap: 1.5rem;
+    /* Scroll Horizontal */
+    overflow-x: auto;
+    padding: 1rem 1rem 2rem 1rem;
+
+    /* Personalización del scroll */
+    scrollbar-width: auto;
+    scrollbar-color: var(--kairo-gold-dark) var(--kairo-dark);
+}
+
+/* Ajuste del ancho de las cards dentro de los resultados para que sean consistentes */
+.search-results-section .ornate-card-portrait {
+    width: 260px;
+    /* Ancho fijo */
+    min-width: 260px;
+}
+
+/* Scrollbar estilo Kairo para esta sección específica */
+.search-results-section .ornate-grid::-webkit-scrollbar {
+    height: 10px;
+}
+
+.search-results-section .ornate-grid::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    margin: 0 1rem;
+}
+
+.search-results-section .ornate-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--kairo-gold-dark), var(--kairo-gold));
+    border-radius: 5px;
+    border: 2px solid var(--kairo-dark);
+}
+
+/* --- BOTÓN MÍTICO (Cargar Más) --- */
+.kairo-btn-mythic {
+    background: linear-gradient(135deg, var(--kairo-gold) 0%, var(--kairo-gold-dark) 100%);
+    border: 1px solid var(--kairo-cream);
+    color: #1a1a1a;
+    padding: 10px 24px;
+    font-family: var(--font-serif);
+    font-weight: 900;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 2px;
+}
+
+.kairo-btn-mythic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: 0.5s;
+    transform: skewX(-25deg);
+}
+
+.kairo-btn-mythic:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 0 20px rgba(197, 165, 114, 0.6);
+    filter: brightness(1.1);
+}
+
+.kairo-btn-mythic:hover::before {
+    left: 100%;
+}
+
+.kairo-btn-mythic svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.kairo-btn-mythic:hover svg {
+    transform: translateX(4px);
+}
+
+/* --- GRID STANDARD (Para Top 30) --- */
 .ornate-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -403,6 +566,7 @@
     padding: 0 1rem;
 }
 
+/* Rank Items (Top 30) */
 .rank-tablet {
     display: flex;
     align-items: center;
@@ -470,15 +634,10 @@
     color: var(--kairo-gold);
 }
 
-/* =========================================
-   MEDIA QUERIES - RESPONSIVE MÓVIL (FINAL)
-   ========================================= */
+/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
-
-    /* Ajustes Hero */
     .kairo-hero {
         min-height: auto;
-        /* Reducimos el padding drásticamente para aprovechar espacio */
         padding: 7rem 1rem 4rem;
     }
 
@@ -487,19 +646,16 @@
         margin-bottom: 2rem;
     }
 
-    /* Stats Frame Vertical */
     .ornate-stats-frame {
         flex-direction: column;
         width: 100%;
         max-width: 320px;
-        /* Ancho máximo agradable en móvil */
         gap: 1.2rem;
         padding: 1.5rem 1rem;
     }
 
     .stat-item {
         width: 100%;
-        /* Añadimos bordes separadores entre items en lugar de la ola horizontal */
         border-bottom: 1px solid rgba(197, 165, 114, 0.2);
         padding-bottom: 1rem;
     }
@@ -511,20 +667,15 @@
 
     .stat-separator-wave {
         display: none;
-        /* Ocultamos la ola separadora horizontal */
     }
 
-    /* Ajustes Secciones */
     .kairo-section {
         padding: 3rem 0;
-        /* Quitamos padding lateral del contenedor para que el scroll llegue al borde */
     }
 
-    /* Headers de Sección compactos */
     .section-header-ornate {
         padding: 0 1rem;
         flex-direction: column;
-        /* Apilamos decoraciones si el título es largo */
         gap: 10px;
         margin-bottom: 2rem;
     }
@@ -532,7 +683,6 @@
     .header-deco-left,
     .header-deco-right {
         width: 50%;
-        /* Líneas más cortas */
         max-width: 100px;
     }
 
@@ -540,7 +690,6 @@
         font-size: 1.6rem;
     }
 
-    /* Grid Top 30 a 1 Columna */
     .ornate-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -553,15 +702,74 @@
 
     .rank-info h4 {
         font-size: 0.9rem;
-        /* Texto un poco más pequeño */
     }
 
-    /* Ajuste de botones y links */
     .kairo-btn-small {
         width: 100%;
-        /* Botón ancho completo en móvil es más fácil de pulsar */
         text-align: center;
         margin-top: 0.5rem;
         padding: 10px;
     }
+
+    .hero-search-container {
+        padding: 0 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .kairo-search-input {
+        font-size: 1rem;
+    }
+
+    .ornate-card-portrait {
+        min-width: 220px;
+    }
+}
+
+/* Loader */
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--kairo-dark);
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.no-results-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    text-align: center;
+
+    background: rgba(10, 10, 10, 0.4);
+    border: 1px dashed var(--kairo-gold-dark);
+    border-radius: 4px;
+}
+
+.no-results-msg p {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    color: rgba(242, 238, 226, 0.6);
+    font-style: italic;
+    margin: 0;
+}
+
+/* Opcional: Un icono o adorno para el estado vacío */
+.no-results-msg::before {
+    content: '❖';
+    font-size: 2rem;
+    color: var(--kairo-gold-dark);
+    margin-bottom: 1rem;
+    opacity: 0.5;
 }

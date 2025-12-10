@@ -14,5 +14,5 @@ export const routes: Routes = [
     { path: 'mi-lista', component: MiLista },
     { path: 'login', component: Login },
     { path: 'register', component: Register },
-    { path: 'anime-detail/:id', component: AnimeDetailPage },
+    { path: 'anime/:id', component: AnimeDetailPage }
 ];

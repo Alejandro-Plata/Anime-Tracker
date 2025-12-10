@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import type { Anime } from '../../types/anime';
 import { AnimeDetail } from '../../types/animeDetail';
 import { Episode } from '../../types/episode';
+import { AnimePage } from '../../types/animePage';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,16 @@ export class Endpoints {
 
   urlBase = 'https://api.jikan.moe/v4/';
 
-  async getAnimesSeason(): Promise<Anime[]> {
+
+  // Petición para obtener los animes de la temporada actual (paginados)
+  async getAnimesSeason(page: number): Promise<AnimePage> {
 
     const animes: Anime[] = [];
 
-    const response = await fetch(`${this.urlBase}seasons/now`);
+    const response = await fetch(`${this.urlBase}seasons/now?page=${page}`);
     const data = await response.json();
+
+    const animePage = data.pagination;
     const animesData = data.data;
 
     // Recorremos todos los animes
@@ -27,19 +32,28 @@ export class Endpoints {
         image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
         score: anime.score,
+        rating: anime.rating.split(' - ')[1],
       });
     }
 
-    return animes;
+    return {
+      animes,
+      hasNextPage: animePage.has_next_page,
+    };
   }
 
 
   // Petición para obtener animes según lo que se introduzca en el buscador
-  async getAnimeByName(name: string): Promise<Anime[]> {
+  async getAnimeByName(name: string): Promise<AnimePage> {
     const response = await fetch(`${this.urlBase}anime?q={${name}}`);
     const data = await response.json();
+
+    const animePage = data.pagination;
     const animesData = data.data;
+
     const animes: Anime[] = [];
+
+
     for (const animeId in animesData) {
       const anime = animesData[animeId];
       animes.push({
@@ -48,9 +62,13 @@ export class Endpoints {
         image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
         score: anime.score,
+        rating: anime.rating.split(' - ')[1],
       });
     }
-    return animes;
+    return {
+      animes,
+      hasNextPage: animePage.has_next_page,
+    };
   }
 
   async getEpisodesById(id: string): Promise<Episode[]> {
@@ -115,5 +133,64 @@ export class Endpoints {
     return anime;
   }
 
+  // Petición para buscar animes
+  async searchAnime(query: string, page: number): Promise<AnimePage> {
+    const response = await fetch(`${this.urlBase}anime?q=${query}&page=${page}`);
+    const data = await response.json();
+
+    const animePage = data.pagination;
+    const animesData = data.data;
+
+    const animes: Anime[] = [];
+
+    for (const animeId in animesData) {
+      const anime = animesData[animeId];
+      animes.push({
+        mal_id: anime.mal_id,
+        url: anime.url,
+        image_url: anime.images.webp.image_url,
+        title: anime.titles[0].title,
+        score: anime.score,
+        rating: anime.rating.split(' - ')[1],
+      });
+    }
+    return {
+      animes,
+      hasNextPage: animePage.has_next_page,
+    };
+  }
+
+  // Petición para obtener animes recomendados 
+  // Estos tienen la siguiente estructura --> Array (data) > Objeto (id y entry) - cada entry (array) > Objetos (animes) --> 2 array = 2 bucles
+  async getAnimesRecommended(page: number): Promise<AnimePage> {
+
+    const response = await fetch(`${this.urlBase}recommendations/anime?page=${page}`);
+    const data = await response.json();
+
+    const animePage = data.pagination;
+    const animesData = data.data;
+
+    const animes: Anime[] = [];
+
+    for (const animeId in animesData) {
+      const anime = animesData[animeId];
+
+      for (const entryId in anime.entry) {
+        const entry = anime.entry[entryId];
+
+        animes.push({
+          mal_id: entry.mal_id,
+          url: entry.url,
+          image_url: entry.images.webp.image_url,
+          title: entry.title
+        });
+      }
+
+    }
+    return {
+      animes,
+      hasNextPage: animePage.has_next_page,
+    };
+  }
 
 }
