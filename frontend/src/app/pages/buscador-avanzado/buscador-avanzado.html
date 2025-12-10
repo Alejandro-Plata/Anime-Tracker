@@ -2,8 +2,8 @@
 
     <!-- CABECERA DE LA SECCIÓN -->
     <header class="search-header">
-        <h1 class="page-title">Brújula de Búsqueda</h1>
-        <p class="page-subtitle">Ajusta los parámetros del artefacto para filtrar las corrientes del tiempo.</p>
+        <h1 class="page-title">Búsqueda avanzada</h1>
+        <p class="page-subtitle">Personaliza tu búsqueda.</p>
         <div class="header-divider-gold"></div>
     </header>
 
@@ -12,7 +12,7 @@
 
         <!-- 1. BARRA DE BÚSQUEDA PRINCIPAL -->
         <div class="form-group full-width">
-            <label for="query" class="kairo-label">Nombre del Tesoro (Título)</label>
+            <label for="query" class="kairo-label">Título del anime</label>
             <div class="input-wrapper-icon">
                 <input type="text" id="query" placeholder="Ej: Fullmetal Alchemist..." class="kairo-input-main">
                 <span class="input-icon">🔍</span>
@@ -91,11 +91,13 @@
         <div class="score-slider-container">
             <div class="slider-labels">
                 <span>1 (Basura)</span>
-                <span id="score-val" class="score-display">Puntuación: 7+</span>
+                <span id="score-val" class="score-display">Puntuación: {{score}}+</span>
                 <span>10 (Obra Maestra)</span>
             </div>
-            <input type="range" min="1" max="10" step="1" value="7" class="kairo-range">
+            <input type="range" min="1" max="10" step="1" [formControl]="scoreControl" class="kairo-range">
         </div>
+
+
 
         <!-- 4. SELECTOR DE GÉNEROS (Runas) -->
         <div class="form-section-divider">
@@ -157,9 +159,9 @@
 
         <!-- 5. BOTONES DE ACCIÓN -->
         <div class="form-actions">
-            <button type="button" class="btn-reset">Limpiar Tablero</button>
+            <button type="button" class="btn-reset">Limpiar búsqueda</button>
             <button type="submit" class="btn-invoke">
-                <span class="btn-text">Invocar Búsqueda</span>
+                <span class="btn-text">Buscar anime</span>
                 <div class="btn-glow"></div>
             </button>
         </div>
