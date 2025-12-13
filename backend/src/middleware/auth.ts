@@ -43,14 +43,14 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
         if (typeof decoded === 'object' && decoded.id) {
-            
+
             const user = await Users.findByPk(decoded.id, {
-                attributes: ['username', 'id'], 
+                attributes: ['username', 'id'],
                 include: [
                     {
                         model: UserAnimeFavs,
-                        as: 'favorites', // Debe coincidir con el nombre de la propiedad en tu modelo User (@HasMany)
-                        attributes: ['animeId'] // Traer solo el id del anime
+                        as: 'favorites',
+                        attributes: ['animeId', 'state']
                     }
                 ]
             });
@@ -60,11 +60,11 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
             }
 
             req.user = user;
-            
+
             next();
 
         } else {
-             return res.status(403).json({ error: 'Token inválido' });
+            return res.status(403).json({ error: 'Token inválido' });
         }
 
     } catch (error) {

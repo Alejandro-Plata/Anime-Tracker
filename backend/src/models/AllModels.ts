@@ -39,6 +39,13 @@ export class UserAnimeFavs extends Model {
     })
     userId!: number;
 
+    @AllowNull(false)
+    @Column({
+        type: DataType.ENUM('VIENDO', 'FINALIZADO', 'PENDIENTE'),
+        defaultValue: 'VIENDO'
+    })
+    state!: string;
+
     // Relación
     @BelongsTo(() => Users)
     user!: Users;

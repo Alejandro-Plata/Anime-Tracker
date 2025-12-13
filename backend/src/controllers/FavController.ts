@@ -4,13 +4,11 @@ import { UserAnimeFavs } from '../models/AllModels.js';
 export class FavController {
     static addFavorite = async (req: Request, res: Response) => {
         try {
-            // Primero se recibe el id del cuerpo de la petición
-            const { animeId } = req.body;
+            const { animeId, state } = req.body;
 
-            // Obtenemos el userId del usuario con la sesión iniciada
             const userId = req.user.id;
 
-            // Verificamos si ya existe para no duplicarlo
+
             const existingFav = await UserAnimeFavs.findOne({
                 where: { userId, animeId }
             });
@@ -19,10 +17,10 @@ export class FavController {
                 return res.status(400).json({ msg: 'Este anime ya está en favoritos' });
             }
 
-            // Creamos el registro en la BD
             await UserAnimeFavs.create({
                 userId,
-                animeId
+                state,
+                animeId,
             });
 
             res.status(201).json({ msg: 'Anime añadido a favoritos' });
@@ -55,7 +53,7 @@ export class FavController {
         try {
 
             // Recibimos el id del anime por los parámetros de la url
-            const { animeId } = req.params; 
+            const { animeId } = req.params;
 
             // Obtenemos el id del usuario 
             const userId = (req as any).user.id;
@@ -76,15 +74,15 @@ export class FavController {
 
             return res.status(200).json(true); // Sí es favorito
 
-        } catch(error) {
-            res.status(500).json({message: "Fallo en el servidor."})
+        } catch (error) {
+            res.status(500).json({ message: "Fallo en el servidor." })
         }
     }
     static removeFavorite = async (req: Request, res: Response) => {
         try {
             // 1. Obtenemos el ID de la URL
             const { animeId } = req.params;
-            
+
             // 2. Obtenemos el ID del usuario del token
             const userId = (req as any).user.id;
 
