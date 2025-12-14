@@ -16,21 +16,24 @@ interface JwtPayload {
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
 
-    const bearer = req.headers.authorization
+    let token = req.cookies.token;
 
-    // Verificamos que el token exista
-    if (!bearer) {
-        const error = new Error('Usuario no autorizado')
-        return res.status(401).json({ error: error.message })
+    // Si no hay cookie, intentar leer del header Authorization (para compatibilidad)
+    if (!token) {
+        const bearer = req.headers.authorization;
+
+        if (!bearer) {
+            const error = new Error('Usuario no autorizado');
+            return res.status(401).json({ error: error.message });
+        }
+
+        const [, bearerToken] = bearer.split(' ');
+        token = bearerToken;
     }
 
-    // Obtenemos el token
-    const [, token] = bearer.split(' ')
-
-    // Verificamos que el token sea válido (bearer)
     if (!token) {
-        const error = new Error('Token inválido')
-        return res.status(401).json({ error: error.message })
+        const error = new Error('Token inválido');
+        return res.status(401).json({ error: error.message });
     }
 
     try {
