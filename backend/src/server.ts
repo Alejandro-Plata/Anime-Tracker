@@ -10,10 +10,7 @@ export async function connectDB() {
 
     try {
         await db.authenticate();
-        // En producción/Vercel evita db.sync({ alter: true }) para no ralentizar o romper datos
-        if (process.env.NODE_ENV !== 'production') {
-            await db.sync();
-        }
+        await db.sync({ alter: true });
         console.log("Base de datos conectada.");
     } catch (error) {
         console.error("Error BD:", error);
