@@ -67,7 +67,7 @@
                             {{ isFavorite ? 'En Favoritos' : 'Favoritos' }}
                         </span>
                     </button>
-
+                    @if(isFavorite){
                     <div class="kairo-custom-select" [class.active]="isSelectOpen" (clickOutside)="closeSelect()">
                         <div class="select-trigger" (click)="toggleSelect()">
                             <span class="current-status">
@@ -86,6 +86,7 @@
                                     class="status-dot dropped"></span> ABANDONADO</div>
                         </div>
                     </div>
+                    }
                 </div>
             </div>
 
