@@ -32,7 +32,7 @@ export class Endpoints {
         image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
         score: anime.score,
-        rating: anime.rating.split(' - ')[1],
+        rating: anime.rating?.split(' - ')[1] || 'N/A',
       });
     }
 
@@ -62,7 +62,7 @@ export class Endpoints {
         image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
         score: anime.score,
-        rating: anime.rating.split(' - ')[1],
+        rating: anime.rating?.split(' - ')[1] || 'N/A',
       });
     }
     return {
@@ -153,7 +153,7 @@ export class Endpoints {
         image_url: anime.images.webp.image_url,
         title: anime.titles[0].title,
         score: anime.score,
-        rating: anime.rating.split(' - ')[1],
+        rating: anime.rating?.split(' - ')[1] || 'N/A',
       });
     }
     return {

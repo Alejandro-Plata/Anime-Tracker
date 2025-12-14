@@ -135,8 +135,14 @@ export class AnimeDetailPage {
       this.showToast('state', 'Puntuacion', `Puntuacion actualizada: ${score}`);
       await this.authService.patchFavoriteScore(this.animeDetail?.mal_id || 0, score);
       console.log('Puntuación guardada:', this.userScore);
-    } catch (error) {
-      this.showToast('reject', 'Error', 'No se pudo guardar la puntuación');
+    } catch (error: any) {
+      console.error('Error al guardar puntuación:', error);
+      console.error('Detalles:', {
+        animeId: this.animeDetail?.mal_id,
+        score: score,
+        errorMessage: error.message
+      });
+      this.showToast('reject', 'Error', error.message || 'No se pudo guardar la puntuación');
     }
   }
 }

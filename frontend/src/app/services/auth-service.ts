@@ -194,18 +194,30 @@ export class AuthService {
   }
   async patchFavoriteScore(animeId: number, score: number): Promise<void> {
     const token = localStorage.getItem(this.TOKEN_KEY);
-    const response = await fetch(`${this.API_URL}/user/favorites/${animeId}/puntuation`, {
+
+    console.log('Guardando puntuación:', {
+      animeId,
+      score,
+      url: `${this.API_URL}/user/favorites/${animeId}/score`,
+      hasToken: !!token
+    });
+
+    const response = await fetch(`${this.API_URL}/user/favorites/${animeId}/score`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ puntuation: score }),
+      body: JSON.stringify({ score }),
     });
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.msg);
+      console.error('Error response:', errorData);
+      throw new Error(errorData.msg || errorData.message || `Error ${response.status}`);
     }
+
+    console.log('Puntuación guardada exitosamente');
     await this.refreshUser();
   }
 }
