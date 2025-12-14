@@ -19,22 +19,8 @@ export async function connectDB() {
 
 const app = express();
 
-// CORS (solo necesario para web, no para móvil)
-const allowedOrigins = [
-    'http://localhost:4200',
-    process.env.FRONTEND_URL,
-    'https://interfaces-h4q8.vercel.app'
-];
-
 app.use(cors({
-    origin: function (origin, callback) {
-        // Permitir peticiones sin origen (como Postman o móviles) o si está en la lista
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
+    origin: '*',
     credentials: true
 }));
 
