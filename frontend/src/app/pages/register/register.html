@@ -11,8 +11,8 @@
         <div class="register-card ornate-border">
 
             <div class="card-header">
-                <h1 class="title">Únete a la <span class="gold-text">Odisea</span></h1>
-                <p class="subtitle">Crea tu grimorio personal de anime</p>
+                <h1 class="title">Únete a la <span class="gold-text">comunidad de frikis más grande de España</span>
+                </h1>
                 <div class="separator-ornament">❖</div>
             </div>
 
@@ -22,7 +22,7 @@
                 <div class="form-group">
                     <label for="username">Nombre de Viajero</label>
                     <input id="username" type="text" formControlName="username" placeholder="Ej. KairoExplorer">
-                    
+
                     @if(isFieldInvalid('username')){
                     <div class="error-msg">
                         El nombre es requerido (min 3 caracteres).
@@ -35,13 +35,13 @@
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
                     <input id="email" type="email" formControlName="email" placeholder="tucorreo@ejemplo.com">
-                    
+
                     @if(isFieldInvalid('email')){
                     <div class="error-msg">
                         Ingresa un correo válido.
                     </div>
                     }
-                    
+
                 </div>
 
                 <!-- CONTRASEÑA -->
