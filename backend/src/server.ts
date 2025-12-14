@@ -23,7 +23,7 @@ const app = express();
 const allowedOrigins = [
     'http://localhost:4200',
     process.env.FRONTEND_URL,
-    ''
+    'https://interfaces-h4q8.vercel.app/'
 ];
 
 app.use(cors({
