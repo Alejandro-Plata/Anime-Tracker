@@ -1,11 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
-import jwt from 'jsonwebtoken'
-import { Users } from '../models/AllModels.js'
-import { UserAnimeFavs } from '../models/AllModels.js'
+import jwt from 'jsonwebtoken';
+import { Users } from '../models/AllModels.js';
+import { UserAnimeFavs } from '../models/AllModels.js';
+
 declare global {
     namespace Express {
         interface Request {
-            user?: Users | null // Puede ser null si no se encuentra
+            user?: Users | null
         }
     }
 }
@@ -16,27 +17,25 @@ interface JwtPayload {
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
 
-    let token = req.cookies.token;
-
-    if (!token) {
-        const bearer = req.headers.authorization;
-
-        if (!bearer) {
-            const error = new Error('Usuario no autorizado');
-            return res.status(401).json({ error: error.message });
-        }
-
-        const [, bearerToken] = bearer.split(' ');
-        token = bearerToken;
+    // Obtenemos el header Authorization
+    const bearer = req.headers.authorization;
+    if (!bearer) {
+        const error = new Error('Usuario no autorizado');
+        return res.status(401).json({ error: error.message });
     }
 
+    // Separamos "Bearer" del token real
+    const [, token] = bearer.split(' ');
+
     if (!token) {
-        const error = new Error('Token inválido');
+        const error = new Error('Token no proporcionado');
         return res.status(401).json({ error: error.message });
     }
 
     try {
-
+        if (!process.env.JWT_SECRET) {
+            throw new Error('Falta JWT_SECRET en variables de entorno');
+        }
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
         if (typeof decoded === 'object' && decoded.id) {
@@ -53,11 +52,10 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
             });
 
             if (!user) {
-                return res.status(403).json({ error: 'El usuario no existe' })
+                return res.status(403).json({ error: 'El usuario no existe' });
             }
 
             req.user = user;
-
             next();
 
         } else {
@@ -65,6 +63,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         }
 
     } catch (error) {
-        return res.status(403).json({ error: 'Token inválido' })
+        return res.status(403).json({ error: 'Token inválido o expirado' });
     }
 }
