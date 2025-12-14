@@ -18,7 +18,6 @@ export class AuthController {
                 return res.status(409).json({ error: error.message });
             }
 
-            // Crear la instancia del usuario
             const user = new Users({ password, username, email });
 
             user.password = await hashPassword(password);
@@ -27,7 +26,6 @@ export class AuthController {
 
             const token = generateJWT(user.id);
 
-            // Establecer cookie igual que en login
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
@@ -36,7 +34,8 @@ export class AuthController {
             });
 
             return res.status(201).json({
-                message: 'Cuenta creada exitosamente'
+                message: 'Cuenta creada exitosamente',
+                token
             });
 
         } catch (error) {
@@ -73,7 +72,8 @@ export class AuthController {
             });
 
             return res.status(200).json({
-                message: 'Login exitoso'
+                message: 'Login exitoso',
+                token
             });
 
         } catch (error) {
