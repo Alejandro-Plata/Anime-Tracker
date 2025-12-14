@@ -27,11 +27,20 @@ export class AuthController {
 
             const token = generateJWT(user.id);
 
+            // Establecer cookie igual que en login
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 1000 * 60 * 60 * 24 * 7
+            });
+
             return res.status(201).json({
-                token: token
-            })
+                message: 'Cuenta creada exitosamente'
+            });
 
         } catch (error) {
+            console.log(error);
             res.status(500).json({ error: 'Hubo un error en el servidor al crear la cuenta' });
         }
     }
@@ -61,6 +70,11 @@ export class AuthController {
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
                 maxAge: 1000 * 60 * 60 * 24 * 7
+            });
+
+            // ✅ IMPORTANTE: Devolver respuesta exitosa
+            return res.status(200).json({
+                message: 'Login exitoso'
             });
 
         } catch (error) {
