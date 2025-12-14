@@ -2,29 +2,27 @@ import type { Request, Response } from "express";
 import { Users } from "../models/AllModels.js";
 import { checkPassword, hashPassword } from "../utils/auth.js";
 import { generateJWT } from "../utils/jwt.js";
+import { Op } from "sequelize";
 
 export class AuthController {
 
     static createAccount = async (req: Request, res: Response) => {
         try {
-            const { password, username } = req.body; // Extraemos explícitamente los campos
+            const { password, username, email } = req.body; // Extraemos explícitamente los campos
 
-            // 1. Prevenir duplicados (Solo por email como pediste)
-            const userExists = await Users.findOne({ where: { username } });
+            // Prevenir duplicados 
+            const userExists = await Users.findOne({ where: { [Op.or]: [{ username }, { email }] } });
 
             if (userExists) {
                 const error = new Error('El usuario ya está registrado');
                 return res.status(409).json({ error: error.message });
             }
 
-            // 2. Crear la instancia del usuario (Solo con datos permitidos)
-            // Es más seguro que pasar req.body completo
-            const user = new Users({ password, username });
+            // Crear la instancia del usuario
+            const user = new Users({ password, username, email });
 
-            // 3. Hashear la contraseña 
             user.password = await hashPassword(password);
 
-            // 4. Guardar en BD
             await user.save();
 
             const token = generateJWT(user.id);

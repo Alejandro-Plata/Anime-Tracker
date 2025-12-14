@@ -80,27 +80,25 @@ export class FavController {
     }
     static removeFavorite = async (req: Request, res: Response) => {
         try {
-            // 1. Obtenemos el ID de la URL
+            // Obtenemos el ID de la URL
             const { animeId } = req.params;
 
-            // 2. Obtenemos el ID del usuario del token
+            // Obtenemos el ID del usuario del token
             const userId = (req as any).user.id;
 
             if (!animeId) {
                 return res.status(400).json({ msg: "Falta el ID del anime" });
             }
 
-            // 3. Borramos el registro que coincida con AMBOS ids
+            // Borramos el registro que coincida con AMBOS ids
             const deletedCount = await UserAnimeFavs.destroy({
                 where: { userId, animeId }
             });
 
             if (deletedCount === 0) {
-                // Si devuelve 0, es que no existía ese favorito
                 return res.status(404).json({ msg: "No se encontró el favorito para eliminar" });
             }
 
-            // 4. Éxito
             res.status(200).json({ msg: "Eliminado de favoritos correctamente" });
 
         } catch (error) {
@@ -127,7 +125,6 @@ export class FavController {
                 return res.status(404).json({ msg: "Favorito no encontrado" });
             }
 
-            // Devolvemos el objeto completo del favorito
             res.json(favorite);
 
         } catch (error) {
