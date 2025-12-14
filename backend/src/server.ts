@@ -24,7 +24,7 @@ const app = express();
 
 // CORS (solo necesario para web, no para móvil)
 const allowedOrigins = [
-    'http://localhost:5173',
+    'http://localhost:4200',
     process.env.FRONTEND_URL
 ];
 
