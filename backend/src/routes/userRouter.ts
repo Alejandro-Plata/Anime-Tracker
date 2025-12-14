@@ -13,9 +13,11 @@ const router = Router();
 router.post('/favorites', authenticate, FavController.addFavorite);
 
 // Obtener todos los favoritos
-router.get('/favorites',  authenticate, FavController.getFavorites);
+router.get('/favorites', authenticate, FavController.getFavorites);
 
 router.get(`/favorite/check/:animeId`, authenticate, FavController.isFavorite)
+
+router.patch('/favorites/:animeId', authenticate, FavController.updateFavoriteState);
 
 router.delete('/favorites/:animeId', authenticate, FavController.removeFavorite);
 

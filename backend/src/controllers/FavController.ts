@@ -132,4 +132,42 @@ export class FavController {
             res.status(500).json({ msg: "Error al obtener el favorito" });
         }
     };
+
+    static updateFavoriteState = async (req: Request, res: Response) => {
+        try {
+            const { animeId } = req.params;
+            const { state } = req.body;
+            const userId = req.user.id;
+
+            if (!animeId) {
+                return res.status(400).json({ msg: "Falta el ID del anime" });
+            }
+
+            if (!state) {
+                return res.status(400).json({ msg: "Falta el estado" });
+            }
+
+            const validStates = ['VIENDO', 'FINALIZADO', 'PENDIENTE', 'ABANDONADO'];
+            if (!validStates.includes(state)) {
+                return res.status(400).json({ msg: "Error al actualizar el estado" });
+            }
+
+            const favorite = await UserAnimeFavs.findOne({
+                where: { userId, animeId }
+            });
+
+            if (!favorite) {
+                return res.status(404).json({ msg: "Favorito no encontrado" });
+            }
+
+            favorite.state = state;
+            await favorite.save();
+
+            res.json({ msg: "Estado actualizado correctamente", favorite });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: "Error al actualizar el estado" });
+        }
+    };
 }
