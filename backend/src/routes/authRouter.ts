@@ -3,19 +3,13 @@ import { body } from 'express-validator';
 import { AuthController } from '../controllers/AuthController.js'
 import { handleInputErrors } from '../middleware/validation.js';
 import { authenticate } from '../middleware/auth.js';
-import { FavController } from '../controllers/FavController.js';
 
-// Inciializamos el enrutado
 const router = Router();
 
-/*
-    ------ RUTAS DE AUTENTICACIÓN ------ 
-*/
 
 /* Registro */
 
 // Utilizamos post para todos los formularios, para evitar problemas de seguridad
-// La ruta completa sería: /api/auth/create-account, es donde vamos a enviar nuestras peticiones
 router.post('/register',
 
     // Validaciones

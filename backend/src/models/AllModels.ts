@@ -34,7 +34,6 @@ export class Users extends Model {
 })
 export class UserAnimeFavs extends Model {
 
-    // Clave foránea
     @ForeignKey(() => Users)
     @AllowNull(false)
     @Column({
@@ -49,7 +48,12 @@ export class UserAnimeFavs extends Model {
     })
     state!: string;
 
-    // Relación
+    @Column({
+        type: DataType.INTEGER,
+        defaultValue: 0
+    })
+    puntuation!: number;
+
     @BelongsTo(() => Users)
     user!: Users;
 

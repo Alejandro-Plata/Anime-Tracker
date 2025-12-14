@@ -36,12 +36,10 @@ export class FavController {
             // Obtenemos el userId del usuario con la sesión iniciada
             const userId = req.user.id;
 
-            // Buscamos todos los favoritos del usuario
             const favorites = await UserAnimeFavs.findAll({
                 where: { userId }
             });
 
-            // Devolvemos la lista de favoritos
             res.json(favorites);
         } catch (error) {
             console.error(error);
@@ -52,27 +50,22 @@ export class FavController {
     static isFavorite = async (req: Request, res: Response) => {
         try {
 
-            // Recibimos el id del anime por los parámetros de la url
             const { animeId } = req.params;
-
-            // Obtenemos el id del usuario 
             const userId = (req as any).user.id;
 
-            // Si no hay id, detenemos la ejecución
             if (!animeId) {
                 return res.status(400).json({ message: "Falta el ID del anime" });
             }
 
-            // Si no es null, el anime se encuentra añadido a favoritos
             const existingFav = await UserAnimeFavs.findOne({
                 where: { userId, animeId }
             });
 
             if (!existingFav) {
-                return res.status(200).json(false); // No es favorito
+                return res.status(200).json(false);
             }
 
-            return res.status(200).json(true); // Sí es favorito
+            return res.status(200).json(true);
 
         } catch (error) {
             res.status(500).json({ message: "Fallo en el servidor." })
@@ -80,17 +73,14 @@ export class FavController {
     }
     static removeFavorite = async (req: Request, res: Response) => {
         try {
-            // Obtenemos el ID de la URL
             const { animeId } = req.params;
 
-            // Obtenemos el ID del usuario del token
             const userId = (req as any).user.id;
 
             if (!animeId) {
                 return res.status(400).json({ msg: "Falta el ID del anime" });
             }
 
-            // Borramos el registro que coincida con AMBOS ids
             const deletedCount = await UserAnimeFavs.destroy({
                 where: { userId, animeId }
             });
@@ -107,7 +97,6 @@ export class FavController {
         }
     }
 
-    // Obtener un favorito específico por ID
     static getFavoriteById = async (req: Request, res: Response) => {
         try {
             const { animeId } = req.params;
@@ -170,4 +159,37 @@ export class FavController {
             res.status(500).json({ msg: "Error al actualizar el estado" });
         }
     };
+
+    static updateFavoritePuntuation = async (req: Request, res: Response) => {
+        try {
+            const { animeId } = req.params;
+            const { puntuation } = req.body;
+            const userId = req.user.id;
+
+            if (!animeId) {
+                return res.status(400).json({ msg: "Falta el ID del anime" });
+            }
+
+            if (!puntuation) {
+                return res.status(400).json({ msg: "Falta la puntuación" });
+            }
+
+            const favorite = await UserAnimeFavs.findOne({
+                where: { userId, animeId }
+            });
+
+            if (!favorite) {
+                return res.status(404).json({ msg: "Favorito no encontrado" });
+            }
+
+            favorite.puntuation = puntuation;
+            await favorite.save();
+
+            res.json({ msg: "Puntuación actualizada correctamente", favorite });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: "Error al actualizar la puntuación" });
+        }
+    }
 }

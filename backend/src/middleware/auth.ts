@@ -18,7 +18,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     let token = req.cookies.token;
 
-    // Si no hay cookie, intentar leer del header Authorization (para compatibilidad)
     if (!token) {
         const bearer = req.headers.authorization;
 
@@ -37,12 +36,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     }
 
     try {
-        // Depuración para no olvidar las variable de entorno
-        if (!process.env.JWT_SECRET) {
-            throw new Error('Falta JWT_SECRET en variables de entorno');
-        }
 
-        // Decodificamos el token
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
         if (typeof decoded === 'object' && decoded.id) {
@@ -71,7 +65,6 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         }
 
     } catch (error) {
-        console.log(error); // Útil para depurar
         return res.status(403).json({ error: 'Token inválido' })
     }
 }
