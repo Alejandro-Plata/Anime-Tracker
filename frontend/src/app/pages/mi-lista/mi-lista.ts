@@ -27,7 +27,6 @@ export class MiLista implements OnInit {
     this.setTab(this.activeTab);
     this.favorites = await this.authService.getFavorites();
 
-    // Cargar favoritos uno por uno con delay para evitar rate limiting
     for (let i = 0; i < this.favorites.length; i++) {
       const favorite = this.favorites[i];
 
@@ -35,14 +34,11 @@ export class MiLista implements OnInit {
         const anime = await this.endpoints.getAnimeById(favorite.animeId.toString());
         this.favoritesAnime.push({ detalles: anime, state: favorite.state });
 
-        // Actualizar la vista después de cada carga
         this.setTab(this.activeTab);
       } catch (error) {
         console.error(`Error cargando anime ${favorite.animeId}:`, error);
       }
 
-      // Esperar 1 segundo entre peticiones (evita 429 rate limit)
-      // Jikan API permite 3 peticiones por segundo, pero getAnimeById hace 2 peticiones
       if (i < this.favorites.length - 1) {
         await new Promise(resolve => setTimeout(resolve, 500));
       }
