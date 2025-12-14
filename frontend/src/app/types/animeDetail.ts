@@ -7,6 +7,7 @@ export interface AnimeDetail {
     title: string;
     title_japanese: string;
     image_url: string;
+    large_image_url: string;
     score: number;
     rank: number;
     synopsis: string;

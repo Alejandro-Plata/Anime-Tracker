@@ -117,6 +117,7 @@ export class Endpoints {
       title: animeList.titles[0].title,
       title_japanese: animeList.titles[1].title,
       image_url: animeList.images.webp.image_url,
+      large_image_url: animeList.images.webp.large_image_url,
       score: animeList.score,
       rank: animeList.rank,
       synopsis: animeList.synopsis,
