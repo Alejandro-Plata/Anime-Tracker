@@ -44,7 +44,7 @@ export class UserAnimeFavs extends Model {
 
     @AllowNull(false)
     @Column({
-        type: DataType.ENUM('VIENDO', 'FINALIZADO', 'PENDIENTE'),
+        type: DataType.ENUM('VIENDO', 'FINALIZADO', 'PENDIENTE', 'ABANDONADO'),
         defaultValue: 'VIENDO'
     })
     state!: string;
