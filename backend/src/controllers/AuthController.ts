@@ -31,7 +31,7 @@ export class AuthController {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
@@ -68,7 +68,7 @@ export class AuthController {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
@@ -91,7 +91,7 @@ export class AuthController {
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
         });
 
         res.json({ message: 'Sesión cerrada correctamente' });
