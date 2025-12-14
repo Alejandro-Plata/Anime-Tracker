@@ -17,11 +17,14 @@ export class Users extends Model {
     @Column({
         type: DataType.STRING(150)
     })
+    email!: string;
+
+    @AllowNull(false)
+    @Column({
+        type: DataType.STRING(150)
+    })
     password!: string;
 
-    // Aquí usamos la clase UserAnimeFav, que se define más abajo.
-    // Como es una función flecha () => UserAnimeFav, JS espera a ejecutarla
-    // hasta que todo el archivo haya sido leído. ¡Truco maestro!
     @HasMany(() => UserAnimeFavs)
     favorites!: UserAnimeFavs[];
 }

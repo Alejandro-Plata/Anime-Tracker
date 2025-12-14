@@ -21,6 +21,9 @@ router.post('/register',
     // Validaciones
     body('username')
         .notEmpty().withMessage("El nombre de usuario no puede ir vacío"),
+    body('email')
+        .notEmpty().withMessage("El email no puede ir vacío")
+        .isEmail().withMessage("El email no es válido"),
     body('password').isLength({ min: 6 }).withMessage("La contraseña es demasiado corta"),
     handleInputErrors,
     AuthController.createAccount);
