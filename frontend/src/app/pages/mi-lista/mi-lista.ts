@@ -44,7 +44,7 @@ export class MiLista implements OnInit {
       // Esperar 1 segundo entre peticiones (evita 429 rate limit)
       // Jikan API permite 3 peticiones por segundo, pero getAnimeById hace 2 peticiones
       if (i < this.favorites.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     }
 
