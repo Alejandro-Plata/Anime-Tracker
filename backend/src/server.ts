@@ -19,6 +19,7 @@ export async function connectDB() {
 const app = express();
 
 // CORS - Allow all origins since we're using Authorization headers, not cookies
+// Updated: 2025-12-14 - Force rebuild
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
