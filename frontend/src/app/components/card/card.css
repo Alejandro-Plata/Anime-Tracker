@@ -132,7 +132,7 @@
     color: var(--kairo-cream);
     margin: 0 0 0.8rem 0;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
