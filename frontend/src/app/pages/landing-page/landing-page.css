@@ -321,14 +321,19 @@
     background: var(--kairo-gold);
 }
 
-/* --- CARDS STANDARDS --- */
 .ornate-card-portrait {
     min-width: 260px;
     cursor: pointer;
     scroll-snap-align: start;
     transition: transform 0.3s ease;
+
+    /* NUEVO: Flexbox vertical para ocupar toda la altura */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
+/* El marco de la imagen mantiene su ratio, no se toca */
 .card-frame-outer {
     border: 3px solid var(--kairo-gold-dark);
     outline: 2px solid var(--kairo-dark);
@@ -339,71 +344,11 @@
     transition: all 0.3s ease;
     position: relative;
     aspect-ratio: 2/3;
-}
-
-.card-frame-inner {
-    position: relative;
-    border: 1px solid var(--kairo-gold-dark);
     width: 100%;
-    height: 100%;
-    overflow: hidden;
+    /* Asegura ancho completo */
 }
 
-.card-frame-inner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s;
-    filter: sepia(20%) contrast(1.1);
-}
-
-.ornate-card-portrait:hover .card-frame-outer {
-    border-color: var(--kairo-gold);
-    transform: translateY(-5px);
-}
-
-.ornate-card-portrait:hover img {
-    transform: scale(1.05);
-    filter: sepia(0%) contrast(1.2);
-}
-
-.card-subtitle {
-    font-size: 0.9rem;
-    margin: 0;
-    color: rgba(242, 238, 226, 0.7);
-    line-height: 1.4;
-    transition: color 0.3s ease;
-}
-
-/* Efecto hover suave cuando se pasa el ratón por toda la tarjeta */
-.ornate-card-portrait:hover .card-subtitle {
-    color: rgba(242, 238, 226, 0.9);
-}
-
-.card-score-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--kairo-green);
-    color: var(--kairo-gold);
-    font-family: var(--font-serif);
-    font-weight: 700;
-    padding: 4px 8px;
-    border: 1px solid var(--kairo-gold);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 0.9rem;
-    z-index: 10;
-}
-
-.card-score-badge svg {
-    width: 12px;
-    height: 12px;
-    fill: currentColor;
-}
-
+/* PANEL DE INFORMACIÓN (CORREGIDO) */
 .card-info-panel {
     background: var(--kairo-panel);
     border: 2px solid var(--kairo-gold-dark);
@@ -413,48 +358,50 @@
     margin-top: -2px;
     position: relative;
     z-index: 2;
+
+    /* NUEVO: Flex grow para llenar el espacio restante */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Alinea contenido arriba */
 }
 
-.card-title-link {
-    text-decoration: none;
-    display: block;
-}
-
+/* TÍTULO (CORREGIDO PARA EVITAR SALTOS DE LÍNEA EXCESIVOS) */
 .card-info-panel h3 {
     font-size: 1rem;
     color: var(--kairo-cream);
     margin-bottom: 0.8rem;
-    white-space: nowrap;
+
+    /* Control de texto largo */
+    white-space: normal;
+    /* Permite saltos de línea si prefieres ver todo el título */
+    /* O mantenlo en nowrap con ellipsis si prefieres cortar: */
+    /* white-space: nowrap; */
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+
+    /* Si decides permitir múltiples líneas, limita la altura para uniformidad */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Máximo 2 líneas */
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    height: 2.4em;
+    /* Altura fija para 2 líneas aprox */
+    line-height: 1.2;
+
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-.card-title-link:hover h3 {
-    color: var(--kairo-gold);
-    text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-}
-
-.card-info-panel a {
-    text-decoration: none;
-    display: block;
-}
-
-/* Efecto al pasar el mouse sobre el enlace */
-.card-info-panel a:hover h3 {
-    color: var(--kairo-gold);
-    text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-    /* Un brillo sutil dorado */
-}
-
-.kairo-btn-small {
-    background: transparent;
-    border: 1px solid var(--kairo-gold);
-    color: var(--kairo-gold);
-    padding: 6px 12px;
-    font-family: var(--font-serif);
-    font-size: 0.8rem;
-    cursor: pointer;
+/* Subtítulo o info extra empujada al fondo si es necesario */
+.card-subtitle {
+    font-size: 0.9rem;
+    margin-top: auto;
+    /* Empuja esto al fondo del panel si hay espacio extra */
+    color: rgba(242, 238, 226, 0.7);
+    line-height: 1.4;
+    transition: color 0.3s ease;
 }
 
 /* =========================================
@@ -479,11 +426,22 @@
     scrollbar-color: var(--kairo-gold-dark) var(--kairo-dark);
 }
 
-/* Ajuste del ancho de las cards dentro de los resultados para que sean consistentes */
+/* Ajuste del ancho y altura de las cards dentro de los resultados para que sean consistentes */
 .search-results-section .ornate-card-portrait {
     width: 260px;
     /* Ancho fijo */
     min-width: 260px;
+    /* Altura consistente para todas las tarjetas */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Asegura que el panel de información tenga una altura mínima fija */
+.search-results-section .card-info-panel {
+    min-height: 100px;
+    /* Altura mínima para uniformidad */
+    flex-shrink: 0;
 }
 
 /* Scrollbar estilo Kairo para esta sección específica */

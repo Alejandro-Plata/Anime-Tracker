@@ -1,0 +1,1 @@
+export type Tab = 'TODOS' | 'VIENDO' | 'FINALIZADO' | 'PENDIENTE' | 'ABANDONADO';

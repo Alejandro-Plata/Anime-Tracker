@@ -9,14 +9,14 @@
             </h1>
 
             <p class="hero-subtitle">
-                Descubre, comparte y disfruta de los mejores animes (y los más raros) con la ayuda de la <span
-                    class="color-cycle">Jikan API</span>.
+                Descubre, comparte y disfruta de los mejores animes (y los más raros) con <span
+                    class="color-cycle">Kairo</span>.
             </p>
 
             <!-- BUSCADOR -->
             <div class="hero-search-container">
                 <div class="search-box-wrapper">
-                    <input type="text" class="kairo-search-input" placeholder="Buscar anime..." [value]="searchQuery()"
+                    <input type="text" class="kairo-search-input" placeholder="Buscar anime..." [value]="searchQuery"
                         (input)="onInputChange($event)">
 
                     <button class="search-btn-icon" (click)="searchAnimes()">
@@ -45,8 +45,8 @@
                 </div>
                 <div class="stat-separator-wave">~</div>
                 <div class="stat-item">
-                    <span class="stat-number">99%</span>
-                    <span class="stat-label">Precisión</span>
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Versatilidad</span>
                 </div>
             </div>
         </div>
@@ -55,16 +55,16 @@
     </section>
 
     <!-- RESULTADOS DE BÚSQUEDA -->
-    @if (searchQuery()) {
+    @if (searchQuery) {
     <section class="kairo-section search-results-section">
         <div class="section-header-ornate">
             <span class="header-deco-left"></span>
             <h2>Se han encontrado {{searchResults.length}} resultados para "<span
-                    class="color-cycle">{{searchQuery()}}</span>"</h2>
+                    class="color-cycle">{{searchQuery}}</span>"</h2>
             <span class="header-deco-right"></span>
 
             <!-- BOTÓN BÚSQUEDA -->
-            @if (hasMorePagesSearch()) {
+            @if (hasMorePagesSearch) {
             <button class="kairo-btn-mythic" (click)="loadMoreAnimes()">
                 <span>Ver más resultados</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -77,31 +77,12 @@
         @if (searchResults.length > 0) {
         <div class="ornate-grid">
             @for (anime of searchResults; track anime.mal_id) {
-            <div class="ornate-card-portrait" (click)="navigateToAnimeDetail(anime.mal_id)">
-                <div class="card-frame-outer">
-                    <div class="card-frame-inner cursor-pointer">
-                        <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
-                        <div class="card-score-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <span>{{anime.score || 'N/A'}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-info-panel">
-                    <h3>{{anime.title}}</h3>
-                    <p class="card-subtitle">
-                        Rating: <span class="gold-text">{{anime.rating ?? 'N/A'}}</span>
-                    </p>
-                </div>
-            </div>
+            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
             }
         </div>
         } @else if(searchResults.length === 0){
         <div class="no-results-msg">
-            <p><span class="color-cycle">No se han encontrado resultados para "{{searchQuery()}}"</span></p>
+            <p><span class="color-cycle">No se han encontrado resultados para "{{searchQuery}}"</span></p>
         </div>
         }
     </section>
@@ -109,17 +90,13 @@
     <div class="section-divider-ornament"></div>
     } @else {
 
-    <!-- ============================================== -->
-    <!-- TOP ANIMES TEMPORADA                           -->
-    <!-- ============================================== -->
     <section class="kairo-section">
         <div class="section-header-ornate">
             <span class="header-deco-left"></span>
             <h2>Top animes de temporada</h2>
             <span class="header-deco-right"></span>
 
-            <!-- BOTÓN VER MÁS TEMPORADA -->
-            @if (hasMorePagesSeason()) {
+            @if (hasMorePagesSeason) {
             <button class="kairo-btn-mythic" (click)="loadMoreSeason()">
                 <span>Ver más</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -131,45 +108,20 @@
 
         <div class="kairo-scroll-container">
             @for(anime of topAnimesSeason; track anime.mal_id) {
-            <div class="ornate-card-portrait" (click)="navigateToAnimeDetail(anime.mal_id)">
-                <div class="card-frame-outer">
-                    <div class="card-frame-inner cursor-pointer">
-                        <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
-                        <div class="card-score-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <span>{{anime.score || 'N/A'}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-info-panel">
-                    <a [href]="anime.url">
-                        <h3>{{anime.title}}</h3>
-                    </a>
-                    <p class="card-subtitle">
-                        Rating: <span class="gold-text">{{anime.rating ?? 'N/A'}}</span>
-                    </p>
-                </div>
-            </div>
+            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
             }
         </div>
     </section>
 
     <div class="section-divider-ornament"></div>
 
-    <!-- ============================================== -->
-    <!-- ANIMES RECOMENDADOS                            -->
-    <!-- ============================================== -->
     <section class="kairo-section">
         <div class="section-header-ornate">
             <span class="header-deco-left"></span>
             <h2>Animes recomendados</h2>
             <span class="header-deco-right"></span>
 
-            <!-- BOTÓN VER MÁS RECOMENDADOS -->
-            @if (hasMorePagesRecommended()) {
+            @if (hasMorePagesRecommended) {
             <button class="kairo-btn-mythic" (click)="loadMoreRecommended()">
                 <span>Ver más</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -181,61 +133,11 @@
 
         <div class="kairo-scroll-container">
             @for(anime of recommendedAnimes; track anime.mal_id) {
-            <div class="ornate-card-portrait" (click)="navigateToAnimeDetail(anime.mal_id)">
-                <div class="card-frame-outer">
-                    <div class="card-frame-inner cursor-pointer">
-                        <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
-                        <div class="card-score-badge">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                            <span>{{anime.score || 'N/A'}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-info-panel">
-                    <a [href]="anime.url">
-                        <h3>{{anime.title}}</h3>
-                    </a>
-                    <p class="card-subtitle" style="font-size: 0.9rem; margin: 0; color: rgba(242, 238, 226, 0.7);">
-                        Rating: <span class="gold-text">{{anime.score || 'N/A'}}</span>
-                    </p>
-                </div>
-            </div>
+            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
             }
         </div>
     </section>
 
-    <div class="section-divider-ornament"></div>
-
-    <!-- EL PANTEÓN (Top 30) -->
-    <section class="kairo-section">
-        <div class="section-header-ornate">
-            <span class="header-deco-left"></span>
-            <h2>El Panteón (Top 30)</h2>
-            <span class="header-deco-right"></span>
-        </div>
-
-        <div class="ornate-grid">
-            @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track $index) {
-            <div class="rank-tablet">
-                <div class="rank-plate">#{{i}}</div>
-                <div class="rank-thumb-frame">
-                    <img src="https://placehold.co/50x70/222/c5a572" alt="Mini" class="rank-img">
-                </div>
-                <div class="rank-info">
-                    <h4>Fullmetal Alchemist: Brotherhood</h4>
-                    <div class="ornate-tags">
-                        <span>Militar</span>
-                        <span>Aventura</span>
-                    </div>
-                </div>
-                <div class="rank-score-gold">9.14</div>
-            </div>
-            }
-        </div>
-    </section>
     }
 
 </main>

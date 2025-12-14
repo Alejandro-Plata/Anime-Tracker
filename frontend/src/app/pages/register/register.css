@@ -195,6 +195,23 @@ input.invalid {
     margin-top: 2px;
 }
 
+.error-alert {
+    background: rgba(140, 59, 59, 0.2);
+    border: 1px solid var(--kairo-red);
+    border-radius: 4px;
+    padding: 12px 16px;
+    color: var(--kairo-red);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 0.5rem;
+}
+
+.error-icon {
+    font-size: 1.2rem;
+}
+
 /* =========================================
        BOTONES Y FOOTER
        ========================================= */
@@ -249,6 +266,7 @@ input.invalid {
     text-decoration: none;
     font-weight: 700;
     transition: color 0.2s;
+    cursor: pointer;
 }
 
 .gold-link:hover {

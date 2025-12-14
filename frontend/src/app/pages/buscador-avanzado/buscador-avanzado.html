@@ -1,170 +1,190 @@
 <div class="search-page-container">
 
-    <!-- CABECERA DE LA SECCIÓN -->
     <header class="search-header">
         <h1 class="page-title">Búsqueda avanzada</h1>
-        <p class="page-subtitle">Personaliza tu búsqueda.</p>
+        <p class="page-subtitle">Encuentra tu próxima obsesión.</p>
         <div class="header-divider-gold"></div>
     </header>
 
-    <!-- ARTEFACTO DE BÚSQUEDA (Formulario) -->
-    <form class="kairo-artifact-form">
+    <form class="kairo-artifact-form" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
 
-        <!-- 1. BARRA DE BÚSQUEDA PRINCIPAL -->
-        <div class="form-group full-width">
-            <label for="query" class="kairo-label">Título del anime</label>
-            <div class="input-wrapper-icon">
-                <input type="text" id="query" placeholder="Ej: Fullmetal Alchemist..." class="kairo-input-main">
-                <span class="input-icon">🔍</span>
+        <div class="form-row full-width">
+            <div class="form-group title-group">
+                <label for="query" class="kairo-label">Título del anime</label>
+
+                <div class="input-wrapper">
+                    <input type="text" id="query" formControlName="query" placeholder="Frieren, Naruto..."
+                        class="kairo-input-main">
+
+                    <button class="search-btn-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- 2. FILTROS PRINCIPALES (Grid) -->
         <div class="filters-grid">
-
-            <!-- Tipo -->
             <div class="form-group">
                 <label for="type" class="kairo-label">Formato</label>
                 <div class="kairo-select-wrapper">
-                    <select id="type" class="kairo-select">
+                    <select formControlName="type" id="type" class="kairo-select">
                         <option value="">Cualquiera</option>
                         <option value="tv">Serie TV</option>
                         <option value="movie">Película</option>
                         <option value="ova">OVA</option>
                         <option value="special">Especial</option>
-                        <option value="ona">ONA</option>
-                        <option value="music">Música</option>
                     </select>
+                    <div class="select-arrow">▼</div>
                 </div>
             </div>
 
-            <!-- Estado -->
             <div class="form-group">
                 <label for="status" class="kairo-label">Estado</label>
                 <div class="kairo-select-wrapper">
-                    <select id="status" class="kairo-select">
+                    <select formControlName="status" id="status" class="kairo-select">
                         <option value="">Cualquiera</option>
                         <option value="airing">En Emisión</option>
                         <option value="complete">Finalizado</option>
                         <option value="upcoming">Próximamente</option>
                     </select>
+                    <div class="select-arrow">▼</div>
                 </div>
             </div>
 
-            <!-- Clasificación (Rating) -->
             <div class="form-group">
-                <label for="rating" class="kairo-label">Restricción</label>
+                <label for="rating" class="kairo-label">Clasificación</label>
                 <div class="kairo-select-wrapper">
-                    <select id="rating" class="kairo-select">
+                    <select formControlName="rating" class="kairo-select">
                         <option value="">Todas</option>
-                        <option value="g">G (Todo Público)</option>
-                        <option value="pg">PG (Niños)</option>
                         <option value="pg13">PG-13 (Adolescentes)</option>
-                        <option value="r17">R-17+ (Violencia/Profanidad)</option>
-                        <option value="r">R+ (Desnudez leve)</option>
+                        <option value="r17">R-17+ (Adultos)</option>
                     </select>
+                    <div class="select-arrow">▼</div>
                 </div>
             </div>
-
-            <!-- Ordenar Por -->
-            <div class="form-group">
-                <label for="order_by" class="kairo-label">Ordenar Hallazgos</label>
-                <div class="kairo-select-wrapper">
-                    <select id="order_by" class="kairo-select">
-                        <option value="popularity">Más Populares</option>
-                        <option value="score">Mejor Valorados</option>
-                        <option value="start_date">Fecha de Estreno</option>
-                        <option value="title">Alfabético</option>
-                        <option value="episodes">Duración (Eps)</option>
-                    </select>
-                </div>
-            </div>
-
         </div>
 
-        <!-- 3. RANGO DE PUNTUACIÓN (Score) -->
         <div class="form-section-divider">
-            <span class="divider-label">Calidad Mínima</span>
+            <span class="divider-label">Periodo de Emisión</span>
             <div class="line"></div>
+        </div>
+
+        <div class="filters-grid dates-grid">
+            <div class="form-group">
+                <label for="start_date" class="kairo-label">Desde</label>
+                <div class="date-input-wrapper">
+                    <input type="date" id="start_date" formControlName="start_date" class="kairo-input-main kairo-date">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="end_date" class="kairo-label">Hasta</label>
+                <div class="date-input-wrapper">
+                    <input type="date" id="end_date" formControlName="end_date" class="kairo-input-main kairo-date">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section-divider">
+            <span class="divider-label">Criterio de Orden</span>
+            <div class="line"></div>
+        </div>
+
+        <div class="filters-grid sorting-grid">
+            <div class="form-group">
+                <label for="order_by" class="kairo-label">Ordenar por</label>
+                <div class="kairo-select-wrapper">
+                    <select formControlName="order_by" id="order_by" class="kairo-select">
+                        <option value="score">Puntuación</option>
+                        <option value="popularity">Popularidad</option>
+                        <option value="start_date">Fecha Estreno</option>
+                        <option value="episodes">Episodios</option>
+                    </select>
+                    <div class="select-arrow">▼</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="sort" class="kairo-label">Dirección</label>
+                <div class="kairo-select-wrapper">
+                    <select formControlName="sort" id="sort" class="kairo-select">
+                        <option value="desc">Mayor a menor (Desc)</option>
+                        <option value="asc">Menor a mayor (Asc)</option>
+                    </select>
+                    <div class="select-arrow">▼</div>
+                </div>
+            </div>
         </div>
 
         <div class="score-slider-container">
-            <div class="slider-labels">
-                <span>1 (Basura)</span>
-                <span id="score-val" class="score-display">Puntuación: {{score}}+</span>
-                <span>10 (Obra Maestra)</span>
+            <div class="slider-header">
+                <span class="score-label">Puntuación mínima:</span>
+                <span class="score-display">{{ searchForm.get('score')?.value || 1 }}</span>
             </div>
-            <input type="range" min="1" max="10" step="1" [formControl]="scoreControl" class="kairo-range">
+            <div class="range-wrapper">
+                <span>1</span>
+                <input type="range" min="1" max="10" step="1" formControlName="score" class="kairo-range">
+                <span>10</span>
+            </div>
         </div>
 
-
-
-        <!-- 4. SELECTOR DE GÉNEROS (Runas) -->
-        <div class="form-section-divider">
-            <span class="divider-label">Esencia (Géneros)</span>
-            <div class="line"></div>
-        </div>
-
-        <div class="genres-grid">
-            <!-- Checkbox Hack para botones seleccionables -->
-            <label class="genre-rune">
-                <input type="checkbox" value="1">
-                <span class="rune-face">Acción</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="2">
-                <span class="rune-face">Aventura</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="4">
-                <span class="rune-face">Comedia</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="8">
-                <span class="rune-face">Drama</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="10">
-                <span class="rune-face">Fantasía</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="14">
-                <span class="rune-face">Terror</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="7">
-                <span class="rune-face">Misterio</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="22">
-                <span class="rune-face">Romance</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="24">
-                <span class="rune-face">Sci-Fi</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="36">
-                <span class="rune-face">Slice of Life</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="30">
-                <span class="rune-face">Deportes</span>
-            </label>
-            <label class="genre-rune">
-                <input type="checkbox" value="37">
-                <span class="rune-face">Sobrenatural</span>
-            </label>
-        </div>
-
-        <!-- 5. BOTONES DE ACCIÓN -->
         <div class="form-actions">
-            <button type="button" class="btn-reset">Limpiar búsqueda</button>
-            <button type="submit" class="btn-invoke">
-                <span class="btn-text">Buscar anime</span>
-                <div class="btn-glow"></div>
+            <button type="button" class="btn-reset" (click)="searchForm.reset()">Restablecer</button>
+            <button type="submit" class="btn-invoke">Buscar anime</button>
+        </div>
+    </form>
+
+    @if (isLoading) {
+    <app-loader message="Buscando animes..."></app-loader>
+    }
+
+    @if (searchResults.length > 0 || (searchFlag && !isLoading)) {
+
+    <div class="kairo-artifact-form results-box">
+
+        <div class="results-info-header">
+            <div class="results-text-group">
+                @if (searchResults.length > 0) {
+                <h2 class="results-title">
+                    RESULTADOS PARA <span class="gold-text">"{{ queryValue || 'TODO' }}"</span>
+                </h2>
+                <span class="results-count-badge">{{ searchResults.length }} coincidencias encontradas</span>
+                }
+                @else {
+                <h2 class="results-title">
+                    Sin resultados
+                </h2>
+                }
+            </div>
+        </div>
+
+        @if (searchResults.length > 0) {
+        <div class="results-grid-vertical">
+            @for (anime of searchResults; track anime.mal_id) {
+            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
+            }
+        </div>
+
+        @if (hasMorePages) {
+        <div class="load-more-container">
+            <button type="button" class="kairo-btn-mythic" (click)="loadMoreAnimes()">
+                Cargar más resultados
+                <svg viewBox="0 0 24 24">
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+                </svg>
             </button>
         </div>
+        }
+        }
+        @else {
+        <div class="empty-state-content">
+            <p>No hay coincidencias para la búsqueda.</p>
+        </div>
+        }
+    </div>
+    }
 
-    </form>
 </div>

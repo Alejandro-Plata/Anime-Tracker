@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth-service';
+import { Router, RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -12,10 +14,13 @@ export class Login implements OnInit {
 
   loginForm: FormGroup;
   isLoading = false;
+  errorMessage: string = '';
+  authService = inject(AuthService);
+  router = inject(Router);
 
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       password: ['', [Validators.required]]
     });
   }
@@ -30,13 +35,16 @@ export class Login implements OnInit {
   onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
+      this.errorMessage = '';
 
-      // Simulación de petición al backend
-      setTimeout(() => {
+      this.authService.login(this.loginForm.value.username, this.loginForm.value.password).then(() => {
         this.isLoading = false;
-        console.log('Credenciales:', this.loginForm.value);
-        alert('✨ Credenciales aceptadas. Bienvenido a KAIRO.');
-      }, 1500);
+        this.router.navigate(['/dashboard']);
+      }).catch((error: Error) => {
+        this.isLoading = false;
+        this.errorMessage = error.message || 'Usuario o contraseña incorrectos.';
+        console.error(error);
+      });
 
     } else {
       this.loginForm.markAllAsTouched();

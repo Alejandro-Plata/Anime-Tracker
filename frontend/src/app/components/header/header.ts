@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-header',
@@ -9,16 +10,30 @@ import { RouterLink } from '@angular/router';
 })
 export class Header {
 
-  addActiveClass(event: any) {
+  isProfileMenuOpen = false;
+  username: string = "";
 
-    // Al link activo, le eliminamos la clase
-    const links = document.querySelectorAll('.nav-link');
-    links.forEach((link) => {
-      link.classList.remove('active');
-    });
+  authService = inject(AuthService);
+  router = inject(Router);
 
-    // Al link que se le dio click, le agregamos la clase
-    event.target.classList.add('active');
+  ngOnInit() {
+    this.username = this.authService.getCurrentUser()?.username || "";
   }
+
+  toggleProfileMenu() {
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  closeProfileMenu() {
+    this.isProfileMenuOpen = false;
+  }
+
+  logout() {
+    this.isProfileMenuOpen = false;
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+
 
 }

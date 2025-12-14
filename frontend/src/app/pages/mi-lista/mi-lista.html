@@ -1,177 +1,75 @@
-<div class="kairo-list-container">
+<main class="mi-lista-main">
+    <div class="noise-overlay"></div>
 
-    <!-- CABECERA -->
-    <header class="list-header">
-        <h1 class="list-title">Mis favoritos</h1>
-        <p class="list-subtitle"> ______________ </p>
-
-        <!-- FILTROS DE ESTADO (Pestañas Místicas) -->
-        <div class="status-tabs">
-            <button class="tab-btn active">Todos</button>
-            <button class="tab-btn">Viendo</button>
-            <button class="tab-btn">Finalizados</button>
-            <button class="tab-btn">Pendientes</button>
+    <!-- HEADER -->
+    <header class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">Mi lista de favoritos</h1>
+            <p class="page-subtitle">Sigue tus animes favoritos y guarda tus progresos</p>
         </div>
+
+        <nav class="filter-tabs">
+            <button class="tab-btn" [class.active]="activeTab === 'TODOS'" (click)="setTab('TODOS')">
+                Todos <span class="count">{{ favoritesAnime.length }}</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'VIENDO'" (click)="setTab('VIENDO')">
+                Viendo <span class="count">{{ getCountByStatus('VIENDO') }}</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'FINALIZADO'" (click)="setTab('FINALIZADO')">
+                Completados <span class="count">{{ getCountByStatus('FINALIZADO') }}</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'PENDIENTE'" (click)="setTab('PENDIENTE')">
+                Pendientes <span class="count">{{ getCountByStatus('PENDIENTE') }}</span>
+            </button>
+            <button class="tab-btn" [class.active]="activeTab === 'ABANDONADO'" (click)="setTab('ABANDONADO')">
+                Abandonados <span class="count">{{ getCountByStatus('ABANDONADO') }}</span>
+            </button>
+        </nav>
     </header>
 
-    <!-- GRID DE CARTAS -->
-    <div class="kairo-card-grid">
+    <section class="anime-grid">
+        @for (anime of favoritesShow; track $index) {
+        <article class="anime-card" [attr.data-status]="anime.state"
+            (click)="navigateToAnimeDetail(anime.detalles.mal_id)">
 
-        <!-- CARTA 1: VIENDO (Watching) -->
-        <div class="kairo-card status-watching">
-            <!-- Marco decorativo -->
-            <div class="card-frame">
+            <div class="card-image-wrapper">
+                <img [src]="anime.detalles.image_url" [alt]="anime.detalles.title" class="card-image">
 
-                <!-- IMAGEN DE PORTADA -->
-                <div class="card-cover">
-                    <img src="https://m.media-amazon.com/images/I/816AbVQc+0L._AC_UF894,1000_QL80_.jpg" alt="Frieren">
-                    <div class="cover-overlay"></div>
+                <div class="score-badge">
+                    <svg viewBox="0 0 24 24" class="star-icon">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <span>{{ anime.detalles.score }}</span>
                 </div>
 
-                <!-- ETIQUETA DE ESTADO (Top Izquierda) -->
-                <div class="status-badge">
-                    <span class="status-icon">👁</span>
-                    <span>Viendo</span>
-                </div>
-
-                <!-- PUNTUACIÓN ESTRELLAS (Top Derecha) -->
-                <div class="star-rating">
-                    <span class="stars-gold">★★★★</span><span class="stars-dim">★</span>
-                    <span class="score-num">8.5</span>
-                </div>
-
-                <!-- DETALLES (Parte Inferior) -->
-                <div class="card-details">
-                    <h3 class="anime-title">Frieren: Beyond Journey's End</h3>
-
-                    <div class="meta-row">
-                        <span class="meta-type">TV</span>
-                        <span class="meta-eps">Ep 12 / 28</span>
-                    </div>
-
-                    <!-- Géneros (Runas pequeñas) -->
-                    <div class="genre-tags">
-                        <span class="tag">Aventura</span>
-                        <span class="tag">Fantasía</span>
-                    </div>
-
-                    <!-- Barra de Progreso (Solo para 'Viendo') -->
-                    <div class="progress-bar-container">
-                        <div class="progress-fill" style="width: 45%;"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- CARTA 2: FINALIZADO (Completed) -->
-        <div class="kairo-card status-completed">
-            <div class="card-frame">
-                <div class="card-cover">
-                    <img src="https://m.media-amazon.com/images/M/MV5BMzNiODA5NjYtYWExZS00OTc4LTg3N2ItYWYwYTUyYmM5MWViXkEyXkFqcGc@._V1_.jpg"
-                        alt="Fullmetal Alchemist">
-                    <div class="cover-overlay"></div>
-                </div>
-
-                <div class="status-badge">
-                    <span class="status-icon">✔</span>
-                    <span>Finalizado</span>
-                </div>
-
-                <div class="star-rating">
-                    <span class="stars-gold">★★★★★</span>
-                    <span class="score-num">10</span>
-                </div>
-
-                <div class="card-details">
-                    <h3 class="anime-title">Fullmetal Alchemist: Brotherhood</h3>
-
-                    <div class="meta-row">
-                        <span class="meta-type">TV</span>
-                        <span class="meta-eps">64 Eps</span>
-                    </div>
-
-                    <div class="genre-tags">
-                        <span class="tag">Militar</span>
-                        <span class="tag">Shounen</span>
-                    </div>
+                <div class="status-indicator" [attr.data-status]="anime.state" [class]="anime.state">
+                    {{ getStatusLabel(anime.state) }}
                 </div>
             </div>
-        </div>
 
-        <!-- CARTA 3: PENDIENTE (Plan to Watch) -->
-        <div class="kairo-card status-plan">
-            <div class="card-frame">
-                <div class="card-cover">
-                    <img src="https://m.media-amazon.com/images/S/pv-target-images/0caff258f00000e343cbb314b20b871f50b029d64ba9795ff0a014d97e03ca41.jpg"
-                        alt="Monster">
-                    <div class="cover-overlay"></div>
-                </div>
+            <div class="card-info">
+                <h3 class="card-title">{{ anime.detalles.title }}</h3>
 
-                <div class="status-badge">
-                    <span class="status-icon">⏳</span>
-                    <span>Pendiente</span>
-                </div>
-
-                <div class="star-rating">
-                    <span class="stars-gold"></span><span class="stars-dim">★★★★★</span>
-                    <span class="score-num">-</span>
-                </div>
-
-                <div class="card-details">
-                    <h3 class="anime-title">Monster</h3>
-
-                    <div class="meta-row">
-                        <span class="meta-type">TV</span>
-                        <span class="meta-eps">74 Eps</span>
-                    </div>
-
-                    <div class="genre-tags">
-                        <span class="tag">Misterio</span>
-                        <span class="tag">Psicológico</span>
-                    </div>
+                <div class="card-genres">
+                    @for (genre of anime.detalles.genres.slice(0, 2); track genre) {
+                    <span class="genre-chip">{{ genre.name }}</span>
+                    }
                 </div>
             </div>
+        </article>
+        }
+
+        @empty {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" class="empty-icon">
+                <path
+                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+            </svg>
+            <p class="empty-text">No hay animes en esta categoría</p>
+            <a class="empty-hint" routerLink="/dashboard">Explora y añade tus favoritos</a>
         </div>
+        }
+    </section>
 
-        <!-- CARTA 4: VIENDO -->
-        <div class="kairo-card status-watching">
-            <div class="card-frame">
-                <div class="card-cover">
-                    <img src="https://m.media-amazon.com/images/M/MV5BZDkwNjc0NWEtNzJlOC00N2YwLTk4MjktZGFlZDE2Y2QzOWI0XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-                        alt="Vinland Saga">
-                    <div class="cover-overlay"></div>
-                </div>
-
-                <div class="status-badge">
-                    <span class="status-icon">👁</span>
-                    <span>Viendo</span>
-                </div>
-
-                <div class="star-rating">
-                    <span class="stars-gold">★★★★</span><span class="stars-dim">★</span>
-                    <span class="score-num">9.0</span>
-                </div>
-
-                <div class="card-details">
-                    <h3 class="anime-title">Vinland Saga Season 2</h3>
-
-                    <div class="meta-row">
-                        <span class="meta-type">TV</span>
-                        <span class="meta-eps">Ep 8 / 24</span>
-                    </div>
-
-                    <div class="genre-tags">
-                        <span class="tag">Drama</span>
-                        <span class="tag">Histórico</span>
-                    </div>
-
-                    <div class="progress-bar-container">
-                        <div class="progress-fill" style="width: 30%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
+</main>

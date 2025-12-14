@@ -2,7 +2,6 @@
     <div class="nav-content">
 
         <input type="checkbox" id="mobile-menu-toggle" class="nav-checkbox">
-
         <label for="mobile-menu-toggle" class="nav-hamburger">
             <span class="line"></span>
             <span class="line"></span>
@@ -10,13 +9,11 @@
         </label>
 
         <nav class="nav-links-container">
-            <a routerLink="/" class="kairo-nav-link active">Inicio</a>
-            <a routerLink="/mi-lista" class="kairo-nav-link">Mi Lista</a>
-            <a routerLink="/buscador-avanzado" class="kairo-nav-link">Buscador</a>
-            <a routerLink="/descubrir" class="kairo-nav-link">Descubrir</a>
+            <a routerLink="/dashboard" class="kairo-nav-link active">Inicio</a>
+            <a routerLink="/dashboard/mi-lista" class="kairo-nav-link">Mi Lista</a>
+            <a routerLink="/dashboard/buscador" class="kairo-nav-link">Buscador</a>
+            <a routerLink="/dashboard/descubrir" class="kairo-nav-link">Descubrir</a>
         </nav>
-
-
 
         <div class="nav-actions-right">
             <div class="nav-logo-right">
@@ -24,7 +21,26 @@
             </div>
         </div>
 
-    </div>
+        <div class="user-profile-wrapper" (click)="toggleProfileMenu()">
 
+            <div class="profile-trigger">
+                <span class="user-name">{{ username }}</span>
+                <div class="avatar-container">
+                    <img src="https://p16-capcut-sign-sg.ibyteimg.com/tos-alisg-v-3741c700-sg/ogfzK66C0kB3a92iuIiDtEAdgDAGIoBzp4AEgB~tplv-4d650qgzx3-image.image?lk3s=2d54f6b1&x-expires=1796971515&x-signature=SJrBLjHwy43N1Yz00xYkmGH%2BwAM%3D"
+                        alt="Perfil" class="profile-img">
+                </div>
+            </div>
+
+            <div class="profile-dropdown" [class.active]="isProfileMenuOpen">
+                <div class="dropdown-arrow"></div>
+                <button class="dropdown-item" (click)="logout()">
+                    <span class="icon">⏻</span>
+                    Cerrar Sesión
+                </button>
+            </div>
+
+        </div>
+
+    </div>
     <div class="header-glow-line"></div>
 </header>

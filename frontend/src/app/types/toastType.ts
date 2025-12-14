@@ -1,0 +1,1 @@
+export type ToastType = 'like' | 'reject' | 'state';

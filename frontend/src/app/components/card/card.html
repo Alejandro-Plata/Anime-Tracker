@@ -1,0 +1,28 @@
+<div class="ornate-card-portrait" (click)="navigateToAnimeDetail()">
+    <div class="card-frame-outer">
+        <div class="card-frame-inner">
+            <img [src]="anime.image_url" [alt]="anime.title" loading="lazy">
+
+            @if(anime.score){
+            <div class="card-score-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path
+                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                </svg>
+                <span>{{anime.score}}</span>
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="card-info-panel">
+        <a href="javascript:void(0)" class="card-title-link">
+            <h3>{{anime.title}}</h3>
+        </a>
+        @if(anime.rating){
+        <p class="card-subtitle">
+            Rating: <span class="gold-text">{{anime.rating}}</span>
+        </p>
+        }
+    </div>
+</div>

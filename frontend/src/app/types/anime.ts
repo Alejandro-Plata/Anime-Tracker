@@ -1,3 +1,5 @@
+import { Genre } from "./genre";
+
 export interface Anime {
     mal_id: number;
     url: string;
@@ -5,4 +7,5 @@ export interface Anime {
     title: string;
     score?: number;
     rating?: string;
+    genre?: Genre[];
 }

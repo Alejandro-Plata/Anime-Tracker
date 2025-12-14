@@ -8,11 +8,12 @@ import { Register } from './pages/register/register';
 import { AnimeDetailPage } from './pages/anime-detail/anime-detail';
 
 export const routes: Routes = [
-    { path: '', component: LandingPage },
-    { path: 'descubrir', component: Descubrir },
-    { path: 'buscador-avanzado', component: BuscadorAvanzado },
-    { path: 'mi-lista', component: MiLista },
-    { path: 'login', component: Login },
+    { path: '', component: Register },
     { path: 'register', component: Register },
-    { path: 'anime/:id', component: AnimeDetailPage }
+    { path: 'login', component: Login },
+    { path: 'dashboard', component: LandingPage },
+    { path: 'dashboard/descubrir', component: Descubrir },
+    { path: 'dashboard/buscador', component: BuscadorAvanzado },
+    { path: 'dashboard/mi-lista', component: MiLista },
+    { path: 'dashboard/anime/:id', component: AnimeDetailPage }
 ];

@@ -1,123 +1,91 @@
 <main class="kairo-main">
-    <!-- Fondo de ruido global -->
     <div class="noise-overlay"></div>
 
-    <!-- HEADER SIMPLE -->
     <header class="kairo-header">
         <div class="logo">KAIRO <span class="gold-text">DISCOVER</span></div>
         <div class="favorites-count">
-            <span class="gold-text">Saved:</span> 8
+            <svg viewBox="0 0 24 24" class="heart-icon-header">
+                <path
+                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span class="gold-text">12</span>
         </div>
     </header>
 
-    <!-- SECCIÓN DESCUBRIR (SWIPE) -->
     <section class="discover-section">
         <div class="container">
+
             <div class="section-header-ornate">
                 <span class="header-deco-left"></span>
                 <h2>La Brújula del Destino</h2>
                 <span class="header-deco-right"></span>
             </div>
 
-            <p class="instruction-text">Desliza para navegar. Encuentra tu próximo tesoro.</p>
+            <p class="instruction-text">Desliza para descubrir tu próximo anime favorito</p>
 
-            <!-- CONTENEDOR DE CARTAS -->
             <div class="card-stack-container">
 
-                <!-- CARTA DE FONDO (NEXT) -->
-                <div class="kairo-card next-card">
+                @if (!anime) {
+                <app-loader message="Buscando tu próximo anime..."></app-loader>
+                }
+
+                @if (anime) {
+                <div class="kairo-card current-card ornate-card-portrait">
                     <div class="card-frame-outer">
                         <div class="card-frame-inner">
-                            <img src="https://www.imdb.com/es/title/tt13706018/" alt="Next Anime">
-                        </div>
-                    </div>
-                    <div class="card-info-panel">
-                        <h3>Next Anime</h3>
-                    </div>
-                </div>
+                            <img [src]="anime.image_url" [alt]="anime.title">
 
-                <!-- CARTA ACTUAL (DRAGGABLE) -->
-                <div class="kairo-card current-card">
-
-                    <!-- Sellos de decisión (Overlay) -->
-                    <div class="stamp stamp-like">INTERESA</div>
-                    <div class="stamp stamp-nope">DESCARTAR</div>
-
-                    <div class="card-frame-outer">
-                        <div class="card-frame-inner">
-                            <img src="https://www.imdb.com/es/title/tt13706018/" alt="Current Anime">
                             <div class="card-score-badge">
-                                8.5
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+                                        fill="currentColor" />
+                                </svg>
+                                <span>{{ anime.score }}</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-info-panel">
-                        <h3>Current Anime</h3>
-                        <div class="tags-row">
-                            <span>Genre 1</span>
-                            <span>Genre 2</span>
-                            <span>Genre 3</span>
-                        </div>
-
-                        <button class="kairo-btn-small full-width mt-2">
-                            Ver Detalles 📜
-                        </button>
+                        <h3>{{ anime.title }}</h3>
+                        <a [routerLink]="`/dashboard/anime/${anime.mal_id}`" class="btn-details">
+                            Ver detalles →
+                        </a>
                     </div>
                 </div>
-
-                <!-- CONTROLES MANUALES -->
-
-
-                <div class="loading-state">
-                    <div class="spinner-gold"></div>
-                    <p>Consultando los astros...</p>
-                </div>
+                }
 
             </div>
-            <div>
-                <div class="swipe-controls">
-                    <button class="control-btn reject-btn">
-                        ✕
-                    </button>
-                    <button class="control-btn like-btn">
-                        ♥
-                    </button>
-                </div>
+
+            @if (anime) {
+            <div class="swipe-controls">
+                <button class="control-btn reject-btn" title="Descartar" (click)="changeAnime('reject')">
+                    ✕
+                </button>
+                <button class="control-btn like-btn" title="Me interesa" (click)="changeAnime('like')">
+                    ♥
+                </button>
             </div>
+            }
+
         </div>
     </section>
 
-    <!-- MODAL DE DETALLES -->
-    <!-- <div class="modal-backdrop">
-        <div class="modal-content ornate-border">
-            <button class="close-modal">✕</button>
-
-            <div class="modal-header">
-                <h2>Current Anime</h2>
-                <div class="modal-meta">
-                    <span>2025</span> •
-                    <span>12 Episodios</span> •
-                    <span class="gold-text">En emisión</span>
-                </div>
-            </div>
-
-            <div class="modal-body">
-                <p class="synopsis">Sin descripción disponible en los archivos.</p>
-
-                <div class="genres-list">
-                    <span class="genre-tag">Genre 1</span>
-                    <span class="genre-tag">Genre 2</span>
-                    <span class="genre-tag">Genre 3</span>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <a href="https://myanimelist.net/anime/" target="_blank" class="kairo-btn">
-                    Ver en MyAnimeList
-                </a>
-            </div>
+    @if (toastState.show) {
+    <div class="kairo-toast" [class]="toastState.type">
+        <div class="toast-icon-frame">
+            @if (toastState.type === 'like') {
+            <span class="icon">♥</span>
+            } @else {
+            <span class="icon">✕</span>
+            }
         </div>
-    </div> -->
+        <div class="toast-content">
+            <span class="toast-title">{{ toastState.title }}</span>
+            <span class="toast-msg">{{ toastState.message }}</span>
+        </div>
+        <div class="toast-progress-bar"></div>
+    </div>
+    }
 
 </main>

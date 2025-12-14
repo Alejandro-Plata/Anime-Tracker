@@ -25,7 +25,7 @@ export class Endpoints {
 
     // Recorremos todos los animes
     for (const animeId in animesData) {
-      const anime = animesData[animeId]; // Obtenemos todo el objeto del anime
+      const anime = animesData[animeId];
       animes.push({ // Nos quedamos solo con las propiedades que nos interesan
         mal_id: anime.mal_id,
         url: anime.url,
@@ -80,6 +80,7 @@ export class Endpoints {
       const episode = episodesData[episodeId];
       episodes.push({
         id: episode.id,
+        date: episode.aired,
         title: episode.title,
         url: episode.url,
       });
@@ -102,6 +103,7 @@ export class Endpoints {
       const episode = episodeData[episodeId];
       episodeList.push({
         id: episode.id,
+        date: episode.date.split('T')[0],
         title: episode.title,
         url: episode.url,
       });
@@ -135,7 +137,7 @@ export class Endpoints {
 
   // Petición para buscar animes
   async searchAnime(query: string, page: number): Promise<AnimePage> {
-    const response = await fetch(`${this.urlBase}anime?q=${query}&page=${page}`);
+    const response = await fetch(`${this.urlBase}anime?${query}&page=${page}`);
     const data = await response.json();
 
     const animePage = data.pagination;
@@ -192,5 +194,37 @@ export class Endpoints {
       hasNextPage: animePage.has_next_page,
     };
   }
+
+  // Petición para añadir a favoritos
+  async addFavorite(animeId: number): Promise<void> {
+    const response = await fetch(`${this.urlBase}anime/${animeId}/favorite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error al añadir a favoritos');
+    }
+  }
+
+  async getRandomAnime(): Promise<Anime> {
+    const response = await fetch(`${this.urlBase}random/anime`);
+    const data = await response.json();
+    const animeData = data.data;
+
+    const anime: Anime = {
+      mal_id: animeData.mal_id,
+      url: animeData.url,
+      image_url: animeData.images?.webp?.image_url || animeData.images?.jpg?.image_url || '',
+      title: animeData.titles?.[0]?.title || animeData.title || 'Sin título',
+      score: animeData.score || 0,
+      rating: animeData.rating?.split(' - ')[1] || 'N/A'
+    };
+
+    return anime;
+  }
+
+
 
 }

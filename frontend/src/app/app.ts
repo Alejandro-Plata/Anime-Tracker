@@ -1,18 +1,20 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { LandingPage } from "./pages/landing-page/landing-page";
+import { Component, signal, inject, ViewChild } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
 import { Header } from "./components/header/header";
 import { Footer } from "./components/footer/footer";
-import { BuscadorAvanzado } from "./pages/buscador-avanzado/buscador-avanzado";
-import { MiLista } from "./pages/mi-lista/mi-lista";
-import { Descubrir } from "./pages/descubrir/descubrir";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, LandingPage, Header, Footer, BuscadorAvanzado, MiLista, Descubrir],
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
   protected readonly title = signal('animewatch-tracker');
+  private router = inject(Router);
+
+  isAuthPage(): boolean {
+    const url = this.router.url;
+    return url === '/' || url === '/login' || url === '/register';
+  }
 }
