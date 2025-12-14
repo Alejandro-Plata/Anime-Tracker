@@ -47,7 +47,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
                     {
                         model: UserAnimeFavs,
                         as: 'favorites',
-                        attributes: ['animeId', 'state', 'puntuation']
+                        attributes: ['animeId', 'state', 'score']
                     }
                 ]
             });

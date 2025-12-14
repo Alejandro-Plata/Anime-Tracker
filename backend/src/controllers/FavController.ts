@@ -160,17 +160,17 @@ export class FavController {
         }
     };
 
-    static updateFavoritePuntuation = async (req: Request, res: Response) => {
+    static updateFavoriteScore = async (req: Request, res: Response) => {
         try {
             const { animeId } = req.params;
-            const { puntuation } = req.body;
+            const { score } = req.body;
             const userId = req.user.id;
 
             if (!animeId) {
                 return res.status(400).json({ msg: "Falta el ID del anime" });
             }
 
-            if (!puntuation) {
+            if (!score) {
                 return res.status(400).json({ msg: "Falta la puntuación" });
             }
 
@@ -182,7 +182,7 @@ export class FavController {
                 return res.status(404).json({ msg: "Favorito no encontrado" });
             }
 
-            favorite.puntuation = puntuation;
+            favorite.score = score;
             await favorite.save();
 
             res.json({ msg: "Puntuación actualizada correctamente", favorite });

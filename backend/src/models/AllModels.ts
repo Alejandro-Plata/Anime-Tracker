@@ -52,7 +52,7 @@ export class UserAnimeFavs extends Model {
         type: DataType.INTEGER,
         defaultValue: 0
     })
-    puntuation!: number;
+    score!: number;
 
     @BelongsTo(() => Users)
     user!: Users;

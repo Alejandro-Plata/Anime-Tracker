@@ -12,7 +12,7 @@ router.get(`/favorite/check/:animeId`, authenticate, FavController.isFavorite)
 
 router.patch('/favorites/:animeId/state', authenticate, FavController.updateFavoriteState);
 
-router.patch('/favorites/:animeId/puntuation', authenticate, FavController.updateFavoritePuntuation);
+router.patch('/favorites/:animeId/score', authenticate, FavController.updateFavoriteScore);
 
 router.delete('/favorites/:animeId', authenticate, FavController.removeFavorite);
 
