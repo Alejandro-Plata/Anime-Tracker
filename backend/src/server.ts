@@ -19,8 +19,26 @@ export async function connectDB() {
 
 const app = express();
 
+// CORS configuration - credentials:true requires specific origins, not '*'
+const allowedOrigins = [
+    'http://localhost:4200',
+    'https://interfaces-h4q8.vercel.app',
+    process.env.FRONTEND_URL
+].filter(Boolean); // Remove undefined values
+
 app.use(cors({
-    origin: '*',
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, Postman, etc.)
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 
