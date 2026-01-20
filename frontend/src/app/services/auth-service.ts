@@ -5,9 +5,9 @@ import { Favorite } from '../types/user';
   providedIn: 'root',
 })
 
-// API_URL real: 'https://backend-anime.vercel.app/api'
+// API_URL real: ''
 export class AuthService {
-  API_URL = 'http://localhost:3000/api';
+  API_URL = 'https://backend-anime-zeta.vercel.app/api';
   STORAGE_KEY = 'user';
   TOKEN_KEY = 'auth_token';
   async login(username: string, password: string): Promise<User> {
