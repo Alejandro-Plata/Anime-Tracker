@@ -13,10 +13,14 @@ export async function connectDB() {
         console.log("Base de datos conectada.");
     } catch (error) {
         console.error("Error BD:", error);
+        throw error;
     }
 }
 
 const app = express();
+
+// Detrás del proxy de Vercel, la IP real del cliente viene en X-Forwarded-For; el limitador la necesita
+app.set('trust proxy', 1);
 
 // CORS - Allow all origins since we're using Authorization headers, not cookies
 // Updated: 2025-12-14 - Force rebuild

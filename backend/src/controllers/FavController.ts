@@ -170,8 +170,8 @@ export class FavController {
                 return res.status(400).json({ msg: "Falta el ID del anime" });
             }
 
-            if (!score) {
-                return res.status(400).json({ msg: "Falta la puntuación" });
+            if (!Number.isInteger(score) || score < 0 || score > 10) {
+                return res.status(400).json({ msg: "La puntuación debe ser un número entero entre 0 y 10" });
             }
 
             const favorite = await UserAnimeFavs.findOne({

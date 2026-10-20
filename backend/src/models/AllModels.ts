@@ -25,6 +25,26 @@ export class Users extends Model {
     })
     password!: string;
 
+    // Recuperación de contraseña: guardamos el HASH del código (nunca el código en claro),
+    // igual que hacemos con las contraseñas, y cuándo caduca.
+    @Column({
+        type: DataType.STRING(100)
+    })
+    resetCode!: string | null;
+
+    @Column({
+        type: DataType.DATE
+    })
+    resetCodeExpires!: Date | null;
+
+    // Intentos fallidos con el código actual: con 6 dígitos habría 1 millón de combinaciones,
+    // así que cortamos tras unos pocos fallos para que no se pueda probar por fuerza bruta
+    @Column({
+        type: DataType.INTEGER,
+        defaultValue: 0
+    })
+    resetAttempts!: number;
+
     @HasMany(() => UserAnimeFavs)
     favorites!: UserAnimeFavs[];
 }
