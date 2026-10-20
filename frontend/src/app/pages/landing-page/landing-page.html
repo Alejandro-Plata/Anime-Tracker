@@ -31,24 +31,6 @@
                     <div class="corner-deco bottom-right"></div>
                 </div>
             </div>
-
-            <!-- STATS -->
-            <div class="ornate-stats-frame">
-                <div class="stat-item">
-                    <span class="stat-number">24k+</span>
-                    <span class="stat-label">Títulos</span>
-                </div>
-                <div class="stat-separator-wave">~</div>
-                <div class="stat-item">
-                    <span class="stat-number">Fast</span>
-                    <span class="stat-label">Jikan API</span>
-                </div>
-                <div class="stat-separator-wave">~</div>
-                <div class="stat-item">
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">Versatilidad</span>
-                </div>
-            </div>
         </div>
 
         <div class="hero-wave-divider"></div>
@@ -64,9 +46,9 @@
             <span class="header-deco-right"></span>
 
             <!-- BOTÓN BÚSQUEDA -->
-            @if (hasMorePagesSearch) {
-            <button class="kairo-btn-mythic" (click)="loadMoreAnimes()">
-                <span>Ver más resultados</span>
+            @if (hasMorePagesSearch && !isLoadingSearch) {
+            <button class="kairo-btn-mythic" (click)="loadMoreAnimes()" [disabled]="isLoadingMoreSearch">
+                <span>{{ isLoadingMoreSearch ? 'Cargando...' : 'Ver más resultados' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
                 </svg>
@@ -74,13 +56,20 @@
             }
         </div>
 
-        @if (searchResults.length > 0) {
+        @if (isLoadingSearch) {
+        <p class="no-results-msg">Buscando animes...</p>
+        } @else if (searchError) {
+        <div class="no-results-msg">
+            <p>{{ searchError }}</p>
+            <button class="kairo-btn-mythic" (click)="searchAnimes()">Reintentar</button>
+        </div>
+        } @else if (searchResults.length > 0) {
         <div class="ornate-grid">
             @for (anime of searchResults; track anime.mal_id) {
             <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
             }
         </div>
-        } @else if(searchResults.length === 0){
+        } @else {
         <div class="no-results-msg">
             <p><span class="color-cycle">No se han encontrado resultados para "{{searchQuery}}"</span></p>
         </div>
@@ -96,15 +85,18 @@
             <h2>Top animes de temporada</h2>
             <span class="header-deco-right"></span>
 
-            @if (hasMorePagesSeason) {
-            <button class="kairo-btn-mythic" (click)="loadMoreSeason()">
-                <span>Ver más</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
-                </svg>
-            </button>
-            }
         </div>
+
+        @if (isLoadingSeason && topAnimesSeason.length === 0) {
+        <p class="no-results-msg">Cargando animes de temporada...</p>
+        } @else if (seasonError) {
+        <div class="no-results-msg">
+            <p>{{ seasonError }}</p>
+            <button class="kairo-btn-mythic" (click)="loadInitialSeason()">Reintentar</button>
+        </div>
+        } @else if (topAnimesSeason.length === 0) {
+        <p class="no-results-msg">No hay animes de temporada disponibles.</p>
+        }
 
         <div class="kairo-scroll-container">
             @for(anime of topAnimesSeason; track anime.mal_id) {
@@ -122,14 +114,25 @@
             <span class="header-deco-right"></span>
 
             @if (hasMorePagesRecommended) {
-            <button class="kairo-btn-mythic" (click)="loadMoreRecommended()">
-                <span>Ver más</span>
+            <button class="kairo-btn-mythic" (click)="loadMoreRecommended()" [disabled]="isLoadingMoreRecommended">
+                <span>{{ isLoadingMoreRecommended ? 'Cargando...' : 'Ver más' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" />
                 </svg>
             </button>
             }
         </div>
+
+        @if (isLoadingRecommended && recommendedAnimes.length === 0) {
+        <p class="no-results-msg">Cargando recomendaciones...</p>
+        } @else if (recommendedError) {
+        <div class="no-results-msg">
+            <p>{{ recommendedError }}</p>
+            <button class="kairo-btn-mythic" (click)="loadInitialRecommended()">Reintentar</button>
+        </div>
+        } @else if (recommendedAnimes.length === 0) {
+        <p class="no-results-msg">No hay recomendaciones disponibles.</p>
+        }
 
         <div class="kairo-scroll-container">
             @for(anime of recommendedAnimes; track anime.mal_id) {

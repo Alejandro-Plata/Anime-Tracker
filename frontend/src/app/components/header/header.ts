@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -28,9 +28,9 @@ export class Header {
     this.isProfileMenuOpen = false;
   }
 
-  logout() {
+  async logout() {
     this.isProfileMenuOpen = false;
-    this.authService.logout();
+    await this.authService.logout();
     this.router.navigate(['/login']);
   }
 

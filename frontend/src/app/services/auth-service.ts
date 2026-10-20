@@ -85,6 +85,9 @@ export class AuthService {
       localStorage.removeItem(this.TOKEN_KEY);
     }
   }
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem(this.TOKEN_KEY);
+  }
   getCurrentUser(): UserFavorites | null {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
@@ -194,14 +197,6 @@ export class AuthService {
   }
   async patchFavoriteScore(animeId: number, score: number): Promise<void> {
     const token = localStorage.getItem(this.TOKEN_KEY);
-
-    console.log('Guardando puntuación:', {
-      animeId,
-      score,
-      url: `${this.API_URL}/user/favorites/${animeId}/score`,
-      hasToken: !!token
-    });
-
     const response = await fetch(`${this.API_URL}/user/favorites/${animeId}/score`, {
       method: 'PATCH',
       headers: {
@@ -213,11 +208,9 @@ export class AuthService {
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Error response:', errorData);
       throw new Error(errorData.msg || errorData.message || `Error ${response.status}`);
     }
 
-    console.log('Puntuación guardada exitosamente');
     await this.refreshUser();
   }
 }

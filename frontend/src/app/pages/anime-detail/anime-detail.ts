@@ -8,10 +8,11 @@ import { AuthService } from '../../services/auth-service';
 import { Loader } from '../../components/loader/loader';
 import { ToastState } from '../../types/toastState';
 import { ToastType } from '../../types/toastType';
+import { ClickOutside } from '../../directives/click-outside';
 
 @Component({
   selector: 'app-anime-detail',
-  imports: [FormsModule, Loader],
+  imports: [FormsModule, Loader, ClickOutside],
   templateUrl: './anime-detail.html',
   styleUrl: './anime-detail.css',
 })
@@ -23,6 +24,11 @@ export class AnimeDetailPage {
 
   isFavorite: boolean = false;
   animeDetail: AnimeDetail | null = null;
+  isLoading = true;
+  errorMessage = '';
+  isEpisodesLoading = false;
+  episodesError = '';
+  episodesSourceUrl = '';
   currentState: State = 'VIENDO';
   isSelectOpen: boolean = false;
   userScore: number = 0;
@@ -38,22 +44,48 @@ export class AnimeDetailPage {
   private toastTimeout: any;
 
   ngOnInit() {
-    this.endpoints.getAnimeById(this.route.snapshot.params['id']).then((anime) => {
+    void this.loadAnimeDetail();
+  }
+
+  async loadAnimeDetail() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    try {
+      const anime = await this.endpoints.getAnimeById(this.route.snapshot.params['id']);
       this.animeDetail = anime;
-      this.authService.getIsFavorite(this.animeDetail.mal_id).then((isFavorite) => {
+      this.episodesSourceUrl = `https://myanimelist.net/anime/${anime.mal_id}`;
+      void this.loadEpisodes(anime.mal_id);
+      this.authService.getIsFavorite(anime.mal_id).then((isFavorite) => {
         this.isFavorite = isFavorite;
       });
-      this.authService.getFavoriteState(this.animeDetail.mal_id).then((state) => {
-        this.currentState = state as State;
+      this.authService.getFavoriteState(anime.mal_id).then((state) => {
+        this.currentState = (state as State) || 'VIENDO';
       });
-      this.authService.getFavoriteScore(this.animeDetail.mal_id).then((score) => {
+      this.authService.getFavoriteScore(anime.mal_id).then((score) => {
         this.userScore = score || 0;
-        console.log(score)
       });
-    });
+    } catch (error) {
+      console.error('Error cargando el detalle del anime:', error);
+      this.errorMessage = 'No se pudo cargar el anime. Comprueba la conexión e inténtalo de nuevo.';
+    } finally {
+      this.isLoading = false;
+    }
+  }
 
-    console.log(this.userScore);
-
+  async loadEpisodes(animeId = this.animeDetail?.mal_id) {
+    if (!animeId || !this.animeDetail) return;
+    this.isEpisodesLoading = true;
+    this.episodesError = '';
+    try {
+      const episodes = await this.endpoints.getEpisodesById(String(animeId));
+      this.animeDetail = { ...this.animeDetail, episodes_list: episodes };
+    } catch (error) {
+      console.error(`Error cargando episodios del anime ${animeId}:`, error);
+      const detail = error instanceof Error ? error.message : 'Error desconocido.';
+      this.episodesError = `No se pudieron cargar los episodios desde la API. ${detail}`;
+    } finally {
+      this.isEpisodesLoading = false;
+    }
   }
 
   get studios() {
@@ -69,17 +101,28 @@ export class AnimeDetailPage {
     return studios.join(', ');
   }
 
-  toggleFavorite() {
+  async toggleFavorite() {
+    if (!this.animeDetail) return;
 
-    if (this.isFavorite) {
-      this.authService.removeAnimeFromFavorites(this.animeDetail?.mal_id || 0);
-      this.showToast('reject', 'Eliminado', 'Anime eliminado de favoritos.');
-    } else {
-      this.authService.addAnimeToFavorites(this.animeDetail?.mal_id || 0);
-      this.showToast('like', 'Favoritos', 'Anime añadido a favoritos.');
+    // Esperamos la respuesta del servidor para no mostrar un estado que no se ha guardado
+    try {
+      if (this.isFavorite) {
+        await this.authService.removeAnimeFromFavorites(this.animeDetail.mal_id);
+        this.showToast('reject', 'Eliminado', 'Anime eliminado de favoritos.');
+      } else {
+        await this.authService.addAnimeToFavorites(this.animeDetail.mal_id);
+        this.showToast('like', 'Favoritos', 'Anime añadido a favoritos.');
+      }
+
+      this.isFavorite = !this.isFavorite;
+      // Al añadir o eliminar, el favorito vuelve a los valores por defecto del servidor
+      this.currentState = 'VIENDO';
+      this.userScore = 0;
+    } catch (error) {
+      console.error('Error al actualizar favoritos:', error);
+      const message = error instanceof Error ? error.message : 'No se pudo actualizar favoritos';
+      this.showToast('reject', 'Error', message);
     }
-
-    this.isFavorite = !this.isFavorite;
   }
 
   toggleSelect() {
@@ -98,11 +141,21 @@ export class AnimeDetailPage {
     this.isScoreSelectOpen = false;
   }
 
-  setState(state: State) {
+  async setState(state: State) {
+    if (!this.animeDetail) return;
+    const previousState = this.currentState;
     this.currentState = state;
     this.isSelectOpen = false;
-    this.authService.patchFavoriteState(this.animeDetail?.mal_id || 0, state);
-    this.showToast('state', 'Estado', `Estado actualizado: ${state}`);
+
+    try {
+      await this.authService.patchFavoriteState(this.animeDetail.mal_id, state);
+      this.showToast('state', 'Estado', `Estado actualizado: ${state}`);
+    } catch (error) {
+      this.currentState = previousState;
+      console.error('Error al guardar el estado:', error);
+      const message = error instanceof Error ? error.message : 'No se pudo guardar el estado';
+      this.showToast('reject', 'Error', message);
+    }
   }
 
   setActiveTab(tab: 'episodes' | 'reviews') {
@@ -128,22 +181,23 @@ export class AnimeDetailPage {
   }
 
   async setUserScore(score: number) {
+    if (!this.animeDetail) return;
+    const previousScore = this.userScore;
     this.userScore = score;
     this.isScoreSelectOpen = false;
 
     try {
-      this.showToast('state', 'Puntuacion', `Puntuacion actualizada: ${score}`);
-      await this.authService.patchFavoriteScore(this.animeDetail?.mal_id || 0, score);
-      console.log('Puntuación guardada:', this.userScore);
-    } catch (error: any) {
+      await this.authService.patchFavoriteScore(this.animeDetail.mal_id, score);
+      this.showToast(
+        'state',
+        'Puntuación',
+        score === 0 ? 'Nota eliminada.' : `Puntuación actualizada: ${score}`
+      );
+    } catch (error) {
+      this.userScore = previousScore;
       console.error('Error al guardar puntuación:', error);
-      console.error('Detalles:', {
-        animeId: this.animeDetail?.mal_id,
-        score: score,
-        errorMessage: error.message
-      });
-      this.showToast('reject', 'Error', error.message || 'No se pudo guardar la puntuación');
+      const message = error instanceof Error ? error.message : 'No se pudo guardar la puntuación';
+      this.showToast('reject', 'Error', message);
     }
   }
 }
-

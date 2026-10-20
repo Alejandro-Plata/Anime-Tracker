@@ -9,10 +9,10 @@
         </label>
 
         <nav class="nav-links-container">
-            <a routerLink="/dashboard" class="kairo-nav-link active">Inicio</a>
-            <a routerLink="/dashboard/mi-lista" class="kairo-nav-link">Mi Lista</a>
-            <a routerLink="/dashboard/buscador" class="kairo-nav-link">Buscador</a>
-            <a routerLink="/dashboard/descubrir" class="kairo-nav-link">Descubrir</a>
+            <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="kairo-nav-link">Inicio</a>
+            <a routerLink="/dashboard/mi-lista" routerLinkActive="active" class="kairo-nav-link">Mi Lista</a>
+            <a routerLink="/dashboard/buscador" routerLinkActive="active" class="kairo-nav-link">Buscador</a>
+            <a routerLink="/dashboard/descubrir" routerLinkActive="active" class="kairo-nav-link">Descubrir</a>
         </nav>
 
         <div class="nav-actions-right">

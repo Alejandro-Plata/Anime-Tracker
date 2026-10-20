@@ -5,11 +5,11 @@ import { Favorite } from '../../types/user';
 import { Endpoints } from '../../services/endpoints/endpoints';
 import { Tab } from '../../types/tab';
 import { FavoriteAnime } from '../../types/favoriteAnime';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-mi-lista',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './mi-lista.html',
   styleUrl: './mi-lista.css',
 })
@@ -57,7 +57,8 @@ export class MiLista implements OnInit {
   }
 
   getCountByStatus(status: string): number {
-    return this.favoritesShow.filter(favoriteAnime => favoriteAnime.state === status).length;
+    // Contamos sobre la lista completa para que los contadores no dependan de la pestaña activa
+    return this.favoritesAnime.filter(favoriteAnime => favoriteAnime.state === status).length;
   }
 
   getStatusLabel(status: string): string {

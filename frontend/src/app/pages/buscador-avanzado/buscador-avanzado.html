@@ -99,7 +99,7 @@
                 <div class="kairo-select-wrapper">
                     <select formControlName="order_by" id="order_by" class="kairo-select">
                         <option value="score">Puntuación</option>
-                        <option value="popularity">Popularidad</option>
+                        <option value="members">Popularidad</option>
                         <option value="start_date">Fecha Estreno</option>
                         <option value="episodes">Episodios</option>
                     </select>
@@ -161,6 +161,12 @@
             </div>
         </div>
 
+        @if (errorMessage) {
+        <div class="empty-state-content">
+            <p>{{ errorMessage }}</p>
+        </div>
+        }
+
         @if (searchResults.length > 0) {
         <div class="results-grid-vertical">
             @for (anime of searchResults; track anime.mal_id) {
@@ -170,8 +176,8 @@
 
         @if (hasMorePages) {
         <div class="load-more-container">
-            <button type="button" class="kairo-btn-mythic" (click)="loadMoreAnimes()">
-                Cargar más resultados
+            <button type="button" class="kairo-btn-mythic" (click)="loadMoreAnimes()" [disabled]="isLoadingMore">
+                {{ isLoadingMore ? 'Cargando...' : 'Cargar más resultados' }}
                 <svg viewBox="0 0 24 24">
                     <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
                 </svg>
@@ -181,7 +187,9 @@
         }
         @else {
         <div class="empty-state-content">
+            @if (!errorMessage) {
             <p>No hay coincidencias para la búsqueda.</p>
+            }
         </div>
         }
     </div>

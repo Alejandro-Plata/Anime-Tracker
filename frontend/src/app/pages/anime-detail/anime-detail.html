@@ -2,9 +2,14 @@
     <div class="bg-overlay"></div>
     <div class="noise-overlay"></div>
 
-    @if (!animeDetail) {
+    @if (isLoading) {
     <app-loader message="Cargando detalles del anime..."></app-loader>
-    } @else {
+    } @else if (errorMessage) {
+    <div class="no-results-msg">
+        <p>{{ errorMessage }}</p>
+        <button class="kairo-btn-mythic" type="button" (click)="loadAnimeDetail()">Reintentar</button>
+    </div>
+    } @else if (animeDetail) {
     <div class="content-container">
 
         <aside class="anime-sidebar">
@@ -27,7 +32,7 @@
                 <div class="score-divider"></div>
 
                 @if(isFavorite) {
-                <div class="score-col user">
+                <div class="score-col user" (clickOutside)="closeScoreSelect()">
                     <span class="score-label">Tu Nota</span>
 
                     <div class="user-score-trigger" (click)="toggleScoreSelect()" [class.has-score]="userScore > 0">
@@ -44,7 +49,7 @@
                     }
 
                     @if (isScoreSelectOpen) {
-                    <div class="score-dropdown custom-scrollbar" (clickOutside)="closeScoreSelect()">
+                    <div class="score-dropdown custom-scrollbar">
                         <div class="score-option remove" (click)="setUserScore(0)">Sin nota</div>
                         @for (num of [10,9,8,7,6,5,4,3,2,1]; track num) {
                         <div class="score-option" [class.selected]="userScore === num" (click)="setUserScore(num)">
@@ -157,6 +162,18 @@
 
                     @if (activeTab === 'episodes') {
                     <div class="episodes-list custom-scrollbar fade-in">
+                        @if (isEpisodesLoading && animeDetail.episodes_list.length === 0) {
+                        <p>Cargando episodios...</p>
+                        } @else if (episodesError) {
+                        <p>{{ episodesError }}</p>
+                        <a [href]="episodesSourceUrl" target="_blank" rel="noopener noreferrer">
+                            Consultar episodios en MyAnimeList
+                        </a>
+                        <button type="button" class="kairo-btn-mythic"
+                            (click)="loadEpisodes()">Reintentar episodios</button>
+                        } @else if (animeDetail.episodes_list.length === 0) {
+                        <p>No hay episodios disponibles.</p>
+                        }
                         @for (episode of animeDetail.episodes_list; track $index) {
                         <div class="episode-card">
                             <div class="ep-index">

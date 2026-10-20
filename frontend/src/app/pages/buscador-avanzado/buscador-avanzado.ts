@@ -27,6 +27,8 @@ export class BuscadorAvanzado {
 
   searchFlag = false;
   isLoading = false;
+  isLoadingMore = false;
+  errorMessage = '';
 
   private endpoints = inject(Endpoints);
   private router = inject(Router);
@@ -37,7 +39,7 @@ export class BuscadorAvanzado {
       type: [''],
       status: [''],
       rating: [''],
-      order_by: ['popularity'],
+      order_by: ['members'],
       score: [5], // El valor vive AQUÍ, dentro del grupo
       start_date: [''],
       end_date: [''],
@@ -53,51 +55,57 @@ export class BuscadorAvanzado {
     return this.searchForm.get('query')?.value;
   }
 
-  queryParts: string[] = [];
-
   onSubmit() {
     this.searchFlag = true;
     this.isLoading = true;
     this.pages = 1;
     this.searchResults = [];
+    this.hasMorePages = false;
+    this.errorMessage = '';
 
     const f = this.searchForm.value;
-
-    this.queryParts = [
-      f.query ? `q=${f.query}` : '',
-      f.type ? `type=${f.type}` : '',
-      f.status ? `status=${f.status}` : '',
-      f.rating ? `rating=${f.rating}` : '',
-      f.order_by ? `order_by=${f.order_by}` : '',
-      f.score ? `min_score=${f.score}` : '',
-      f.start_date ? `start_date=${f.start_date}` : '',
-      f.end_date ? `end_date=${f.end_date}` : '',
-      f.sort ? `sort=${f.sort}` : '',
-    ];
-
-    this.currentQuery = this.queryParts.filter(part => part !== '').join('&');
-
-    console.log(this.currentQuery);
+    const params = new URLSearchParams();
+    if (f.query?.trim()) params.set('q', f.query.trim());
+    if (f.type) params.set('type', f.type);
+    if (f.status) params.set('status', f.status);
+    if (f.rating) params.set('rating', f.rating);
+    if (f.order_by) params.set('order_by', f.order_by);
+    if (f.score) params.set('min_score', String(f.score));
+    if (f.start_date) params.set('start_date', f.start_date);
+    if (f.end_date) params.set('end_date', f.end_date);
+    if (f.sort) params.set('sort', f.sort);
+    this.currentQuery = params.toString();
 
     this.endpoints.searchAnime(this.currentQuery, this.pages).then((animePage) => {
-      console.log(animePage.animes);
       this.searchResults = animePage.animes;
       this.hasMorePages = animePage.hasNextPage;
-      this.isLoading = false;
     }).catch(err => {
       console.error("Error buscando anime:", err);
       this.searchResults = [];
+      this.hasMorePages = false;
+      this.errorMessage = 'No se pudo completar la búsqueda. Inténtalo de nuevo.';
+    }).finally(() => {
       this.isLoading = false;
     });
 
   }
 
-  loadMoreAnimes() {
-    this.pages++;
-    this.endpoints.searchAnime(this.currentQuery, this.pages).then((animePage) => {
+  async loadMoreAnimes() {
+    if (!this.hasMorePages || this.isLoadingMore) return;
+    const nextPage = this.pages + 1;
+    this.isLoadingMore = true;
+    this.errorMessage = '';
+    try {
+      const animePage = await this.endpoints.searchAnime(this.currentQuery, nextPage);
+      this.pages = nextPage;
       this.searchResults = [...this.searchResults, ...animePage.animes];
       this.hasMorePages = animePage.hasNextPage;
-    });
+    } catch (error) {
+      console.error('Error cargando más resultados:', error);
+      this.errorMessage = 'No se pudieron cargar más resultados. Inténtalo de nuevo.';
+    } finally {
+      this.isLoadingMore = false;
+    }
   }
 
   navigateToAnimeDetail(animeId: number) {

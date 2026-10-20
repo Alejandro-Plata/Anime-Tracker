@@ -2,10 +2,9 @@
     <div class="noise-overlay"></div>
 
     <header class="kairo-header">
-        <h1 class="page-title">Descubre joyitas (entre la escoria)</h1>
+        <h1 class="page-title">Descubre joyitas</h1>
 
-        <p class="instruction-text">Desliza para descubrir tu próximo anime favorito (o traumatizarte lo que queda
-            de día)</p>
+        <p class="instruction-text">Desliza para descubrir tu próximo anime favorito</p>
     </header>
 
     <section class="discover-section">
@@ -13,8 +12,15 @@
 
             <div class="card-stack-container">
 
-                @if (!anime) {
+                @if (isLoading) {
                 <app-loader message="Buscando tu próximo anime..."></app-loader>
+                }
+
+                @if (errorMessage) {
+                <div class="no-results-msg">
+                    <p>{{ errorMessage }}</p>
+                    <button class="kairo-btn-mythic" type="button" (click)="loadRandomAnime()">Reintentar</button>
+                </div>
                 }
 
                 @if (anime) {

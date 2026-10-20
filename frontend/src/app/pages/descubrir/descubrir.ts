@@ -16,12 +16,12 @@ export class Descubrir implements OnInit {
 
   endpoints = inject(Endpoints);
   authService = inject(AuthService);
-  anime!: Anime;
+  anime: Anime | null = null;
+  isLoading = true;
+  errorMessage = '';
 
   ngOnInit(): void {
-    this.endpoints.getRandomAnime().then((anime) => {
-      this.anime = anime;
-    });
+    void this.loadRandomAnime();
   }
 
   toastState: ToastState = {
@@ -33,19 +33,35 @@ export class Descubrir implements OnInit {
 
   toastTimeout: any;
 
-  changeAnime(action: string) {
+  async changeAnime(action: 'like' | 'reject') {
+    if (!this.anime || this.isLoading) return;
+
     if (action === 'like') {
-      this.showToast('like', 'Favoritos', 'Anime añadido a favoritos');
-      this.authService.addAnimeToFavorites(this.anime.mal_id).then(() => {
-        this.endpoints.getRandomAnime().then((anime) => {
-          this.anime = anime;
-        });
-      });
+      try {
+        await this.authService.addAnimeToFavorites(this.anime.mal_id);
+        this.showToast('like', 'Favoritos', 'Anime añadido a favoritos');
+        await this.loadRandomAnime();
+      } catch (error) {
+        console.error('Error añadiendo anime a favoritos:', error);
+        this.showToast('reject', 'Error', 'No se pudo añadir el anime a favoritos.');
+      }
     } else if (action === 'reject') {
       this.showToast('reject', 'Descartado', 'Anime descartado');
-      this.endpoints.getRandomAnime().then((anime) => {
-        this.anime = anime;
-      });
+      await this.loadRandomAnime();
+    }
+  }
+
+  async loadRandomAnime() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.anime = null;
+    try {
+      this.anime = await this.endpoints.getRandomAnime();
+    } catch (error) {
+      console.error('Error cargando anime aleatorio:', error);
+      this.errorMessage = 'No se pudo cargar un anime. Comprueba la conexión e inténtalo de nuevo.';
+    } finally {
+      this.isLoading = false;
     }
   }
 
