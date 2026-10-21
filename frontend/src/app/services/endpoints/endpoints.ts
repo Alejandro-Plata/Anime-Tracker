@@ -5,6 +5,7 @@ import type { Anime } from '../../types/anime';
 import type { AnimeDetail } from '../../types/animeDetail';
 import type { Episode } from '../../types/episode';
 import type { AnimePage } from '../../types/animePage';
+import type { ReviewPage } from '../../types/review';
 
 interface ApiPagination {
   hasNextPage?: boolean;
@@ -57,6 +58,19 @@ interface ApiEpisode {
   title: string;
   aired?: string | null;
   url: string;
+}
+
+interface ApiReview {
+  reviewId: number;
+  username: string;
+  imageUrl?: string | null;
+  date?: string | null;
+  tag?: string | null;
+  score?: number | null;
+  reviewText?: string | null;
+  isSpoiler?: boolean;
+  url?: string | null;
+  reactions?: { overall?: number | null } | null;
 }
 
 @Injectable({
@@ -135,6 +149,37 @@ export class Endpoints {
       title: episode.title,
       url: episode.url,
     }));
+  }
+
+  // La API devuelve las reseñas de 20 en 20; hasNextPage indica si hay otra página
+  async getReviewsById(id: string, page = 1): Promise<ReviewPage> {
+    const response = await this.request<ApiReview[]>(
+      `anime/${encodeURIComponent(id)}/reviews?page=${page}`
+    );
+    if (!Array.isArray(response.data)) {
+      throw new Error('La API de anime devolvió una lista de reseñas inesperada.');
+    }
+    return {
+      reviews: response.data.map((review) => ({
+        id: review.reviewId,
+        username: review.username,
+        avatarUrl: review.imageUrl || '',
+        date: review.date || '',
+        tag: review.tag || '',
+        score: review.score ?? 0,
+        text: this.decodeHtml(review.reviewText || ''),
+        isSpoiler: !!review.isSpoiler,
+        likes: review.reactions?.overall ?? 0,
+        url: review.url || '',
+      })),
+      hasNextPage: response.meta?.pagination?.hasNextPage ?? false,
+    };
+  }
+
+  // Los textos llegan con entidades HTML (&rsquo;, &amp;...). DOMParser las convierte a texto normal
+  // sin ejecutar nada, y luego se muestran con {{ }}, que ya escapa cualquier etiqueta.
+  private decodeHtml(text: string): string {
+    return new DOMParser().parseFromString(text, 'text/html').documentElement.textContent || '';
   }
 
   async getAnimeById(id: string): Promise<AnimeDetail> {

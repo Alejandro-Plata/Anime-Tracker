@@ -1,3 +1,29 @@
-node_modules
+# Dependencias
+node_modules/
+
+# Compilado
+dist/
+*.tsbuildinfo
+
+# Secretos y entorno
 .env
-dist
+.env.*
+!.env.example
+
+# Vercel
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# IDEs y editores
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Sistema
+.DS_Store
+Thumbs.db

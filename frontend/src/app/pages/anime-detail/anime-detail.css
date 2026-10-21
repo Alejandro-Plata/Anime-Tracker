@@ -1019,6 +1019,71 @@
     font-size: 0.9rem;
     line-height: 1.6;
     margin: 0;
+    /* Las reseñas traen saltos de línea propios: los respetamos */
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+img.reviewer-avatar {
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.review-header .reviewer-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.review-tag {
+    color: var(--kairo-gold);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-left: 8px;
+}
+
+.review-date {
+    color: rgba(242, 238, 226, 0.5);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.review-link {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 8px;
+    color: var(--kairo-gold);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.review-spoiler {
+    padding: 1rem;
+    border: 1px dashed rgba(140, 115, 75, 0.5);
+    text-align: center;
+    color: rgba(242, 238, 226, 0.7);
+    font-size: 0.9rem;
+}
+
+.review-spoiler p {
+    margin: 0 0 6px;
+}
+
+.review-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(140, 115, 75, 0.15);
+    color: rgba(242, 238, 226, 0.6);
+    font-size: 0.8rem;
+}
+
+.review-footer a {
+    color: var(--kairo-gold);
 }
 
 .hidden {

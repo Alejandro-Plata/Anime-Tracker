@@ -15,6 +15,6 @@ export class App {
 
   isAuthPage(): boolean {
     const url = this.router.url;
-    return url === '/' || url === '/login' || url === '/register';
+    return url === '/' || url === '/login' || url === '/forgot-password' || url === '/register';
   }
 }

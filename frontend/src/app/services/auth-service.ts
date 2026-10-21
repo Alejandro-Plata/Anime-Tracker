@@ -17,8 +17,7 @@ export class AuthService {
       body: JSON.stringify({ username, password }),
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al iniciar sesión');
+      throw new Error(await this.leerError(response, 'Error al iniciar sesión'));
     }
     const data = await response.json();
     if (data.token) {
@@ -46,8 +45,7 @@ export class AuthService {
       body: JSON.stringify(data),
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Error al registrar');
+      throw new Error(await this.leerError(response, 'Error al registrar'));
     }
     const responseData = await response.json();
     if (responseData.token) {
@@ -68,6 +66,42 @@ export class AuthService {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(user));
     return user;
   }
+  // Paso 1 de "olvidé mi contraseña": pide que se envíe un código al correo
+  async forgotPassword(email: string): Promise<void> {
+    const response = await fetch(`${this.API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo enviar el código'));
+    }
+  }
+
+  // Paso 2: comprueba el código y guarda la nueva contraseña
+  async resetPassword(email: string, code: string, password: string): Promise<void> {
+    const response = await fetch(`${this.API_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code, password }),
+    });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo cambiar la contraseña'));
+    }
+  }
+
+  // El backend responde { error }, { msg }, { message } o, si falla la validación, { errors: [{ msg }] }.
+  // Si el servidor devuelve otra cosa (una página HTML de error de Vercel, por ejemplo), response.json()
+  // lanzaría un SyntaxError y el usuario vería "JSON.parse: unexpected character". Aquí lo evitamos.
+  private async leerError(response: Response, porDefecto: string): Promise<string> {
+    try {
+      const data = await response.json();
+      return data.error || data.msg || data.message || data.errors?.[0]?.msg || `${porDefecto} (error ${response.status})`;
+    } catch {
+      return `${porDefecto} (error ${response.status})`;
+    }
+  }
+
   async logout(): Promise<void> {
     try {
       const token = localStorage.getItem(this.TOKEN_KEY);
@@ -159,8 +193,7 @@ export class AuthService {
       body: JSON.stringify({ animeId, state }),
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.msg || 'Error al añadir a favoritos');
+      throw new Error(await this.leerError(response, 'Error al añadir a favoritos'));
     }
     await this.refreshUser();
   }
@@ -174,8 +207,7 @@ export class AuthService {
       },
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.msg || 'Error al eliminar de favoritos');
+      throw new Error(await this.leerError(response, 'Error al eliminar de favoritos'));
     }
     await this.refreshUser();
   }
@@ -190,8 +222,7 @@ export class AuthService {
       body: JSON.stringify({ state }),
     });
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.msg);
+      throw new Error(await this.leerError(response, 'Error en la petición'));
     }
     await this.refreshUser();
   }
@@ -207,8 +238,7 @@ export class AuthService {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.msg || errorData.message || `Error ${response.status}`);
+      throw new Error(await this.leerError(response, `Error ${response.status}`));
     }
 
     await this.refreshUser();

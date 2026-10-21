@@ -202,38 +202,68 @@
 
                     @if (activeTab === 'reviews') {
                     <div class="reviews-list custom-scrollbar fade-in">
-                        <div class="review-card">
-                            <div class="review-header">
-                                <div class="reviewer-avatar">SP</div>
-                                <div class="reviewer-info">
-                                    <span class="reviewer-name">SuperPupPresent</span>
-                                    <span class="review-score">★ 9</span>
-                                </div>
-                            </div>
-                            <div class="review-body">
-                                <p>In short if you like and read the chainsaw man manga you will love this movie.
-                                    Although it can be very strange at times. I highly recommend to watch it in a
-                                    theater as well. The story / characters: This did not feel like a typical Shounen
-                                    story, there's a clear emphasis on character relations where the action takes the
-                                    backseat for some of the movie.</p>
-                            </div>
-                        </div>
+                        @if (isReviewsLoading && reviews.length === 0) {
+                        <p>Cargando reseñas...</p>
+                        } @else if (reviewsError && reviews.length === 0) {
+                        <p>{{ reviewsError }}</p>
+                        <button type="button" class="kairo-btn-mythic" (click)="loadReviews()">Reintentar reseñas</button>
+                        } @else if (reviewsLoaded && reviews.length === 0) {
+                        <p>Este anime todavía no tiene reseñas.</p>
+                        }
 
+                        @for (review of reviews; track review.id) {
                         <div class="review-card">
                             <div class="review-header">
-                                <div class="reviewer-avatar">M</div>
+                                @if (review.avatarUrl) {
+                                <img class="reviewer-avatar" [src]="review.avatarUrl" [alt]="review.username"
+                                    loading="lazy" referrerpolicy="no-referrer" (error)="onAvatarError(review)">
+                                } @else {
+                                <div class="reviewer-avatar">{{ initial(review.username) }}</div>
+                                }
                                 <div class="reviewer-info">
-                                    <span class="reviewer-name">Melvin_15</span>
-                                    <span class="review-score">★ 5</span>
+                                    <span class="reviewer-name">{{ review.username }}</span>
+                                    <span class="review-score">
+                                        @if (review.score) { ★ {{ review.score }} }
+                                        @if (review.tag) { <span class="review-tag">{{ tagLabel(review.tag) }}</span> }
+                                    </span>
                                 </div>
+                                <span class="review-date">{{ review.date }}</span>
                             </div>
+
+                            @if (review.isSpoiler && !revealedSpoilers.has(review.id)) {
+                            <div class="review-spoiler">
+                                <p>Esta reseña contiene spoilers.</p>
+                                <button type="button" class="review-link" (click)="revealSpoiler(review.id)">Mostrar de todos modos</button>
+                            </div>
+                            } @else {
                             <div class="review-body">
-                                <p>Writing this review to compile my thoughts on why I felt surprisingly disappointed
-                                    after leaving the theatre. I had left the cinema feeling very underwhelmed and
-                                    surprisingly so - as I was expecting to at the very least, enjoy the action scenes.
-                                </p>
+                                <p>{{ visibleText(review) }}</p>
+                                @if (isLong(review)) {
+                                <button type="button" class="review-link" (click)="toggleReview(review.id)">
+                                    {{ expandedReviews.has(review.id) ? 'Mostrar menos' : 'Leer más' }}
+                                </button>
+                                }
+                            </div>
+                            }
+
+                            <div class="review-footer">
+                                <span title="Reacciones en MyAnimeList">♥ {{ review.likes }}</span>
+                                @if (review.url) {
+                                <a [href]="review.url" target="_blank" rel="noopener noreferrer">Ver en MyAnimeList</a>
+                                }
                             </div>
                         </div>
+                        }
+
+                        @if (reviews.length > 0) {
+                        @if (reviewsError) { <p>{{ reviewsError }}</p> }
+                        @if (reviewsHasNext) {
+                        <button type="button" class="kairo-btn-mythic" [disabled]="isReviewsLoading"
+                            (click)="loadReviews()">
+                            {{ isReviewsLoading ? 'Cargando...' : 'Cargar más reseñas' }}
+                        </button>
+                        }
+                        }
                     </div>
                     }
 

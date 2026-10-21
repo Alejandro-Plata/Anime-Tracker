@@ -9,6 +9,7 @@ import { Loader } from '../../components/loader/loader';
 import { ToastState } from '../../types/toastState';
 import { ToastType } from '../../types/toastType';
 import { ClickOutside } from '../../directives/click-outside';
+import { Review } from '../../types/review';
 
 @Component({
   selector: 'app-anime-detail',
@@ -35,6 +36,23 @@ export class AnimeDetailPage {
   isScoreSelectOpen: boolean = false;
 
   activeTab: 'episodes' | 'reviews' = 'episodes';
+
+  reviews: Review[] = [];
+  reviewsPage = 0;
+  reviewsHasNext = false;
+  isReviewsLoading = false;
+  reviewsError = '';
+  reviewsLoaded = false;
+  // Reseñas desplegadas (las largas se muestran recortadas) y spoilers ya descubiertos, por id
+  expandedReviews = new Set<number>();
+  revealedSpoilers = new Set<number>();
+  readonly REVIEW_PREVIEW_CHARS = 450;
+
+  private readonly TAGS: Record<string, string> = {
+    'Recommended': 'Recomendado',
+    'Mixed Feelings': 'Opiniones mixtas',
+    'Not Recommended': 'No recomendado',
+  };
   toastState: ToastState = {
     show: false,
     type: 'like',
@@ -160,6 +178,61 @@ export class AnimeDetailPage {
 
   setActiveTab(tab: 'episodes' | 'reviews') {
     this.activeTab = tab;
+    // Las reseñas se piden la primera vez que se abre la pestaña, no al cargar la página
+    if (tab === 'reviews' && !this.reviewsLoaded && !this.isReviewsLoading) {
+      void this.loadReviews();
+    }
+  }
+
+  async loadReviews() {
+    if (!this.animeDetail) return;
+    this.isReviewsLoading = true;
+    this.reviewsError = '';
+    try {
+      const page = await this.endpoints.getReviewsById(String(this.animeDetail.mal_id), this.reviewsPage + 1);
+      this.reviews = [...this.reviews, ...page.reviews];
+      this.reviewsPage += 1;
+      this.reviewsHasNext = page.hasNextPage;
+      this.reviewsLoaded = true;
+    } catch (error) {
+      console.error(`Error cargando reseñas del anime ${this.animeDetail.mal_id}:`, error);
+      const detail = error instanceof Error ? error.message : 'Error desconocido.';
+      this.reviewsError = `No se pudieron cargar las reseñas. ${detail}`;
+    } finally {
+      this.isReviewsLoading = false;
+    }
+  }
+
+  tagLabel(tag: string): string {
+    return this.TAGS[tag] || tag;
+  }
+
+  initial(username: string): string {
+    return (username || '?').charAt(0).toUpperCase();
+  }
+
+  isLong(review: Review): boolean {
+    return review.text.length > this.REVIEW_PREVIEW_CHARS;
+  }
+
+  // Texto que se ve ahora: recortado si es largo y no se ha desplegado
+  visibleText(review: Review): string {
+    if (!this.isLong(review) || this.expandedReviews.has(review.id)) return review.text;
+    return review.text.slice(0, this.REVIEW_PREVIEW_CHARS).trimEnd() + '…';
+  }
+
+  toggleReview(id: number) {
+    if (this.expandedReviews.has(id)) this.expandedReviews.delete(id);
+    else this.expandedReviews.add(id);
+  }
+
+  revealSpoiler(id: number) {
+    this.revealedSpoilers.add(id);
+  }
+
+  // Si el avatar no carga, mostramos la inicial en su lugar
+  onAvatarError(review: Review) {
+    review.avatarUrl = '';
   }
 
 
