@@ -25,7 +25,10 @@ Aplicación web para **buscar anime y llevar el seguimiento personal**: cada usu
 
 Puedes crear una cuenta con cualquier usuario y contraseña para probarla. La primera petición tras un rato sin uso puede tardar unos segundos por el arranque en frío de la función serverless.
 
+![Portada de Kairo: el nombre a todo ancho con un póster real en la I](docs/landing.jpg)
+
 ## Funcionalidades
+- Landing pública con una demostración en vivo: busca una serie, elige estado y nota y mira cómo quedaría en tu lista
 - Registro, inicio de sesión (JWT) y recuperación de contraseña con código por e-mail
 - Buscador avanzado y sección de descubrimiento
 - Detalle de cada anime con reseñas
