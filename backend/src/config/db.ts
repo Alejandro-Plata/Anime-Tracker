@@ -12,6 +12,14 @@ if (!databaseUrl) {
     );
 }
 
+// Sequelize rompe con un error críptico si la URL no empieza por el protocolo (p. ej. si se pegó
+// "DATABASE_URL=postgresql://..." entero o con comillas como valor): mejor avisar con claridad
+if (!/^postgres(ql)?:\/\//.test(databaseUrl)) {
+    throw new Error(
+        'DATABASE_URL no es válida: debe empezar por postgresql:// (sin comillas ni el prefijo "DATABASE_URL=").'
+    );
+}
+
 // Bases de datos en la nube (Neon, Supabase...) exigen SSL: se activa si la URL trae ?sslmode=require.
 // Una base en localhost (Docker) no lo soporta, así que ahí se desactiva. Con cualquier otra URL
 // se mantiene la configuración que ya funcionaba en producción.
