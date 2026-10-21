@@ -17,6 +17,14 @@ Aplicación web para **buscar anime y llevar el seguimiento personal**: cada usu
                                └─────────────┘
 ```
 
+## Demo en vivo
+| | URL |
+|---|---|
+| Aplicación web | https://anime-watchtracker.vercel.app |
+| API | https://anime-tracker-opal.vercel.app |
+
+Puedes crear una cuenta con cualquier usuario y contraseña para probarla. La primera petición tras un rato sin uso puede tardar unos segundos por el arranque en frío de la función serverless.
+
 ## Funcionalidades
 - Registro, inicio de sesión (JWT) y recuperación de contraseña con código por e-mail
 - Buscador avanzado y sección de descubrimiento
