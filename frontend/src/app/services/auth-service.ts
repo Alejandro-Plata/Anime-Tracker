@@ -5,9 +5,11 @@ import { Favorite } from '../types/user';
   providedIn: 'root',
 })
 
-// API_URL real: ''
 export class AuthService {
-  API_URL = 'https://backend-anime-zeta.vercel.app/api';
+  // En local usamos el backend en :3000; en cualquier otro dominio (Vercel) el backend desplegado.
+  API_URL = ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://localhost:3000/api'
+    : 'https://backend-anime-zeta.vercel.app/api';
   STORAGE_KEY = 'user';
   TOKEN_KEY = 'auth_token';
   async login(username: string, password: string): Promise<User> {

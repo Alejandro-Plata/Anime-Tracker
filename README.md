@@ -1,8 +1,63 @@
-# Problemas con Vercel
+# AnimeWatch Tracker
 
-Buenas Justo, he hecho el proyecto usando base de datos para guardar favoritos y puntuación,
-y me he quedado sin deployments para Vercel (Resource is limited - try again in 15 hours (more than 100, code: "api-deployments-free-per-day")).
-En 15 horas puedo subir los cambios que he hecho (que se que sería demasiado tarde). Tanto el backend como el frontend están en github. La url a la que accede el backend en la autenticación es la de localhost:3000.
-En un comentario en la parte superior de authService está puesta la URL del backend desplegado, por si lo hubiera solucionado para cuando veas la tarea.
+Aplicación web para **buscar anime y llevar el seguimiento personal**: cada usuario guarda sus favoritos, les asigna un estado y una puntuación, y consulta los detalles y reseñas de cada título. Los datos de los animes vienen de la [API Jikan](https://jikan.moe/) (MyAnimeList); la lista personal se guarda en PostgreSQL.
 
-Disculpa las molestias.
+| Carpeta | Qué es | Tecnologías |
+|---|---|---|
+| [`frontend`](./frontend) | Cliente web | Angular 20, TypeScript |
+| [`backend`](./backend) | API REST | Node.js, Express 5, TypeScript, Sequelize, PostgreSQL, JWT, bcrypt, express-validator, rate limiting |
+
+```
+┌──────────────┐  Jikan API (catálogo de anime)
+│   frontend   │ ──────────────────────────────►
+│ Angular :4200│
+│              │  HTTP + JWT   ┌─────────────┐  Sequelize  ┌────────────┐
+│              │ ────────────► │   backend   │ ──────────► │ PostgreSQL │
+└──────────────┘               │ Express:3000│             └────────────┘
+                               └─────────────┘
+```
+
+## Funcionalidades
+- Registro, inicio de sesión (JWT) y recuperación de contraseña con código por e-mail
+- Buscador avanzado y sección de descubrimiento
+- Detalle de cada anime con reseñas
+- Mi lista: favoritos con estado de visionado y puntuación propia
+
+## Arranque en local
+Necesitas Node.js 20+ y una base de datos PostgreSQL.
+
+```bash
+# Backend (http://localhost:3000)
+cd backend
+cp .env.example .env      # rellena DATABASE_URL y JWT_SECRET
+npm install
+npm run dev
+
+# Frontend (http://localhost:4200), en otra terminal
+cd frontend
+npm install
+npm start
+```
+
+El frontend usa `http://localhost:3000/api` cuando se abre desde `localhost` y el backend desplegado en cualquier otro dominio (`API_URL` en `frontend/src/app/services/auth-service.ts`). Las tablas se crean solas al arrancar el backend (`sequelize.sync`).
+
+### Variables de entorno del backend
+| Variable | Para qué |
+|---|---|
+| `DATABASE_URL` | Conexión a PostgreSQL (con `?sslmode=require` en Neon, Supabase…) |
+| `JWT_SECRET` | Firma de tokens |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | Envío del código de "olvidé mi contraseña". Sin ellas, en local el código se muestra por consola |
+
+## Endpoints principales
+| Método | Ruta | Acceso |
+|---|---|---|
+| POST | `/api/auth/register`, `/api/auth/login`, `/api/auth/logout` | público |
+| POST | `/api/auth/forgot-password`, `/api/auth/reset-password` | público |
+| GET | `/api/auth/user` | autenticado |
+| GET / POST | `/api/user/favorites` | autenticado |
+| GET / DELETE | `/api/user/favorites/:animeId` | autenticado |
+| PATCH | `/api/user/favorites/:animeId/state`, `/score` | autenticado |
+| GET | `/api/user/favorite/check/:animeId` | autenticado |
+
+## Despliegue
+Ambas partes se publican en Vercel como proyectos separados: el backend (carpeta `backend`) como función serverless y el frontend (carpeta `frontend`, con su `vercel.json`) como sitio estático. La base de datos está en Neon.
