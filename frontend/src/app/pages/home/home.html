@@ -1,0 +1,223 @@
+<div class="home">
+
+  <!-- ================= PORTADA ================= -->
+  <header class="hero">
+    <div class="top">
+      <a class="mark" routerLink="/" aria-label="Kairo, inicio">Kairo</a>
+      <nav class="links" aria-label="Principal">
+        <a href="#probar">Probar</a>
+        <a href="#como">Cómo funciona</a>
+        @if (authService.isLoggedIn()) {
+        <a routerLink="/dashboard">Mi lista</a>
+        } @else {
+        <a routerLink="/login">Entrar</a>
+        }
+      </nav>
+    </div>
+
+    <div class="intro">
+      <p class="lede">Tu lista de anime, con estado, nota y reseñas, sobre el catálogo de MyAnimeList.</p>
+      @if (authService.isLoggedIn()) {
+      <a class="btn" routerLink="/dashboard">Ir a mi lista</a>
+      } @else {
+      <a class="btn" routerLink="/register">Crear mi lista</a>
+      }
+    </div>
+
+    <h1 class="monument" aria-label="Kairo, tu lista de anime">
+      <span class="word" aria-hidden="true">KA<span class="eye">
+            @for (p of posters; track p.title; let i = $index) {
+            <img [src]="p.image_url" alt="" width="225" height="318" [class.on]="i === indice()"
+              [attr.fetchpriority]="i === 0 ? 'high' : null">
+            }
+          </span>RO</span>
+    </h1>
+  </header>
+
+  <main>
+
+    <!-- ================= LO QUE HACE ================= -->
+    <section class="features" aria-labelledby="t-hace">
+      <h2 id="t-hace" data-reveal>Lo que haces con cada anime</h2>
+
+      <article class="module" data-reveal>
+        <div class="panel" data-ui>
+          <div class="ui-search">Frieren</div>
+          <ul class="ui-rows">
+            <li><span>Sousou no Frieren</span><b>9.24</b></li>
+            <li><span>Sousou no Frieren: Mini Anime</span><b>6.71</b></li>
+            <li><span>Frieren Special</span><b>7.40</b></li>
+          </ul>
+        </div>
+        <div class="text">
+          <h3>Busca en el catálogo</h3>
+          <p>Escribe un título y encuentra la serie entre todo el catálogo de MyAnimeList, con su nota y sus géneros.</p>
+          <p>También tienes un buscador avanzado y una sección para descubrir qué se emite esta temporada.</p>
+        </div>
+      </article>
+
+      <article class="module" data-reveal>
+        <div class="panel" data-ui>
+          <div class="ui-chips">
+            <span class="on">Viendo</span><span>Finalizado</span><span>Pendiente</span><span>Abandonado</span>
+          </div>
+          <p class="ui-note">Tu lista · 4 estados</p>
+        </div>
+        <div class="text">
+          <h3>Dile en qué punto estás</h3>
+          <p>Cada favorito tiene su estado: viendo, finalizado, pendiente o abandonado.</p>
+          <p>En Mi lista filtras por estado y ves cuántos tienes en cada uno.</p>
+        </div>
+      </article>
+
+      <article class="module" data-reveal>
+        <div class="panel" data-ui>
+          <div class="ui-scale">
+            @for (n of notas; track n) {
+            <span [class.on]="n === 9">{{ n }}</span>
+            }
+          </div>
+          <p class="ui-note">Tu nota: 9</p>
+        </div>
+        <div class="text">
+          <h3>Ponle tu nota</h3>
+          <p>Puntúa del 1 al 10 y compara tu nota con la media de MyAnimeList en la ficha.</p>
+          <p>Las reseñas de la comunidad aparecen en la misma pantalla de detalle.</p>
+        </div>
+      </article>
+
+      <article class="module" data-reveal>
+        <div class="panel" data-ui>
+          <div class="ui-code"><span>4</span><span>7</span><span>2</span><span></span><span></span><span></span></div>
+          <p class="ui-note">Código enviado a tu correo</p>
+        </div>
+        <div class="text">
+          <h3>Tu cuenta es tuya</h3>
+          <p>Registro con usuario y correo, sesión con token y recuperación de contraseña con un código por e-mail.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- ================= PRUÉBALO (EN VIVO) ================= -->
+    <section class="try" id="probar" aria-labelledby="t-probar">
+      <div class="plate">
+        <img [src]="seleccionado().image_url" [alt]="'Póster de ' + seleccionado().title">
+      </div>
+
+      <div class="side">
+        <div class="top-block">
+          <h2 id="t-probar">Pruébalo con tu anime</h2>
+          <label class="field" for="q">Busca una serie</label>
+          <input id="q" type="search" autocomplete="off" placeholder="Frieren, Steins;Gate, Bleach…"
+            [value]="query()" (input)="onBuscar($event)">
+
+          @if (buscando()) {
+          <p class="msg">Buscando…</p>
+          } @else if (errorBusqueda()) {
+          <p class="msg">{{ errorBusqueda() }}</p>
+          }
+          @if (resultados().length > 0) {
+          <ul class="hits">
+            @for (r of resultados(); track r.title) {
+            <li><button type="button" (click)="elegir(r)">
+                <img [src]="r.image_url" alt="" width="40" height="56" loading="lazy">
+                <span>{{ r.title }}</span>
+                <b>{{ r.score || '–' }}</b>
+              </button></li>
+            }
+          </ul>
+          }
+
+          <div class="tabs" role="group" aria-label="Estado">
+            @for (e of estados; track e.id) {
+            <button type="button" [class.on]="estado() === e.id" [attr.aria-pressed]="estado() === e.id"
+              (click)="estado.set(e.id)">{{ e.label }}</button>
+            }
+          </div>
+        </div>
+
+        <div class="detail">
+          <h3>{{ seleccionado().title }}</h3>
+          <p>{{ seleccionado().genres ? seleccionado().genres + '. ' : '' }}Media en MyAnimeList: {{ seleccionado().score || '–' }}.</p>
+          <div class="scale" role="group" aria-label="Tu nota">
+            @for (n of notas; track n) {
+            <button type="button" [class.on]="nota() === n" [attr.aria-pressed]="nota() === n"
+              (click)="nota.set(n)">{{ n }}</button>
+            }
+          </div>
+        </div>
+
+        <div class="cells">
+          <a class="cell ink" routerLink="/register">Guardar en mi lista ({{ etiqueta() }}, {{ nota() }})</a>
+          <a class="cell tone" routerLink="/login">Ya tengo cuenta</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CÓMO FUNCIONA ================= -->
+    <section class="how" id="como" aria-labelledby="t-como">
+      <div class="column">
+        <h2 id="t-como" data-reveal>Cómo se usa, de principio a fin</h2>
+
+        <p data-reveal><b>Para empezar,</b> crea una cuenta con un usuario, un correo y una contraseña. Es lo único que se pide.</p>
+
+        <p data-reveal><b>En un minuto,</b> busca una serie por su título o explora lo que se emite esta temporada y ábrela para ver su ficha completa.</p>
+        <div class="strip" data-reveal aria-hidden="true">
+          @for (p of posters.slice(0, 3); track p.title) {
+          <img [src]="p.image_url" alt="" loading="lazy" width="164" height="232">
+          }
+        </div>
+
+        <p data-reveal><b>Después,</b> márcala como viendo, finalizada, pendiente o abandonada, y ponle tu nota del 1 al 10.</p>
+
+        <p data-reveal><b>Desde entonces,</b> tu lista te espera en Mi lista, ordenada por estado, con tus notas y las reseñas de cada serie a un clic.</p>
+        <div class="strip" data-reveal aria-hidden="true">
+          @for (p of posters.slice(3, 6); track p.title) {
+          <img [src]="p.image_url" alt="" loading="lazy" width="164" height="232">
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LLAMADA ================= -->
+    <section class="go" aria-label="Empezar">
+      <a class="band" [routerLink]="authService.isLoggedIn() ? '/dashboard' : '/register'">
+        <span class="sentence">{{ authService.isLoggedIn() ? 'Vuelve a tu lista.' : 'Crea tu cuenta y arma tu lista en un minuto.' }}</span>
+        <svg class="arrow" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true">
+          <path d="M12 36 36 12M16 12h20v20" fill="none" stroke="currentColor" stroke-width="5" />
+        </svg>
+        <span class="verb" aria-hidden="true">{{ authService.isLoggedIn() ? 'ENTRAR' : 'EMPEZAR' }}</span>
+      </a>
+    </section>
+  </main>
+
+  <!-- ================= PIE ================= -->
+  <footer class="foot">
+    <p class="mark-big" aria-hidden="true">KAIRO</p>
+    <div class="cols">
+      <ul class="places">
+        <li><a href="https://github.com/Alejandro-Plata/Anime-Tracker" target="_blank" rel="noopener">Código en GitHub</a></li>
+        <li><a href="https://github.com/Alejandro-Plata" target="_blank" rel="noopener">Más proyectos</a></li>
+        <li><a routerLink="/login">Entrar</a></li>
+      </ul>
+      <div class="small">
+        <ul>
+          <li><a routerLink="/register">Crear cuenta</a></li>
+          <li><a routerLink="/forgot-password">Recuperar contraseña</a></li>
+        </ul>
+        <ul>
+          <li><a href="#probar">Probar</a></li>
+          <li><a href="#como">Cómo funciona</a></li>
+        </ul>
+        <ul>
+          <li><a href="https://anime-tracker-opal.vercel.app" target="_blank" rel="noopener">API</a></li>
+          <li><a href="https://myanimelist.net" target="_blank" rel="noopener">MyAnimeList</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <p>Proyecto de portfolio de Alejandro Plata Cortés. Series, pósters y notas: MyAnimeList, a través de la API Jikan.</p>
+      <a href="#" (click)="$event.preventDefault(); scrollTop()">Volver arriba</a>
+    </div>
+  </footer>
+</div>

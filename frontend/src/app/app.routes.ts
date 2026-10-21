@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { Home } from './pages/home/home';
 import { LandingPage } from './pages/landing-page/landing-page';
 import { Descubrir } from './pages/descubrir/descubrir';
 import { BuscadorAvanzado } from './pages/buscador-avanzado/buscador-avanzado';
@@ -10,7 +11,7 @@ import { ForgotPassword } from './pages/forgot-password/forgot-password';
 import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
-    { path: '', component: Register },
+    { path: '', component: Home },
     { path: 'register', component: Register },
     { path: 'login', component: Login },
     { path: 'forgot-password', component: ForgotPassword },
