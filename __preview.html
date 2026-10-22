@@ -1,0 +1,216 @@
+<style>body{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:900px;margin:20px auto;color:#1f2328;font-size:16px;line-height:1.5} table{border-collapse:collapse} td,th{border:1px solid #d0d7de;padding:6px 13px} img{max-width:100%} pre{background:#f6f8fa;padding:12px;overflow:auto} code{background:#eff1f3;padding:2px 4px;border-radius:4px} blockquote{border-left:4px solid #d0d7de;margin:0;padding:0 1em;color:#59636e}</style><h1 align="center">Kairo · AnimeWatch Tracker</h1>
+
+<p align="center">
+  <b>Busca anime, llévalo al día y puntúalo.</b><br>
+  Aplicación web full-stack para el seguimiento personal de anime sobre el catálogo de MyAnimeList.
+</p>
+
+<p align="center">
+  <a href="https://anime-watchtracker.vercel.app"><b>🌐 Demo</b></a> ·
+  <a href="https://anime-tracker-opal.vercel.app"><b>⚙️ API</b></a> ·
+  <a href="#-capturas">Capturas</a> ·
+  <a href="#-arranque-en-local">Arranque en local</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Angular%2020-DD0031?style=for-the-badge&logo=angular&logoColor=white" alt="Angular 20">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Node.js-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
+  <img src="https://img.shields.io/badge/Express%205-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express 5">
+  <img src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white" alt="Sequelize">
+  <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT">
+  <img src="https://img.shields.io/badge/Jikan%20%C2%B7%20MyAnimeList-2E51A2?style=for-the-badge&logo=myanimelist&logoColor=white" alt="Jikan · MyAnimeList">
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel">
+  <img src="https://img.shields.io/badge/Neon-00A67E?style=for-the-badge" alt="Neon">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/landing.jpg" alt="Landing de Kairo" width="92%">
+</p>
+
+<blockquote>
+<p>La demo corre en el plan gratuito de Vercel: la primera petición tras un rato sin uso puede tardar unos segundos. Puedes crear una cuenta con cualquier usuario y contraseña.</p>
+</blockquote>
+<h2>✨ Qué hace</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🏠 <strong>Landing pública</strong></td>
+<td>Réplica de «Mi lista» con datos reales de la API y la temporada en emisión, con registro e inicio de sesión a un clic</td>
+</tr>
+<tr>
+<td>🔐 <strong>Cuenta segura</strong></td>
+<td>Registro, inicio de sesión con <strong>JWT</strong> y recuperación de contraseña con un código de 6 dígitos por e-mail (guardado con hash, caduca a los 15 min y con límite de intentos)</td>
+</tr>
+<tr>
+<td>🔎 <strong>Buscar y descubrir</strong></td>
+<td>Buscador simple y avanzado (formato, estado, fechas, puntuación), top de temporada, recomendaciones y <strong>Descubrir</strong> con tarjetas que se deslizan: derecha te interesa, izquierda no</td>
+</tr>
+<tr>
+<td>📺 <strong>Ficha completa</strong></td>
+<td>Sinopsis, géneros, estudios, episodios y reseñas de la comunidad</td>
+</tr>
+<tr>
+<td>📚 <strong>Mi lista</strong></td>
+<td>Cada serie con su estado (<em>viendo, finalizado, pendiente, abandonado</em>) y tu nota; filtros con contadores</td>
+</tr>
+<tr>
+<td>👤 <strong>Perfil</strong></td>
+<td>Ver y editar usuario y correo, cambiar contraseña y eliminar la cuenta. Tu imagen de perfil es el póster de tu anime mejor puntuado</td>
+</tr>
+<tr>
+<td>🛡️ <strong>Contenido apto</strong></td>
+<td>Se filtran las series +18 en listas, buscadores y descubrimiento</td>
+</tr>
+</tbody>
+</table>
+<h2>📸 Capturas</h2>
+<table>
+<tr><td align="center"><img src="docs/screenshots/mi-lista.jpg" alt="Mi lista" width="440"><br><sub><b>Mi lista</b></sub></td><td align="center"><img src="docs/screenshots/descubrir.jpg" alt="Descubrir (deslizar tarjetas)" width="440"><br><sub><b>Descubrir (deslizar tarjetas)</b></sub></td></tr>
+<tr><td align="center"><img src="docs/screenshots/detalle.jpg" alt="Ficha del anime" width="440"><br><sub><b>Ficha del anime</b></sub></td><td align="center"><img src="docs/screenshots/perfil.jpg" alt="Perfil" width="440"><br><sub><b>Perfil</b></sub></td></tr>
+</table>
+
+<h2>🏗️ Arquitectura</h2>
+<pre><code>┌──────────────┐  Jikan API (catálogo de anime)
+│   frontend   │ ───────────────────────────────►
+│ Angular :4200│
+│              │  HTTP + JWT   ┌─────────────┐  Sequelize  ┌────────────┐
+│              │ ────────────► │   backend   │ ──────────► │ PostgreSQL │
+└──────────────┘               │ Express:3000│             └────────────┘
+                               └─────────────┘
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Tecnologías</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cliente</td>
+<td>Angular 20 (componentes <em>standalone</em>, carga diferida de rutas), TypeScript, CSS propio</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Node.js, Express 5, TypeScript, Sequelize, JWT, bcrypt, express-validator, rate limiting</td>
+</tr>
+<tr>
+<td>Datos</td>
+<td>PostgreSQL (Neon) para usuarios y favoritos · API Jikan para el catálogo</td>
+</tr>
+<tr>
+<td>Despliegue</td>
+<td>Vercel (cliente estático y API como función <em>serverless</em>)</td>
+</tr>
+</tbody>
+</table>
+<h2>🚀 Arranque en local</h2>
+<p>Necesitas Node.js 20+ y una base de datos PostgreSQL.</p>
+<pre><code class="language-bash"># Backend (http://localhost:3000)
+cd backend
+cp .env.example .env      # rellena DATABASE_URL y JWT_SECRET
+npm install
+npm run dev
+
+# Frontend (http://localhost:4200), en otra terminal
+cd frontend
+npm install
+npm start
+</code></pre>
+<p>El frontend usa <code>http://localhost:3000/api</code> cuando se abre desde <code>localhost</code> y el backend desplegado en cualquier otro dominio (<code>API_URL</code> en <code>frontend/src/app/services/auth-service.ts</code>). Las tablas se crean solas al arrancar el backend (<code>sequelize.sync</code>).</p>
+<h3>Variables de entorno del backend</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATABASE_URL</code></td>
+<td>Conexión a PostgreSQL (con <code>?sslmode=require</code> en Neon, Supabase…)</td>
+</tr>
+<tr>
+<td><code>JWT_SECRET</code></td>
+<td>Firma de tokens</td>
+</tr>
+<tr>
+<td><code>SMTP_HOST</code>, <code>SMTP_PORT</code>, <code>SMTP_USER</code>, <code>SMTP_PASS</code>, <code>MAIL_FROM</code></td>
+<td>Envío del código de «olvidé mi contraseña». Sin ellas, en local el código se muestra por consola</td>
+</tr>
+</tbody>
+</table>
+<h2>🔌 Endpoints principales</h2>
+<table>
+<thead>
+<tr>
+<th>Método</th>
+<th>Ruta</th>
+<th>Acceso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/register</code>, <code>/api/auth/login</code>, <code>/api/auth/logout</code></td>
+<td>público</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/forgot-password</code>, <code>/api/auth/reset-password</code></td>
+<td>público</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/auth/user</code></td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>GET · PATCH · DELETE</td>
+<td><code>/api/user/profile</code> (ver, editar, eliminar cuenta)</td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/user/password</code></td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>GET · POST</td>
+<td><code>/api/user/favorites</code></td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>GET · DELETE</td>
+<td><code>/api/user/favorites/:animeId</code></td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/api/user/favorites/:animeId/state</code> · <code>/score</code></td>
+<td>autenticado</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/user/favorite/check/:animeId</code></td>
+<td>autenticado</td>
+</tr>
+</tbody>
+</table>
+<h2>📁 Estructura</h2>
+<pre><code>animewatch-tracker/
+├── frontend/   # Angular 20: páginas (landing, inicio, buscador, descubrir, mi lista, perfil, ficha), componentes y servicios
+├── backend/    # Express 5: rutas, controladores, modelos Sequelize, middleware y utilidades (JWT, correo)
+└── docs/       # Capturas de pantalla
+</code></pre>
+<hr />
+<p align="center">Proyecto personal de <a href="https://github.com/Alejandro-Plata">Alejandro Plata Cortés</a> · Datos de series y pósters: MyAnimeList, a través de la API Jikan.</p>
