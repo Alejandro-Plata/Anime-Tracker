@@ -1,304 +1,236 @@
-<main class="kairo-main detail-layout">
-    <div class="bg-overlay"></div>
-    <div class="noise-overlay"></div>
+<main class="page detail">
 
     @if (isLoading) {
     <app-loader message="Cargando detalles del anime..."></app-loader>
     } @else if (errorMessage) {
-    <div class="no-results-msg">
+    <div class="state-msg">
         <p>{{ errorMessage }}</p>
-        <button class="kairo-btn-mythic" type="button" (click)="loadAnimeDetail()">Reintentar</button>
+        <button class="pill pill-line" type="button" (click)="loadAnimeDetail()">Reintentar</button>
     </div>
     } @else if (animeDetail) {
-    <div class="content-container">
+    <div class="layout">
 
-        <aside class="anime-sidebar">
-
-            <div class="poster-frame-outer">
-                <div class="poster-frame-inner">
-                    <img [src]="animeDetail.large_image_url" [alt]="animeDetail.title">
-                    <div class="status-badge">{{ animeDetail.status }}</div>
-                </div>
+        <aside class="side">
+            <div class="poster">
+                <img [src]="animeDetail.large_image_url" [alt]="'Póster de ' + animeDetail.title" width="425" height="600">
+                @if (animeDetail.status) {
+                <span class="status">{{ animeDetail.status }}</span>
+                }
             </div>
 
-            <div class="score-comparison-box ornate-border">
-
-                <div class="score-col global">
-                    <span class="score-label">Global</span>
-                    <div class="score-value">{{ animeDetail.score }}</div>
-                    <span class="score-rank">#{{ animeDetail.rank }}</span>
+            <div class="scores">
+                <div class="score-col">
+                    <span class="micro">Global</span>
+                    <strong>{{ animeDetail.score }}</strong>
+                    <span class="rank">#{{ animeDetail.rank }}</span>
                 </div>
 
-                <div class="score-divider"></div>
-
-                @if(isFavorite) {
+                @if (isFavorite) {
                 <div class="score-col user" (clickOutside)="closeScoreSelect()">
-                    <span class="score-label">Tu Nota</span>
-
-                    <div class="user-score-trigger" (click)="toggleScoreSelect()" [class.has-score]="userScore > 0">
-                        <span class="value">{{ userScore > 0 ? userScore : '-' }}</span>
-                        <span class="edit-icon">✎</span>
-                    </div>
+                    <span class="micro">Tu nota</span>
+                    <button type="button" class="user-score" (click)="toggleScoreSelect()"
+                        [attr.aria-expanded]="isScoreSelectOpen" aria-label="Cambiar tu nota">
+                        <strong>{{ userScore > 0 ? userScore : '–' }}</strong>
+                        <span aria-hidden="true">✎</span>
+                    </button>
 
                     @if (userScore > 0 && animeDetail.score) {
-                    <div class="diff-badge" [class.positive]="userScore >= animeDetail.score"
+                    <span class="diff" [class.positive]="userScore >= animeDetail.score"
                         [class.negative]="userScore < animeDetail.score">
-                        {{ (userScore - animeDetail.score) > 0 ? '+' : '' }}{{ (userScore -
-                        animeDetail.score).toFixed(2) }}
-                    </div>
+                        {{ (userScore - animeDetail.score) > 0 ? '+' : '' }}{{ (userScore - animeDetail.score).toFixed(2) }}
+                    </span>
                     }
 
                     @if (isScoreSelectOpen) {
-                    <div class="score-dropdown custom-scrollbar">
-                        <div class="score-option remove" (click)="setUserScore(0)">Sin nota</div>
+                    <div class="dropdown scores-menu" role="listbox">
+                        <button type="button" role="option" (click)="setUserScore(0)">Sin nota</button>
                         @for (num of [10,9,8,7,6,5,4,3,2,1]; track num) {
-                        <div class="score-option" [class.selected]="userScore === num" (click)="setUserScore(num)">
-                            <span class="star">★</span> {{ num }}
-                        </div>
+                        <button type="button" role="option" [class.selected]="userScore === num"
+                            (click)="setUserScore(num)">★ {{ num }}</button>
                         }
                     </div>
                     }
                 </div>
                 }
             </div>
-            <div class="user-actions-box">
-                <div class="actions-group">
-                    <button class="btn-fav-action" [class.is-fav]="isFavorite" (click)="toggleFavorite()">
-                        <svg class="heart-icon" viewBox="0 0 24 24">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                        <span class="btn-text">
-                            {{ isFavorite ? 'En Favoritos' : 'Favoritos' }}
-                        </span>
+
+            <div class="actions">
+                <button type="button" class="pill pill-lg" [class.pill-gold]="!isFavorite" [class.pill-line]="isFavorite"
+                    [class.is-fav]="isFavorite" (click)="toggleFavorite()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"
+                        [attr.fill]="isFavorite ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                    {{ isFavorite ? 'En mi lista' : 'Añadir a mi lista' }}
+                </button>
+
+                @if (isFavorite) {
+                <div class="select" (clickOutside)="closeSelect()">
+                    <button type="button" class="select-trigger" (click)="toggleSelect()" [attr.aria-expanded]="isSelectOpen"
+                        aria-haspopup="listbox">
+                        <span class="chip" [attr.data-estado]="currentState">{{ currentState || 'Estado' }}</span>
+                        <span aria-hidden="true">▾</span>
                     </button>
-                    @if(isFavorite){
-                    <div class="kairo-custom-select" [class.active]="isSelectOpen" (clickOutside)="closeSelect()">
-                        <div class="select-trigger" (click)="toggleSelect()">
-                            <span class="current-status">
-                                <strong [class]="currentState">{{ currentState || 'Estado' }}</strong>
-                            </span>
-                            <span class="arrow-icon">▼</span>
-                        </div>
-                        <div class="select-options">
-                            <div class="option-item" (click)="setState('VIENDO')"><span
-                                    class="status-dot watching"></span> VIENDO</div>
-                            <div class="option-item" (click)="setState('FINALIZADO')"><span
-                                    class="status-dot completed"></span> FINALIZADO</div>
-                            <div class="option-item" (click)="setState('PENDIENTE')"><span
-                                    class="status-dot pending"></span> PENDIENTE</div>
-                            <div class="option-item" (click)="setState('ABANDONADO')"><span
-                                    class="status-dot dropped"></span> ABANDONADO</div>
-                        </div>
+                    @if (isSelectOpen) {
+                    <div class="dropdown" role="listbox">
+                        <button type="button" role="option" (click)="setState('VIENDO')">Viendo</button>
+                        <button type="button" role="option" (click)="setState('FINALIZADO')">Finalizado</button>
+                        <button type="button" role="option" (click)="setState('PENDIENTE')">Pendiente</button>
+                        <button type="button" role="option" (click)="setState('ABANDONADO')">Abandonado</button>
                     </div>
                     }
                 </div>
+                }
             </div>
 
-            <div class="tech-info">
-                <div class="info-row">
-                    <span class="label">Formato:</span>
-                    <span class="value">{{ animeDetail.source }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Episodios:</span>
-                    <span class="value">{{ animeDetail.episodes_count }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Duración por episodio:</span>
-                    <span class="value">{{ animeDetail.duration.split(' per')[0] }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Estudio/s:</span>
-                    <span class="value">{{ studios }}</span>
-                </div>
-            </div>
-
+            <dl class="facts">
+                <div><dt>Formato</dt><dd>{{ animeDetail.source }}</dd></div>
+                <div><dt>Episodios</dt><dd>{{ animeDetail.episodes_count }}</dd></div>
+                <div><dt>Duración</dt><dd>{{ animeDetail.duration.split(' per')[0] }}</dd></div>
+                <div><dt>Estudio</dt><dd>{{ studios }}</dd></div>
+            </dl>
         </aside>
 
+        <section class="content">
 
-        <section class="anime-content">
-
-            <header class="anime-header">
-                <h1 class="anime-title">{{ animeDetail.title }}</h1>
-                <h2 class="anime-subtitle">{{ animeDetail.title_japanese }} • {{ animeDetail.year }}</h2>
-
-                <div class="genres-row">
+            <header class="head">
+                <h1>{{ animeDetail.title }}</h1>
+                <p class="sub">{{ animeDetail.title_japanese }}@if (animeDetail.year) { · {{ animeDetail.year }} }</p>
+                <div class="genres">
                     @for (genre of animeDetail.genres; track $index) {
-                    <span class="genre-tag">{{ genre.name }}</span>
+                    <span class="tag">{{ genre.name }}</span>
                     }
                 </div>
             </header>
 
-            <div class="separator-ornament">❖</div>
-
-            <div class="synopsis-container">
-                <h3>Sinopsis</h3>
+            <div class="synopsis">
+                <h2>Sinopsis</h2>
                 <p>{{ animeDetail.synopsis }}</p>
                 @if (animeDetail.background) {
-                <div class="background-info">
-                    <h4>Antecedentes</h4>
+                <div class="background">
+                    <h3>Antecedentes</h3>
                     <p>{{ animeDetail.background }}</p>
                 </div>
                 }
             </div>
 
-            <div class="separator-ornament">❖</div>
-
-            <div class="content-tabs-container">
-                <div class="tabs-header">
-                    <button class="tab-btn" [class.active]="activeTab === 'episodes'"
-                        (click)="setActiveTab('episodes')">
-                        Episodios ({{ animeDetail.episodes_count }})
-                        <div class="active-indicator"></div>
+            <div class="tabs">
+                <div class="tab-row">
+                    <button type="button" [class.active]="activeTab === 'episodes'" (click)="setActiveTab('episodes')">
+                        Episodios <b>{{ animeDetail.episodes_count }}</b>
                     </button>
-                    <button class="tab-btn" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+                    <button type="button" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
                         Reseñas
-                        <div class="active-indicator"></div>
                     </button>
                 </div>
 
-                <div class="tabs-content">
-
-                    @if (activeTab === 'episodes') {
-                    <div class="episodes-list custom-scrollbar fade-in">
-                        @if (isEpisodesLoading && animeDetail.episodes_list.length === 0) {
-                        <p>Cargando episodios...</p>
-                        } @else if (episodesError) {
+                @if (activeTab === 'episodes') {
+                <div class="episodes">
+                    @if (isEpisodesLoading && animeDetail.episodes_list.length === 0) {
+                    <p class="note">Cargando episodios…</p>
+                    } @else if (episodesError) {
+                    <div class="note">
                         <p>{{ episodesError }}</p>
-                        <a [href]="episodesSourceUrl" target="_blank" rel="noopener noreferrer">
-                            Consultar episodios en MyAnimeList
-                        </a>
-                        <button type="button" class="kairo-btn-mythic"
-                            (click)="loadEpisodes()">Reintentar episodios</button>
-                        } @else if (animeDetail.episodes_list.length === 0) {
-                        <p>No hay episodios disponibles.</p>
-                        }
-                        @for (episode of animeDetail.episodes_list; track $index) {
-                        <div class="episode-card">
-                            <div class="ep-index">
-                                <div class="ep-rune-box">
-                                    <span class="ep-num">{{ $index + 1 }}</span>
-                                </div>
-                            </div>
-                            <div class="ep-info">
-                                <span class="ep-title">{{ episode.title }}</span>
-                                <span class="ep-date">{{ episode.date }}</span>
-                            </div>
-                            <div class="ep-separator"></div>
-                            <button class="play-btn-custom" title="Ver Episodio">
-                                <a [href]="episode.url" target="_blank">
-                                    <svg viewBox="0 0 50 50" class="play-svg">
-                                        <path class="svg-frame" d="M25 2 L48 25 L25 48 L2 25 Z" fill="none"
-                                            stroke-width="2" />
-                                        <path class="svg-triangle" d="M20 15 L35 25 L20 35 Z" />
-                                    </svg>
-                                </a>
-                            </button>
-                        </div>
-                        }
+                        <a [href]="episodesSourceUrl" target="_blank" rel="noopener noreferrer">Consultar episodios en MyAnimeList</a>
+                        <button type="button" class="pill pill-line pill-sm" (click)="loadEpisodes()">Reintentar episodios</button>
                     </div>
+                    } @else if (animeDetail.episodes_list.length === 0) {
+                    <p class="note">No hay episodios disponibles.</p>
                     }
-
-                    @if (activeTab === 'reviews') {
-                    <div class="reviews-list custom-scrollbar fade-in">
-                        @if (isReviewsLoading && reviews.length === 0) {
-                        <p>Cargando reseñas...</p>
-                        } @else if (reviewsError && reviews.length === 0) {
-                        <p>{{ reviewsError }}</p>
-                        <button type="button" class="kairo-btn-mythic" (click)="loadReviews()">Reintentar reseñas</button>
-                        } @else if (reviewsLoaded && reviews.length === 0) {
-                        <p>Este anime todavía no tiene reseñas.</p>
-                        }
-
-                        @for (review of reviews; track review.id) {
-                        <div class="review-card">
-                            <div class="review-header">
-                                @if (review.avatarUrl) {
-                                <img class="reviewer-avatar" [src]="review.avatarUrl" [alt]="review.username"
-                                    loading="lazy" referrerpolicy="no-referrer" (error)="onAvatarError(review)">
-                                } @else {
-                                <div class="reviewer-avatar">{{ initial(review.username) }}</div>
-                                }
-                                <div class="reviewer-info">
-                                    <span class="reviewer-name">{{ review.username }}</span>
-                                    <span class="review-score">
-                                        @if (review.score) { ★ {{ review.score }} }
-                                        @if (review.tag) { <span class="review-tag">{{ tagLabel(review.tag) }}</span> }
-                                    </span>
-                                </div>
-                                <span class="review-date">{{ review.date }}</span>
-                            </div>
-
-                            @if (review.isSpoiler && !revealedSpoilers.has(review.id)) {
-                            <div class="review-spoiler">
-                                <p>Esta reseña contiene spoilers.</p>
-                                <button type="button" class="review-link" (click)="revealSpoiler(review.id)">Mostrar de todos modos</button>
-                            </div>
-                            } @else {
-                            <div class="review-body">
-                                <p>{{ visibleText(review) }}</p>
-                                @if (isLong(review)) {
-                                <button type="button" class="review-link" (click)="toggleReview(review.id)">
-                                    {{ expandedReviews.has(review.id) ? 'Mostrar menos' : 'Leer más' }}
-                                </button>
-                                }
-                            </div>
-                            }
-
-                            <div class="review-footer">
-                                <span title="Reacciones en MyAnimeList">♥ {{ review.likes }}</span>
-                                @if (review.url) {
-                                <a [href]="review.url" target="_blank" rel="noopener noreferrer">Ver en MyAnimeList</a>
-                                }
-                            </div>
-                        </div>
-                        }
-
-                        @if (reviews.length > 0) {
-                        @if (reviewsError) { <p>{{ reviewsError }}</p> }
-                        @if (reviewsHasNext) {
-                        <button type="button" class="kairo-btn-mythic" [disabled]="isReviewsLoading"
-                            (click)="loadReviews()">
-                            {{ isReviewsLoading ? 'Cargando...' : 'Cargar más reseñas' }}
-                        </button>
-                        }
-                        }
-                    </div>
+                    @for (episode of animeDetail.episodes_list; track $index) {
+                    <a class="episode" [href]="episode.url" target="_blank" rel="noopener noreferrer"
+                        [attr.aria-label]="'Episodio ' + ($index + 1) + ': ' + episode.title">
+                        <span class="num">{{ $index + 1 }}</span>
+                        <span class="ep-info">
+                            <span class="ep-title">{{ episode.title }}</span>
+                            <span class="ep-date">{{ episode.date }}</span>
+                        </span>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+                    </a>
                     }
-
                 </div>
+                }
+
+                @if (activeTab === 'reviews') {
+                <div class="reviews">
+                    @if (isReviewsLoading && reviews.length === 0) {
+                    <p class="note">Cargando reseñas…</p>
+                    } @else if (reviewsError && reviews.length === 0) {
+                    <div class="note">
+                        <p>{{ reviewsError }}</p>
+                        <button type="button" class="pill pill-line pill-sm" (click)="loadReviews()">Reintentar reseñas</button>
+                    </div>
+                    } @else if (reviewsLoaded && reviews.length === 0) {
+                    <p class="note">Este anime todavía no tiene reseñas.</p>
+                    }
+
+                    @for (review of reviews; track review.id) {
+                    <article class="review">
+                        <div class="review-head">
+                            @if (review.avatarUrl) {
+                            <img class="avatar" [src]="review.avatarUrl" [alt]="review.username" loading="lazy"
+                                referrerpolicy="no-referrer" (error)="onAvatarError(review)">
+                            } @else {
+                            <div class="avatar">{{ initial(review.username) }}</div>
+                            }
+                            <div class="who">
+                                <span class="name">{{ review.username }}</span>
+                                <span class="meta">
+                                    @if (review.score) { ★ {{ review.score }} }
+                                    @if (review.tag) { <span class="tag">{{ tagLabel(review.tag) }}</span> }
+                                </span>
+                            </div>
+                            <span class="date">{{ review.date }}</span>
+                        </div>
+
+                        @if (review.isSpoiler && !revealedSpoilers.has(review.id)) {
+                        <div class="spoiler">
+                            <p>Esta reseña contiene spoilers.</p>
+                            <button type="button" class="link" (click)="revealSpoiler(review.id)">Mostrar de todos modos</button>
+                        </div>
+                        } @else {
+                        <div class="review-body">
+                            <p>{{ visibleText(review) }}</p>
+                            @if (isLong(review)) {
+                            <button type="button" class="link" (click)="toggleReview(review.id)">
+                                {{ expandedReviews.has(review.id) ? 'Mostrar menos' : 'Leer más' }}
+                            </button>
+                            }
+                        </div>
+                        }
+
+                        <div class="review-foot">
+                            <span title="Reacciones en MyAnimeList">♥ {{ review.likes }}</span>
+                            @if (review.url) {
+                            <a [href]="review.url" target="_blank" rel="noopener noreferrer">Ver en MyAnimeList</a>
+                            }
+                        </div>
+                    </article>
+                    }
+
+                    @if (reviews.length > 0) {
+                    @if (reviewsError) { <p class="note">{{ reviewsError }}</p> }
+                    @if (reviewsHasNext) {
+                    <button type="button" class="pill pill-line more" [disabled]="isReviewsLoading" (click)="loadReviews()">
+                        {{ isReviewsLoading ? 'Cargando…' : 'Cargar más reseñas' }}
+                    </button>
+                    }
+                    }
+                </div>
+                }
             </div>
 
         </section>
-
     </div>
     }
+
     @if (toastState.show) {
-    <div class="kairo-toast" [class]="toastState.type">
-        <div class="toast-icon-frame">
-            @if (toastState.type === 'like') {
-            <svg class="toast-svg-icon heart" viewBox="0 0 24 24">
-                <path
-                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-            </svg>
-            } @else if (toastState.type === 'state') {
-            <svg class="toast-svg-icon" viewBox="0 0 24 24">
-                <path
-                    d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
-            </svg>
-            }
-            @else {
-            <span class="icon">✕</span>
-            }
+    <div class="toast" [attr.data-type]="toastState.type" role="status">
+        <span class="toast-icon" aria-hidden="true">{{ toastState.type === 'like' ? '♥' : toastState.type === 'state' ? '↻' : '✕' }}</span>
+        <div>
+            <strong>{{ toastState.title }}</strong>
+            <span>{{ toastState.message }}</span>
         </div>
-
-        <div class="toast-content">
-            <span class="toast-title">{{ toastState.title }}</span>
-            <span class="toast-msg">{{ toastState.message }}</span>
-        </div>
-
-        <div class="toast-progress-bar"></div>
     </div>
     }
 </main>

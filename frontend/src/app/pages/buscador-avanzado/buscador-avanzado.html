@@ -1,139 +1,88 @@
-<div class="search-page-container">
+<main class="page">
 
-    <header class="search-header">
-        <h1 class="page-title">Búsqueda avanzada</h1>
-        <p class="page-subtitle">Encuentra tu próxima obsesión.</p>
-        <div class="header-divider-gold"></div>
+    <header class="page-head">
+        <h1>Búsqueda avanzada</h1>
+        <p>Filtra el catálogo por formato, estado, fechas y puntuación.</p>
     </header>
 
-    <form class="kairo-artifact-form" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <form class="panel" [formGroup]="searchForm" (ngSubmit)="onSubmit()">
 
-        <div class="form-row full-width">
-            <div class="form-group title-group">
-                <label for="query" class="kairo-label">Título del anime</label>
+        <div class="field full">
+            <label for="query">Título del anime</label>
+            <input type="search" id="query" formControlName="query" placeholder="Frieren, Naruto…" class="field-input">
+        </div>
 
-                <div class="input-wrapper">
-                    <input type="text" id="query" formControlName="query" placeholder="Frieren, Naruto..."
-                        class="kairo-input-main">
+        <div class="grid3">
+            <div class="field">
+                <label for="type">Formato</label>
+                <select formControlName="type" id="type" class="field-input">
+                    <option value="">Cualquiera</option>
+                    <option value="tv">Serie TV</option>
+                    <option value="movie">Película</option>
+                    <option value="ova">OVA</option>
+                    <option value="special">Especial</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="status">Estado</label>
+                <select formControlName="status" id="status" class="field-input">
+                    <option value="">Cualquiera</option>
+                    <option value="airing">En emisión</option>
+                    <option value="complete">Finalizado</option>
+                    <option value="upcoming">Próximamente</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="rating">Clasificación</label>
+                <select formControlName="rating" id="rating" class="field-input">
+                    <option value="">Todas</option>
+                    <option value="pg13">PG-13 (adolescentes)</option>
+                    <option value="r17">R-17+ (adultos)</option>
+                </select>
+            </div>
+        </div>
 
-                    <button class="search-btn-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </button>
+        <div class="grid3">
+            <div class="field">
+                <label for="start_date">Emitido desde</label>
+                <input type="date" id="start_date" formControlName="start_date" class="field-input">
+            </div>
+            <div class="field">
+                <label for="end_date">Emitido hasta</label>
+                <input type="date" id="end_date" formControlName="end_date" class="field-input">
+            </div>
+            <div class="field">
+                <label for="order_by">Ordenar por</label>
+                <select formControlName="order_by" id="order_by" class="field-input">
+                    <option value="score">Puntuación</option>
+                    <option value="members">Popularidad</option>
+                    <option value="start_date">Fecha de estreno</option>
+                    <option value="episodes">Episodios</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="grid3">
+            <div class="field">
+                <label for="sort">Dirección</label>
+                <select formControlName="sort" id="sort" class="field-input">
+                    <option value="desc">Mayor a menor</option>
+                    <option value="asc">Menor a mayor</option>
+                </select>
+            </div>
+            <div class="field span2">
+                <label for="score">Puntuación mínima: <b>{{ searchForm.get('score')?.value || 1 }}</b></label>
+                <div class="range">
+                    <span>1</span>
+                    <input type="range" id="score" min="1" max="10" step="1" formControlName="score">
+                    <span>10</span>
                 </div>
             </div>
         </div>
 
-        <div class="filters-grid">
-            <div class="form-group">
-                <label for="type" class="kairo-label">Formato</label>
-                <div class="kairo-select-wrapper">
-                    <select formControlName="type" id="type" class="kairo-select">
-                        <option value="">Cualquiera</option>
-                        <option value="tv">Serie TV</option>
-                        <option value="movie">Película</option>
-                        <option value="ova">OVA</option>
-                        <option value="special">Especial</option>
-                    </select>
-                    <div class="select-arrow">▼</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="status" class="kairo-label">Estado</label>
-                <div class="kairo-select-wrapper">
-                    <select formControlName="status" id="status" class="kairo-select">
-                        <option value="">Cualquiera</option>
-                        <option value="airing">En Emisión</option>
-                        <option value="complete">Finalizado</option>
-                        <option value="upcoming">Próximamente</option>
-                    </select>
-                    <div class="select-arrow">▼</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="rating" class="kairo-label">Clasificación</label>
-                <div class="kairo-select-wrapper">
-                    <select formControlName="rating" class="kairo-select">
-                        <option value="">Todas</option>
-                        <option value="pg13">PG-13 (Adolescentes)</option>
-                        <option value="r17">R-17+ (Adultos)</option>
-                    </select>
-                    <div class="select-arrow">▼</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section-divider">
-            <span class="divider-label">Periodo de Emisión</span>
-            <div class="line"></div>
-        </div>
-
-        <div class="filters-grid dates-grid">
-            <div class="form-group">
-                <label for="start_date" class="kairo-label">Desde</label>
-                <div class="date-input-wrapper">
-                    <input type="date" id="start_date" formControlName="start_date" class="kairo-input-main kairo-date">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="end_date" class="kairo-label">Hasta</label>
-                <div class="date-input-wrapper">
-                    <input type="date" id="end_date" formControlName="end_date" class="kairo-input-main kairo-date">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-section-divider">
-            <span class="divider-label">Criterio de Orden</span>
-            <div class="line"></div>
-        </div>
-
-        <div class="filters-grid sorting-grid">
-            <div class="form-group">
-                <label for="order_by" class="kairo-label">Ordenar por</label>
-                <div class="kairo-select-wrapper">
-                    <select formControlName="order_by" id="order_by" class="kairo-select">
-                        <option value="score">Puntuación</option>
-                        <option value="members">Popularidad</option>
-                        <option value="start_date">Fecha Estreno</option>
-                        <option value="episodes">Episodios</option>
-                    </select>
-                    <div class="select-arrow">▼</div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="sort" class="kairo-label">Dirección</label>
-                <div class="kairo-select-wrapper">
-                    <select formControlName="sort" id="sort" class="kairo-select">
-                        <option value="desc">Mayor a menor (Desc)</option>
-                        <option value="asc">Menor a mayor (Asc)</option>
-                    </select>
-                    <div class="select-arrow">▼</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="score-slider-container">
-            <div class="slider-header">
-                <span class="score-label">Puntuación mínima:</span>
-                <span class="score-display">{{ searchForm.get('score')?.value || 1 }}</span>
-            </div>
-            <div class="range-wrapper">
-                <span>1</span>
-                <input type="range" min="1" max="10" step="1" formControlName="score" class="kairo-range">
-                <span>10</span>
-            </div>
-        </div>
-
-        <div class="form-actions">
-            <button type="button" class="btn-reset" (click)="searchForm.reset()">Restablecer</button>
-            <button type="submit" class="btn-invoke">Buscar anime</button>
+        <div class="actions">
+            <button type="button" class="pill pill-line" (click)="searchForm.reset()">Restablecer</button>
+            <button type="submit" class="pill pill-gold">Buscar anime</button>
         </div>
     </form>
 
@@ -142,57 +91,38 @@
     }
 
     @if (searchResults.length > 0 || (searchFlag && !isLoading)) {
-
-    <div class="kairo-artifact-form results-box">
-
-        <div class="results-info-header">
-            <div class="results-text-group">
-                @if (searchResults.length > 0) {
-                <h2 class="results-title">
-                    RESULTADOS PARA <span class="gold-text">"{{ queryValue || 'TODO' }}"</span>
-                </h2>
-                <span class="results-count-badge">{{ searchResults.length }} coincidencias encontradas</span>
-                }
-                @else {
-                <h2 class="results-title">
-                    Sin resultados
-                </h2>
-                }
-            </div>
+    <section class="results" aria-live="polite">
+        <div class="results-head">
+            @if (searchResults.length > 0) {
+            <h2>Resultados para “{{ queryValue || 'todo' }}”</h2>
+            <span>{{ searchResults.length }} coincidencias</span>
+            } @else {
+            <h2>Sin resultados</h2>
+            }
         </div>
 
         @if (errorMessage) {
-        <div class="empty-state-content">
-            <p>{{ errorMessage }}</p>
-        </div>
+        <p class="state-msg">{{ errorMessage }}</p>
         }
 
         @if (searchResults.length > 0) {
-        <div class="results-grid-vertical">
+        <div class="poster-grid">
             @for (anime of searchResults; track anime.mal_id) {
             <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
             }
         </div>
 
         @if (hasMorePages) {
-        <div class="load-more-container">
-            <button type="button" class="kairo-btn-mythic" (click)="loadMoreAnimes()" [disabled]="isLoadingMore">
-                {{ isLoadingMore ? 'Cargando...' : 'Cargar más resultados' }}
-                <svg viewBox="0 0 24 24">
-                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
-                </svg>
+        <div class="more">
+            <button type="button" class="pill pill-line" (click)="loadMoreAnimes()" [disabled]="isLoadingMore">
+                {{ isLoadingMore ? 'Cargando…' : 'Cargar más resultados' }}
             </button>
         </div>
         }
+        } @else if (!errorMessage) {
+        <p class="state-msg">No hay coincidencias para la búsqueda.</p>
         }
-        @else {
-        <div class="empty-state-content">
-            @if (!errorMessage) {
-            <p>No hay coincidencias para la búsqueda.</p>
-            }
-        </div>
-        }
-    </div>
+    </section>
     }
 
-</div>
+</main>

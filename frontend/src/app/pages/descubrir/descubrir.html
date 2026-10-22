@@ -1,84 +1,53 @@
-<main class="kairo-main">
-    <div class="noise-overlay"></div>
+<main class="page">
 
-    <header class="kairo-header">
-        <h1 class="page-title">Descubre joyitas</h1>
-
-        <p class="instruction-text">Desliza para descubrir tu próximo anime favorito</p>
+    <header class="page-head center">
+        <h1>Descubre joyitas</h1>
+        <p>Una serie al azar cada vez. Si te gusta, va a tu lista.</p>
     </header>
 
-    <section class="discover-section">
-        <div class="container">
+    <section class="stage" aria-live="polite">
+        @if (isLoading) {
+        <app-loader message="Buscando tu próximo anime..."></app-loader>
+        }
 
-            <div class="card-stack-container">
-
-                @if (isLoading) {
-                <app-loader message="Buscando tu próximo anime..."></app-loader>
-                }
-
-                @if (errorMessage) {
-                <div class="no-results-msg">
-                    <p>{{ errorMessage }}</p>
-                    <button class="kairo-btn-mythic" type="button" (click)="loadRandomAnime()">Reintentar</button>
-                </div>
-                }
-
-                @if (anime) {
-                <div class="kairo-card current-card ornate-card-portrait">
-                    <div class="card-frame-outer">
-                        <div class="card-frame-inner">
-                            <img [src]="anime.image_url" [alt]="anime.title">
-
-                            <div class="card-score-badge">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                                        fill="currentColor" />
-                                </svg>
-                                <span>{{ anime.score }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-info-panel">
-                        <h3>{{ anime.title }}</h3>
-                        <a [routerLink]="`/dashboard/anime/${anime.mal_id}`" class="btn-details">
-                            Ver detalles →
-                        </a>
-                    </div>
-                </div>
-                }
-
-            </div>
-
-            @if (anime) {
-            <div class="swipe-controls">
-                <button class="control-btn reject-btn" title="Descartar" (click)="changeAnime('reject')">
-                    ✕
-                </button>
-                <button class="control-btn like-btn" title="Me interesa" (click)="changeAnime('like')">
-                    ♥
-                </button>
-            </div>
-            }
-
+        @if (errorMessage) {
+        <div class="state-msg">
+            <p>{{ errorMessage }}</p>
+            <button class="pill pill-line" type="button" (click)="loadRandomAnime()">Reintentar</button>
         </div>
+        }
+
+        @if (anime) {
+        <article class="pick">
+            <a class="pick-poster" [routerLink]="`/dashboard/anime/${anime.mal_id}`" [attr.aria-label]="'Ver detalles de ' + anime.title">
+                <img [src]="largeSrc(anime.image_url)" [alt]="'Póster de ' + anime.title" width="425" height="600"
+                    (error)="fallbackSrc($event, anime.image_url)">
+                @if (anime.score) {
+                <span class="score">★ {{ anime.score }}</span>
+                }
+            </a>
+            <h2>{{ anime.title }}</h2>
+            <a [routerLink]="`/dashboard/anime/${anime.mal_id}`" class="detail-link">Ver detalles →</a>
+
+            <div class="actions">
+                <button type="button" class="pill pill-line pill-lg" (click)="changeAnime('reject')">
+                    Descartar
+                </button>
+                <button type="button" class="pill pill-gold pill-lg" (click)="changeAnime('like')">
+                    Me interesa
+                </button>
+            </div>
+        </article>
+        }
     </section>
 
     @if (toastState.show) {
-    <div class="kairo-toast" [class]="toastState.type">
-        <div class="toast-icon-frame">
-            @if (toastState.type === 'like') {
-            <span class="icon">♥</span>
-            } @else {
-            <span class="icon">✕</span>
-            }
+    <div class="toast" [attr.data-type]="toastState.type" role="status">
+        <span class="toast-icon" aria-hidden="true">{{ toastState.type === 'like' ? '♥' : '✕' }}</span>
+        <div>
+            <strong>{{ toastState.title }}</strong>
+            <span>{{ toastState.message }}</span>
         </div>
-        <div class="toast-content">
-            <span class="toast-title">{{ toastState.title }}</span>
-            <span class="toast-msg">{{ toastState.message }}</span>
-        </div>
-        <div class="toast-progress-bar"></div>
     </div>
     }
 

@@ -65,6 +65,16 @@ export class Descubrir implements OnInit {
     }
   }
 
+  // El póster grande es el que aguanta mostrarse a este tamaño; si no existe se usa el medio
+  largeSrc(url: string): string {
+    return url.replace(/(\.(?:jpe?g|png|webp))(?:[?#].*)?$/i, 'l$1');
+  }
+
+  fallbackSrc(event: Event, url: string) {
+    const img = event.target as HTMLImageElement;
+    if (url && img.src !== url) img.src = url;
+  }
+
   showToast(type: 'like' | 'reject', title: string, message: string) {
     if (this.toastTimeout) clearTimeout(this.toastTimeout);
 

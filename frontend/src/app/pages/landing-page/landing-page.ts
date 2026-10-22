@@ -20,6 +20,9 @@ export class LandingPage implements OnInit {
   topAnimesSeason: Anime[] = [];
   recommendedAnimes: Anime[] = [];
 
+  // Se enseñan de 20 en 20 aunque la API devuelva más de una vez
+  recommendedVisible = 20;
+
   pagesSearch = 1;
   pagesRecommended = 1;
 
@@ -168,6 +171,14 @@ export class LandingPage implements OnInit {
     }
   }
 
+  showMoreRecommended() {
+    if (this.recommendedVisible < this.recommendedAnimes.length) {
+      this.recommendedVisible += 20;
+    } else {
+      void this.loadMoreRecommended();
+    }
+  }
+
   async loadMoreRecommended() {
     if (!this.hasMorePagesRecommended || this.isLoadingMoreRecommended) return;
     const nextPage = this.pagesRecommended + 1;
@@ -177,6 +188,7 @@ export class LandingPage implements OnInit {
       const animePage = await this.endpoints.getAnimesRecommended(nextPage);
       this.pagesRecommended = nextPage;
       this.recommendedAnimes = [...this.recommendedAnimes, ...animePage.animes];
+      this.recommendedVisible += 20;
       this.hasMorePagesRecommended = animePage.hasNextPage;
     } catch (error) {
       console.error('Error cargando más recomendaciones:', error);

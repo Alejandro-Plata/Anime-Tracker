@@ -1,46 +1,35 @@
-<header class="kairo-header-nav">
-    <div class="nav-content">
+<header class="nav">
+    <div class="nav-in">
+        <a class="brand" routerLink="/dashboard" aria-label="Kairo, inicio">
+            <img src="logo_kairo.svg" alt="" width="28" height="28">
+            <span>Kairo</span>
+        </a>
 
-        <input type="checkbox" id="mobile-menu-toggle" class="nav-checkbox">
-        <label for="mobile-menu-toggle" class="nav-hamburger">
-            <span class="line"></span>
-            <span class="line"></span>
-            <span class="line"></span>
-        </label>
-
-        <nav class="nav-links-container">
-            <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="kairo-nav-link">Inicio</a>
-            <a routerLink="/dashboard/mi-lista" routerLinkActive="active" class="kairo-nav-link">Mi Lista</a>
-            <a routerLink="/dashboard/buscador" routerLinkActive="active" class="kairo-nav-link">Buscador</a>
-            <a routerLink="/dashboard/descubrir" routerLinkActive="active" class="kairo-nav-link">Descubrir</a>
+        <nav class="links" [class.open]="isMenuOpen" aria-label="Principal">
+            <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+            <a routerLink="/dashboard/mi-lista" routerLinkActive="active">Mi lista</a>
+            <a routerLink="/dashboard/buscador" routerLinkActive="active">Buscador</a>
+            <a routerLink="/dashboard/descubrir" routerLinkActive="active">Descubrir</a>
         </nav>
 
-        <div class="nav-actions-right">
-            <div class="nav-logo-right">
-                <img src="logo_kairo.svg" alt="KAIRO" class="logo-img">
-            </div>
-        </div>
-
-        <div class="user-profile-wrapper" (click)="toggleProfileMenu()">
-
-            <div class="profile-trigger">
-                <span class="user-name">{{ username }}</span>
-                <div class="avatar-container">
-                    <img src="https://p16-capcut-sign-sg.ibyteimg.com/tos-alisg-v-3741c700-sg/ogfzK66C0kB3a92iuIiDtEAdgDAGIoBzp4AEgB~tplv-4d650qgzx3-image.image?lk3s=2d54f6b1&x-expires=1796971515&x-signature=SJrBLjHwy43N1Yz00xYkmGH%2BwAM%3D"
-                        alt="Perfil" class="profile-img">
-                </div>
-            </div>
-
-            <div class="profile-dropdown" [class.active]="isProfileMenuOpen">
-                <div class="dropdown-arrow"></div>
-                <button class="dropdown-item" (click)="logout()">
-                    <span class="icon">⏻</span>
-                    Cerrar Sesión
+        <div class="right">
+            <div class="profile" (clickOutside)="closeProfileMenu()">
+                <button type="button" class="profile-btn" (click)="toggleProfileMenu()"
+                    [attr.aria-expanded]="isProfileMenuOpen" aria-haspopup="menu">
+                    <span class="avatar" aria-hidden="true">{{ initial }}</span>
+                    <span class="name">{{ username }}</span>
                 </button>
+                @if (isProfileMenuOpen) {
+                <div class="menu" role="menu">
+                    <button type="button" role="menuitem" (click)="logout()">Cerrar sesión</button>
+                </div>
+                }
             </div>
 
+            <button type="button" class="burger" (click)="toggleMenu()" [attr.aria-expanded]="isMenuOpen"
+                aria-label="Abrir menú">
+                <span></span><span></span><span></span>
+            </button>
         </div>
-
     </div>
-    <div class="header-glow-line"></div>
 </header>

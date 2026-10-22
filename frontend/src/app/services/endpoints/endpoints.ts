@@ -103,6 +103,13 @@ export class Endpoints {
     }
   }
 
+  // Contenido +18: clasificación Rx de MyAnimeList o género Hentai/Erotica. Las listas de la API no
+  // siempre traen estos campos, así que se filtra lo que se pueda reconocer.
+  private isAdult(anime: ApiAnime): boolean {
+    return !!anime.rating?.startsWith('Rx')
+      || !!anime.genres?.some(({ name }) => name === 'Hentai' || name === 'Erotica');
+  }
+
   private toAnime(anime: ApiAnime): Anime {
     return {
       mal_id: anime.malId,
@@ -142,7 +149,7 @@ export class Endpoints {
           throw new Error('La API de anime devolvió una lista inesperada.');
         }
         return response.data
-          .filter((anime) => anime.imageUrl || anime.images?.medium)
+          .filter((anime) => (anime.imageUrl || anime.images?.medium) && !this.isAdult(anime))
           .slice(0, count)
           .map((anime) => this.toPoster(anime));
       });
@@ -160,7 +167,7 @@ export class Endpoints {
       throw new Error('La API de anime devolvió una lista inesperada.');
     }
     return response.data
-      .filter((anime) => anime.imageUrl || anime.images?.medium)
+      .filter((anime) => (anime.imageUrl || anime.images?.medium) && !this.isAdult(anime))
       .slice(0, count)
       .map((anime) => this.toPoster(anime));
   }
@@ -174,7 +181,7 @@ export class Endpoints {
       throw new Error('La API de anime devolvió una lista inesperada.');
     }
     return {
-      animes: response.data.map((anime) => this.toAnime(anime)),
+      animes: response.data.filter((anime) => !this.isAdult(anime)).map((anime) => this.toAnime(anime)),
       hasNextPage: response.meta?.pagination?.hasNextPage ?? false,
     };
   }
@@ -294,11 +301,16 @@ export class Endpoints {
   }
 
   async getRandomAnime(): Promise<Anime> {
-    const response = await this.request<ApiAnime>('random/anime');
-    if (!response.data || typeof response.data.malId !== 'number') {
-      throw new Error('La API no devolvió un anime aleatorio.');
+    // La ruta aleatoria no admite filtros: se vuelve a tirar hasta dar con una serie apta
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const response = await this.request<ApiAnime>('random/anime');
+      if (!response.data || typeof response.data.malId !== 'number') {
+        throw new Error('La API no devolvió un anime aleatorio.');
+      }
+      if (this.isAdult(response.data)) continue;
+      const anime = this.toAnime(response.data);
+      return { ...anime, score: anime.score ?? 0 };
     }
-    const anime = this.toAnime(response.data);
-    return { ...anime, score: anime.score ?? 0 };
+    throw new Error('No se encontró un anime apto a tiempo. Inténtalo de nuevo.');
   }
 }

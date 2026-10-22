@@ -6,10 +6,12 @@ import { Endpoints } from '../../services/endpoints/endpoints';
 import { Tab } from '../../types/tab';
 import { FavoriteAnime } from '../../types/favoriteAnime';
 import { Router, RouterLink } from '@angular/router';
+import { Card } from '../../components/card/card';
+import type { Anime } from '../../types/anime';
 
 @Component({
   selector: 'app-mi-lista',
-  imports: [RouterLink],
+  imports: [RouterLink, Card],
   templateUrl: './mi-lista.html',
   styleUrl: './mi-lista.css',
 })
@@ -44,7 +46,6 @@ export class MiLista implements OnInit {
       }
     }
 
-    console.log('Favoritos cargados:', this.favoritesAnime);
   }
 
   setTab(tab: 'TODOS' | 'VIENDO' | 'FINALIZADO' | 'PENDIENTE' | 'ABANDONADO') {
@@ -73,6 +74,16 @@ export class MiLista implements OnInit {
         return 'Abandonado';
     }
     return ''
+  }
+
+  // La tarjeta compartida recibe un Anime; la ficha completa ya trae todo lo necesario
+  aAnime(favorite: FavoriteAnime): Anime {
+    const d = favorite.detalles;
+    return { mal_id: d.mal_id, url: `https://myanimelist.net/anime/${d.mal_id}`, image_url: d.image_url, title: d.title, score: d.score || undefined };
+  }
+
+  generos(favorite: FavoriteAnime): string[] {
+    return favorite.detalles.genres.slice(0, 2).map(g => g.name);
   }
 
   navigateToAnimeDetail(animeId: number) {

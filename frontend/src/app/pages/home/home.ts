@@ -2,14 +2,15 @@ import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular
 import { RouterLink } from '@angular/router';
 import { Endpoints } from '../../services/endpoints/endpoints';
 import { AuthService } from '../../services/auth-service';
+import { Card } from '../../components/card/card';
+import type { Anime } from '../../types/anime';
 import type { Poster } from '../../types/poster';
 
 type Estado = 'TODOS' | 'VIENDO' | 'FINALIZADO' | 'PENDIENTE' | 'ABANDONADO';
 
 interface Entrada {
-  poster: Poster;
+  anime: Anime;
   estado: Exclude<Estado, 'TODOS'>;
-  nota: number;
 }
 
 const ESTADOS: { id: Estado; label: string }[] = [
@@ -28,7 +29,7 @@ const REPARTO: Exclude<Estado, 'TODOS'>[] = [
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, Card],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -44,19 +45,14 @@ export class Home implements OnInit, OnDestroy {
   cargando = signal(true);
   fallo = signal(false);
 
-  // Mockup de "Mi lista"
+  // Réplica de "Mi lista"
   filtro = signal<Estado>('TODOS');
-  query = signal('');
-  resultados = signal<Poster[]>([]);
-  buscando = signal(false);
-  errorBusqueda = signal('');
-  notaDemo = signal(9);
+  generos = signal<Record<number, string[]>>({});
 
   entradas = computed<Entrada[]>(() =>
     this.top().slice(0, 12).map((poster, i) => ({
-      poster,
+      anime: this.aAnime(poster),
       estado: REPARTO[i % REPARTO.length],
-      nota: Math.max(6, Math.min(10, Math.round(poster.score ?? 8))),
     }))
   );
   visibles = computed(() => {
@@ -64,17 +60,17 @@ export class Home implements OnInit, OnDestroy {
     return this.entradas().filter(e => f === 'TODOS' || e.estado === f).slice(0, 8);
   });
   fondo = computed(() => this.top().slice(0, 12));
-  destacado = computed(() => this.top()[0]);
+  temporadaAnimes = computed(() => this.temporada().slice(0, 12).map(p => this.aAnime(p)));
+  notaDemo = signal(9);
 
-  private debounce?: ReturnType<typeof setTimeout>;
-  private peticion = 0;
+  private vivo = true;
 
   ngOnInit() {
     this.cargar();
   }
 
   ngOnDestroy() {
-    clearTimeout(this.debounce);
+    this.vivo = false;
   }
 
   cargar() {
@@ -84,10 +80,30 @@ export class Home implements OnInit, OnDestroy {
       this.endpoints.getPosters('top', 24),
       this.endpoints.getPosters('season', 18),
     ]).then(([top, season]) => {
-      if (top.status === 'fulfilled') this.top.set(top.value);
+      if (top.status === 'fulfilled') {
+        this.top.set(top.value);
+        void this.cargarGeneros(top.value.slice(0, 12));
+      }
       if (season.status === 'fulfilled') this.temporada.set(season.value);
       this.fallo.set(top.status === 'rejected' && season.status === 'rejected');
     }).finally(() => this.cargando.set(false));
+  }
+
+  // Como en la app real, los géneros salen de la ficha de cada serie; se piden despacio para no saturar la API
+  private async cargarGeneros(posters: Poster[]) {
+    for (const p of posters) {
+      if (!this.vivo) return;
+      try {
+        const detalle = await this.endpoints.getAnimeById(String(p.mal_id));
+        this.generos.update(g => ({ ...g, [p.mal_id]: detalle.genres.slice(0, 2).map(x => x.name) }));
+      } catch { /* sin géneros la tarjeta sigue siendo válida */ }
+      await new Promise(r => setTimeout(r, 400));
+    }
+  }
+
+  // La tarjeta compartida pide la versión grande a partir de la media
+  private aAnime(p: Poster): Anime {
+    return { mal_id: p.mal_id, url: `https://myanimelist.net/anime/${p.mal_id}`, image_url: p.fallback_url, title: p.title, score: p.score };
   }
 
   cuenta(id: Estado): number {
@@ -104,37 +120,6 @@ export class Home implements OnInit, OnDestroy {
   imgError(event: Event, p: Poster) {
     const img = event.target as HTMLImageElement;
     if (p.fallback_url && img.src !== p.fallback_url) img.src = p.fallback_url;
-  }
-
-  onBuscar(event: Event) {
-    const valor = (event.target as HTMLInputElement).value;
-    this.query.set(valor);
-    clearTimeout(this.debounce);
-    const id = ++this.peticion;
-    if (valor.trim().length < 2) {
-      this.resultados.set([]);
-      this.errorBusqueda.set('');
-      this.buscando.set(false);
-      return;
-    }
-    this.buscando.set(true);
-    this.debounce = setTimeout(() => this.buscar(valor.trim(), id), 500);
-  }
-
-  private async buscar(texto: string, id: number) {
-    this.errorBusqueda.set('');
-    try {
-      const encontrados = await this.endpoints.searchPosters(texto, 8);
-      if (id !== this.peticion) return;
-      this.resultados.set(encontrados);
-      if (encontrados.length === 0) this.errorBusqueda.set('Sin resultados para esa búsqueda.');
-    } catch {
-      if (id !== this.peticion) return;
-      this.resultados.set([]);
-      this.errorBusqueda.set('La búsqueda no respondió. Prueba otra vez en unos segundos.');
-    } finally {
-      if (id === this.peticion) this.buscando.set(false);
-    }
   }
 
   scrollTop() {
