@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d9bd8a"/>
+      <stop offset="1" stop-color="#a98a57"/>
+    </linearGradient>
+  </defs>
+  <!-- Fondo verde para que la K se vea igual en pestañas claras y oscuras -->
+  <rect width="64" height="64" rx="14" fill="#2f5c4f"/>
+  <path d="M20 13v38" fill="none" stroke="#f2eee2" stroke-width="7" stroke-linecap="round"/>
+  <path d="M44 14 27 32l17 18" fill="none" stroke="url(#g)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="47" cy="32" r="4" fill="#c5a572"/>
+</svg>

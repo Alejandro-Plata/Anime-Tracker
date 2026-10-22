@@ -16,7 +16,10 @@
             <div class="profile" (clickOutside)="closeProfileMenu()">
                 <button type="button" class="profile-btn" (click)="toggleProfileMenu()"
                     [attr.aria-expanded]="isProfileMenuOpen" aria-haspopup="menu">
-                    <span class="avatar" aria-hidden="true">{{ initial }}</span>
+                    <span class="avatar" aria-hidden="true">
+                        {{ initial }}
+                        <img [src]="avatar.url()" alt="" referrerpolicy="no-referrer" (error)="$any($event.target).style.display = 'none'">
+                    </span>
                     <span class="name">{{ username }}</span>
                 </button>
                 @if (isProfileMenuOpen) {

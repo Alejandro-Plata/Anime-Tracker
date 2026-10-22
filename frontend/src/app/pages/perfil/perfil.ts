@@ -2,6 +2,7 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
+import { AvatarService } from '../../services/avatar-service';
 import type { UserProfile } from '../../types/user';
 import type { ToastState } from '../../types/toastState';
 
@@ -16,6 +17,7 @@ export class Perfil implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  avatar = inject(AvatarService);
 
   profile: UserProfile | null = null;
   isLoading = true;
@@ -70,6 +72,7 @@ export class Perfil implements OnInit {
         this.authService.getFavorites(),
       ]);
       this.setProfile(profile);
+      void this.avatar.refresh(favorites);
 
       const rated = favorites.filter(f => f.score > 0);
       this.stats = {

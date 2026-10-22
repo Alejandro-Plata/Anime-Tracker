@@ -18,7 +18,12 @@
 
         <!-- ===== Resumen ===== -->
         <aside class="card summary">
-            <div class="avatar" aria-hidden="true">{{ initial }}</div>
+            <div class="avatar">
+                <span aria-hidden="true">{{ initial }}</span>
+                <img [src]="avatar.url()" [alt]="'Imagen de perfil de ' + profile.username" referrerpolicy="no-referrer"
+                    (error)="$any($event.target).style.display = 'none'">
+            </div>
+            <p class="avatar-hint">Tu imagen es el póster de tu anime mejor puntuado.</p>
             <h2>{{ profile.username }}</h2>
             <p class="email">{{ profile.email }}</p>
             <p class="since">Miembro desde {{ memberSince }}</p>
