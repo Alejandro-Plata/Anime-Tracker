@@ -1,103 +1,242 @@
-<main class="page">
+<div class="home">
 
-    <section class="hero" aria-labelledby="t-inicio">
-        <h1 id="t-inicio">Descubre tu próximo anime</h1>
-        <p>Busca en todo el catálogo, mira qué se emite ahora y guarda lo que quieras ver.</p>
-
-        <div class="search">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-            <input type="search" class="field-input" placeholder="Buscar anime…" aria-label="Buscar anime"
-                [value]="searchQuery" (input)="onInputChange($event)" (keydown.enter)="searchAnimes()">
-        </div>
-    </section>
-
-    @if (searchQuery) {
-    <section class="block" aria-live="polite">
-        <div class="block-head">
-            <h2>{{ isLoadingSearch ? 'Buscando…' : searchResults.length + ' resultados para “' + searchQuery + '”' }}</h2>
-        </div>
-
-        @if (isLoadingSearch) {
-        <p class="state-msg">Buscando animes…</p>
-        } @else if (searchError) {
-        <div class="state-msg">
-            <p>{{ searchError }}</p>
-            <button type="button" class="pill pill-line" (click)="searchAnimes()">Reintentar</button>
-        </div>
-        } @else if (searchResults.length > 0) {
-        <div class="poster-grid">
-            @for (anime of searchResults; track anime.mal_id) {
-            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
-            }
-        </div>
-        @if (hasMorePagesSearch) {
-        <div class="more">
-            <button type="button" class="pill pill-line" (click)="loadMoreAnimes()" [disabled]="isLoadingMoreSearch">
-                {{ isLoadingMoreSearch ? 'Cargando…' : 'Ver más resultados' }}
-            </button>
-        </div>
-        }
+  <!-- ================= NAVEGACIÓN ================= -->
+  <header class="nav">
+    <div class="nav-in">
+      <a class="brand" routerLink="/" aria-label="Kairo, inicio">
+        <img src="logo_kairo.svg" alt="" width="28" height="28">
+        <span>Kairo</span>
+      </a>
+      <nav class="nav-links" aria-label="Principal">
+        <a href="#temporada">Temporada</a>
+        <a href="#funciones">Funciones</a>
+        <a href="#como">Cómo funciona</a>
+      </nav>
+      <div class="nav-cta">
+        @if (authService.isLoggedIn()) {
+        <a class="pill pill-gold" routerLink="/dashboard">Ir a mi lista</a>
         } @else {
-        <p class="state-msg">No se han encontrado resultados para “{{ searchQuery }}”.</p>
+        <a class="pill pill-ghost" routerLink="/login">Iniciar sesión</a>
+        <a class="pill pill-gold" routerLink="/register">Crear cuenta</a>
         }
-    </section>
-    } @else {
+      </div>
+    </div>
+  </header>
 
-    <section class="block" aria-labelledby="t-temporada">
-        <div class="block-head">
-            <h2 id="t-temporada">Top animes de temporada</h2>
+  <main>
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" aria-labelledby="t-hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+
+      <div class="hero-in">
+        <h1 id="t-hero">Tu lista de anime,<br>siempre al día</h1>
+        <p class="sub">Guarda lo que ves, márcalo con un estado, ponle tu nota y lee las reseñas de la comunidad. Todo en un solo lugar.</p>
+
+        <div class="cta-row">
+          @if (authService.isLoggedIn()) {
+          <a class="pill pill-gold pill-lg" routerLink="/dashboard">Ir a mi lista</a>
+          } @else {
+          <a class="pill pill-gold pill-lg" routerLink="/register">Crear cuenta gratis</a>
+          <a class="pill pill-line pill-lg" routerLink="/login">Iniciar sesión</a>
+          }
+        </div>
+      </div>
+
+      <!-- Réplica de la pantalla "Mi lista" con datos reales de la API -->
+      <div class="mock" role="img" aria-label="Vista previa de la pantalla Mi lista">
+        <div class="mock-bar" aria-hidden="true">
+          <span class="mock-brand"><img src="logo_kairo.svg" alt="" width="22" height="22">Kairo</span>
+          <span class="mock-links"><i>Inicio</i><i class="on">Mi lista</i><i>Buscador</i><i>Descubrir</i></span>
+          <span class="mock-avatar">T</span>
         </div>
 
-        @if (isLoadingSeason && topAnimesSeason.length === 0) {
-        <p class="state-msg">Cargando animes de temporada…</p>
-        } @else if (seasonError) {
-        <div class="state-msg">
-            <p>{{ seasonError }}</p>
-            <button type="button" class="pill pill-line" (click)="loadInitialSeason()">Reintentar</button>
-        </div>
-        } @else if (topAnimesSeason.length === 0) {
-        <p class="state-msg">No hay animes de temporada disponibles.</p>
-        } @else {
-        <div class="poster-grid">
-            @for (anime of topAnimesSeason.slice(0, 12); track anime.mal_id) {
-            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
+        <div class="mock-page">
+          <div class="page-head">
+            <h1>Mi lista</h1>
+            <p>Tus series, con su estado.</p>
+          </div>
+
+          <div class="tab-row" role="group" aria-label="Filtrar por estado">
+            @for (e of estados; track e.id) {
+            <button type="button" [class.active]="filtro() === e.id" [attr.aria-pressed]="filtro() === e.id"
+              (click)="filtro.set(e.id)">{{ e.label }} <b>{{ cuenta(e.id) }}</b></button>
             }
-        </div>
-        }
-    </section>
+          </div>
 
-    <section class="block" aria-labelledby="t-recomendados">
-        <div class="block-head">
-            <h2 id="t-recomendados">Animes recomendados</h2>
-        </div>
-
-        @if (isLoadingRecommended && recommendedAnimes.length === 0) {
-        <p class="state-msg">Cargando recomendaciones…</p>
-        } @else if (recommendedError && recommendedAnimes.length === 0) {
-        <div class="state-msg">
-            <p>{{ recommendedError }}</p>
-            <button type="button" class="pill pill-line" (click)="loadInitialRecommended()">Reintentar</button>
-        </div>
-        } @else if (recommendedAnimes.length === 0) {
-        <p class="state-msg">No hay recomendaciones disponibles.</p>
-        } @else {
-        <div class="poster-grid">
-            @for (anime of recommendedAnimes.slice(0, recommendedVisible); track anime.mal_id) {
-            <app-card [anime]="anime" [animeId]="anime.mal_id"></app-card>
+          @if (cargando() && visibles().length === 0) {
+          <div class="poster-grid mock-grid" aria-hidden="true">
+            @for (n of [1,2,3,4]; track n) { <div class="skel-tile"></div> }
+          </div>
+          } @else if (fallo()) {
+          <div class="state-msg">
+            <p>No se pudo cargar el catálogo.</p>
+            <button type="button" class="pill pill-line" (click)="cargar()">Reintentar</button>
+          </div>
+          } @else {
+          <div class="poster-grid mock-grid">
+            @for (e of visibles(); track e.anime.mal_id) {
+            <app-card [anime]="e.anime" [animeId]="e.anime.mal_id" [state]="e.estado"
+              [genres]="generos()[e.anime.mal_id] || []" [interactive]="false"></app-card>
             }
+          </div>
+          }
         </div>
-        @if (recommendedError) {
-        <p class="state-msg">{{ recommendedError }}</p>
-        }
-        @if (hasMorePagesRecommended || recommendedVisible < recommendedAnimes.length) {
-        <div class="more">
-            <button type="button" class="pill pill-line" (click)="showMoreRecommended()" [disabled]="isLoadingMoreRecommended">
-                {{ isLoadingMoreRecommended ? 'Cargando…' : 'Ver más' }}
-            </button>
-        </div>
-        }
-        }
+      </div>
     </section>
 
-    }
-</main>
+    <!-- ================= EN EMISIÓN ================= -->
+    <section class="season" id="temporada" aria-labelledby="t-temp">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow-s">En emisión ahora</p>
+            <h2 id="t-temp">Lo que se está viendo esta temporada</h2>
+          </div>
+          @if (!authService.isLoggedIn()) {
+          <a class="pill pill-line" routerLink="/register">Crear cuenta</a>
+          }
+        </div>
+      </div>
+      <div class="wrap">
+        @if (cargando() && temporada().length === 0) {
+        <div class="season-grid" aria-hidden="true">
+          @for (n of [1,2,3,4,5,6]; track n) { <div class="skel-tile"></div> }
+        </div>
+        } @else {
+        <div class="season-grid">
+          @for (a of temporadaAnimes(); track a.mal_id) {
+          <app-card [anime]="a" [animeId]="a.mal_id" [interactive]="false"></app-card>
+          }
+        </div>
+        }
+      </div>
+    </section>
+
+    <!-- ================= FUNCIONES ================= -->
+    <section class="features" id="funciones" aria-labelledby="t-func">
+      <div class="wrap">
+        <p class="eyebrow-s">Qué incluye</p>
+        <h2 id="t-func">Todo lo que necesitas para llevar tu lista</h2>
+
+        <div class="fgrid">
+          <article class="fcard fwide">
+            <div class="ftext">
+              <h3>Un catálogo enorme a un buscador de distancia</h3>
+              <p>Busca por título, filtra con el buscador avanzado o descubre qué se emite ahora. Cada serie trae su póster, nota, géneros y reseñas.</p>
+            </div>
+            <div class="fvis fvis-posters" aria-hidden="true">
+              @for (p of fondo().slice(4, 9); track p.mal_id) {
+              <img [src]="p.image_url" alt="" width="225" height="318" loading="lazy" (error)="imgError($event, p)">
+              }
+            </div>
+          </article>
+
+          <article class="fcard">
+            <div class="ftext">
+              <h3>Cada serie, en su estado</h3>
+              <p>Viendo, finalizado, pendiente o abandonado. Filtra tu lista y sabe cuántas tienes en cada uno.</p>
+            </div>
+            <div class="fvis fvis-chips" aria-hidden="true">
+              <span class="chip" data-estado="VIENDO">Viendo</span>
+              <span class="chip" data-estado="FINALIZADO">Finalizado</span>
+              <span class="chip" data-estado="PENDIENTE">Pendiente</span>
+              <span class="chip" data-estado="ABANDONADO">Abandonado</span>
+            </div>
+          </article>
+
+          <article class="fcard">
+            <div class="ftext">
+              <h3>Tu nota, del 1 al 10</h3>
+              <p>Puntúa y compárala con la media de MyAnimeList en la misma ficha.</p>
+            </div>
+            <div class="fvis fvis-scale" role="group" aria-label="Tu nota de ejemplo">
+              @for (n of notas; track n) {
+              <button type="button" [class.on]="notaDemo() === n" [attr.aria-pressed]="notaDemo() === n"
+                (click)="notaDemo.set(n)">{{ n }}</button>
+              }
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CÓMO FUNCIONA ================= -->
+    <section class="how" id="como" aria-labelledby="t-como">
+      <div class="wrap">
+        <p class="eyebrow-s">Cómo funciona</p>
+        <h2 id="t-como">De cero a tu lista en un minuto</h2>
+        <ol class="steps">
+          <li>
+            <span class="num">1</span>
+            <h3>Crea tu cuenta</h3>
+            <p>Usuario, correo y contraseña. Si la olvidas, te mandamos un código por e-mail.</p>
+          </li>
+          <li>
+            <span class="num">2</span>
+            <h3>Busca y guarda</h3>
+            <p>Encuentra una serie, ábrela para ver su ficha y añádela a tu lista.</p>
+          </li>
+          <li>
+            <span class="num">3</span>
+            <h3>Marca y puntúa</h3>
+            <p>Elige estado y nota. Tu lista queda ordenada y lista para consultar cuando quieras.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================= CTA FINAL ================= -->
+    <section class="final" aria-labelledby="t-final">
+      <div class="final-in">
+        <div class="final-posters" aria-hidden="true">
+          @for (p of fondo().slice(0, 6); track p.mal_id) {
+          <img [src]="p.image_url" alt="" width="225" height="318" loading="lazy" (error)="imgError($event, p)">
+          }
+        </div>
+        <h2 id="t-final">{{ authService.isLoggedIn() ? 'Tu lista te está esperando' : 'Empieza tu lista hoy' }}</h2>
+        <p>{{ authService.isLoggedIn() ? 'Vuelve donde lo dejaste.' : 'Es gratis y te lleva un minuto.' }}</p>
+        <div class="cta-row">
+          @if (authService.isLoggedIn()) {
+          <a class="pill pill-gold pill-lg" routerLink="/dashboard">Ir a mi lista</a>
+          } @else {
+          <a class="pill pill-gold pill-lg" routerLink="/register">Crear cuenta gratis</a>
+          <a class="pill pill-onDark pill-lg" routerLink="/login">Iniciar sesión</a>
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= PIE ================= -->
+  <footer class="foot">
+    <div class="wrap foot-in">
+      <div class="foot-brand">
+        <a class="brand" routerLink="/" aria-label="Kairo, inicio"><img src="logo_kairo.svg" alt="" width="28" height="28"><span>Kairo</span></a>
+        <p>Proyecto de portfolio de Alejandro Plata Cortés. Series, pósters y notas: MyAnimeList, a través de la API Jikan.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Explorar</h4>
+        <a href="#temporada">Temporada</a>
+        <a href="#funciones">Funciones</a>
+        <a href="#como">Cómo funciona</a>
+      </div>
+      <div class="foot-col">
+        <h4>Cuenta</h4>
+        <a routerLink="/register">Crear cuenta</a>
+        <a routerLink="/login">Iniciar sesión</a>
+        <a routerLink="/forgot-password">Recuperar contraseña</a>
+      </div>
+      <div class="foot-col">
+        <h4>Proyecto</h4>
+        <a href="https://github.com/Alejandro-Plata/Anime-Tracker" target="_blank" rel="noopener">Código en GitHub</a>
+        <a href="https://github.com/Alejandro-Plata" target="_blank" rel="noopener">Más proyectos</a>
+        <a href="https://myanimelist.net" target="_blank" rel="noopener">MyAnimeList</a>
+      </div>
+    </div>
+    <div class="wrap legal">
+      <p>&copy; 2025 Kairo</p>
+      <a href="#" (click)="$event.preventDefault(); scrollTop()">Volver arriba</a>
+    </div>
+  </footer>
+</div>

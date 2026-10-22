@@ -1,0 +1,157 @@
+<main class="page">
+
+    <header class="page-head">
+        <p class="kicker">Cuenta</p>
+        <h1>Mi perfil</h1>
+        <p>Consulta tus datos y cámbialos cuando quieras.</p>
+    </header>
+
+    @if (isLoading) {
+    <p class="state-msg">Cargando perfil…</p>
+    } @else if (loadError) {
+    <div class="state-msg">
+        <p>{{ loadError }}</p>
+        <button type="button" class="pill pill-line" (click)="load()">Reintentar</button>
+    </div>
+    } @else if (profile) {
+    <div class="layout">
+
+        <!-- ===== Resumen ===== -->
+        <aside class="card summary">
+            <div class="avatar" aria-hidden="true">{{ initial }}</div>
+            <h2>{{ profile.username }}</h2>
+            <p class="email">{{ profile.email }}</p>
+            <p class="since">Miembro desde {{ memberSince }}</p>
+
+            <dl class="stats">
+                <div><dt>En tu lista</dt><dd>{{ stats.total }}</dd></div>
+                <div><dt>Nota media</dt><dd>{{ stats.media ? stats.media.toFixed(1) : '–' }}</dd></div>
+                <div><dt>Viendo</dt><dd>{{ stats.viendo }}</dd></div>
+                <div><dt>Finalizados</dt><dd>{{ stats.finalizado }}</dd></div>
+                <div><dt>Pendientes</dt><dd>{{ stats.pendiente }}</dd></div>
+                <div><dt>Abandonados</dt><dd>{{ stats.abandonado }}</dd></div>
+            </dl>
+        </aside>
+
+        <div class="forms">
+
+            <!-- ===== Datos ===== -->
+            <section class="card">
+                <h2>Datos de la cuenta</h2>
+                <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+                    <div class="field">
+                        <label for="username">Usuario</label>
+                        <input id="username" type="text" class="field-input" formControlName="username"
+                            autocomplete="username" [attr.aria-invalid]="invalid(profileForm, 'username')">
+                        @if (invalid(profileForm, 'username')) {
+                        <span class="error" role="alert">Mínimo 3 caracteres.</span>
+                        }
+                    </div>
+                    <div class="field">
+                        <label for="email">Correo electrónico</label>
+                        <input id="email" type="email" class="field-input" formControlName="email"
+                            autocomplete="email" [attr.aria-invalid]="invalid(profileForm, 'email')">
+                        @if (invalid(profileForm, 'email')) {
+                        <span class="error" role="alert">Ingresa un correo válido.</span>
+                        }
+                    </div>
+
+                    @if (profileError) {
+                    <div class="alert" role="alert">{{ profileError }}</div>
+                    }
+
+                    <div class="actions">
+                        <button type="button" class="pill pill-line" [disabled]="profileForm.pristine || savingProfile"
+                            (click)="profileForm.reset({ username: profile.username, email: profile.email }); profileError = ''">Descartar</button>
+                        <button type="submit" class="pill pill-gold" [disabled]="profileForm.pristine || savingProfile">
+                            {{ savingProfile ? 'Guardando…' : 'Guardar cambios' }}
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- ===== Contraseña ===== -->
+            <section class="card">
+                <h2>Cambiar contraseña</h2>
+                <form [formGroup]="passwordForm" (ngSubmit)="savePassword()" novalidate>
+                    <div class="field">
+                        <label for="currentPassword">Contraseña actual</label>
+                        <input id="currentPassword" type="password" class="field-input" formControlName="currentPassword"
+                            autocomplete="current-password" [attr.aria-invalid]="invalid(passwordForm, 'currentPassword')">
+                        @if (invalid(passwordForm, 'currentPassword')) {
+                        <span class="error" role="alert">Escribe tu contraseña actual.</span>
+                        }
+                    </div>
+                    <div class="field">
+                        <label for="newPassword">Nueva contraseña</label>
+                        <input id="newPassword" type="password" class="field-input" formControlName="newPassword"
+                            autocomplete="new-password" placeholder="Mínimo 6 caracteres"
+                            [attr.aria-invalid]="invalid(passwordForm, 'newPassword')">
+                        @if (invalid(passwordForm, 'newPassword')) {
+                        <span class="error" role="alert">Mínimo 6 caracteres.</span>
+                        }
+                    </div>
+                    <div class="field">
+                        <label for="confirmPassword">Repite la nueva contraseña</label>
+                        <input id="confirmPassword" type="password" class="field-input" formControlName="confirmPassword"
+                            autocomplete="new-password">
+                        @if (passwordForm.hasError('notMatching') && passwordForm.get('confirmPassword')?.touched) {
+                        <span class="error" role="alert">Las contraseñas no coinciden.</span>
+                        }
+                    </div>
+
+                    @if (passwordError) {
+                    <div class="alert" role="alert">{{ passwordError }}</div>
+                    }
+
+                    <div class="actions">
+                        <button type="submit" class="pill pill-gold" [disabled]="passwordForm.invalid || savingPassword">
+                            {{ savingPassword ? 'Guardando…' : 'Cambiar contraseña' }}
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- ===== Eliminar cuenta ===== -->
+            <section class="card danger">
+                <h2>Eliminar cuenta</h2>
+                <p>Se borrarán tu cuenta y tu lista de series. No se puede deshacer.</p>
+
+                @if (!confirmingDelete) {
+                <button type="button" class="pill pill-danger" (click)="confirmingDelete = true">Eliminar mi cuenta</button>
+                } @else {
+                <form [formGroup]="deleteForm" (ngSubmit)="deleteAccount()" novalidate>
+                    <div class="field">
+                        <label for="deletePassword">Escribe tu contraseña para confirmar</label>
+                        <input id="deletePassword" type="password" class="field-input" formControlName="password"
+                            autocomplete="current-password">
+                    </div>
+                    @if (deleteError) {
+                    <div class="alert" role="alert">{{ deleteError }}</div>
+                    }
+                    <div class="actions">
+                        <button type="button" class="pill pill-line" (click)="cancelDelete()" [disabled]="deleting">Cancelar</button>
+                        <button type="submit" class="pill pill-danger" [disabled]="deleteForm.invalid || deleting">
+                            {{ deleting ? 'Eliminando…' : 'Eliminar definitivamente' }}
+                        </button>
+                    </div>
+                </form>
+                }
+            </section>
+        </div>
+    </div>
+    }
+
+    @if (toastState.show) {
+    @for (key of [toastKey]; track key) {
+    <div class="toast" [attr.data-type]="toastState.type" role="status" style="--dur: 2.5s">
+        <span class="toast-icon" aria-hidden="true">✓</span>
+        <div class="toast-text">
+            <strong>{{ toastState.title }}</strong>
+            <span>{{ toastState.message }}</span>
+        </div>
+        <i class="toast-bar"></i>
+    </div>
+    }
+    }
+</main>

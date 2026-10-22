@@ -16,3 +16,10 @@ export interface Favorite {
     state: string;
     score: number;
 }
+
+export interface UserProfile {
+    id: number;
+    username: string;
+    email: string;
+    createdAt: string;
+}

@@ -13,13 +13,11 @@ export class Header implements OnInit {
 
   isProfileMenuOpen = false;
   isMenuOpen = false;
-  username: string = "";
 
   authService = inject(AuthService);
   router = inject(Router);
 
   ngOnInit() {
-    this.username = this.authService.getCurrentUser()?.username || "";
     // El menú móvil se cierra al navegar
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -27,6 +25,11 @@ export class Header implements OnInit {
         this.isProfileMenuOpen = false;
       }
     });
+  }
+
+  // Se lee siempre del almacenamiento: si cambia el nombre en Mi perfil, la cabecera lo refleja al momento
+  get username(): string {
+    return this.authService.getCurrentUser()?.username || '';
   }
 
   get initial(): string {

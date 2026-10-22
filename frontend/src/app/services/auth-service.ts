@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User, UserFavorites } from '../types/user';
+import { User, UserFavorites, UserProfile } from '../types/user';
 import { Favorite } from '../types/user';
 @Injectable({
   providedIn: 'root',
@@ -121,6 +121,59 @@ export class AuthService {
       localStorage.removeItem(this.TOKEN_KEY);
     }
   }
+  private authHeaders(): HeadersInit {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem(this.TOKEN_KEY)}`
+    };
+  }
+
+  async getProfile(): Promise<UserProfile> {
+    const response = await fetch(`${this.API_URL}/user/profile`, { headers: this.authHeaders() });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo cargar el perfil'));
+    }
+    return response.json();
+  }
+
+  async updateProfile(data: { username: string; email: string }): Promise<UserProfile> {
+    const response = await fetch(`${this.API_URL}/user/profile`, {
+      method: 'PATCH',
+      headers: this.authHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo guardar el perfil'));
+    }
+    // El nombre guardado en el navegador se actualiza para que la cabecera lo muestre
+    await this.refreshUser();
+    return response.json();
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const response = await fetch(`${this.API_URL}/user/password`, {
+      method: 'PUT',
+      headers: this.authHeaders(),
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo cambiar la contraseña'));
+    }
+  }
+
+  async deleteAccount(password: string): Promise<void> {
+    const response = await fetch(`${this.API_URL}/user/profile`, {
+      method: 'DELETE',
+      headers: this.authHeaders(),
+      body: JSON.stringify({ password }),
+    });
+    if (!response.ok) {
+      throw new Error(await this.leerError(response, 'No se pudo eliminar la cuenta'));
+    }
+    localStorage.removeItem(this.STORAGE_KEY);
+    localStorage.removeItem(this.TOKEN_KEY);
+  }
+
   isLoggedIn(): boolean {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }
