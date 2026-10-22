@@ -1,0 +1,31 @@
+<div class="shell">
+  <aside class="showcase" aria-hidden="true">
+    <div class="posters">
+      @for (col of columnas(); track $index) {
+      <div class="col" [class.up]="$index === 1">
+        <div class="track">
+          @for (p of col.concat(col); track $index) {
+          <img [src]="p.image_url" alt="" width="225" height="318" (error)="imgError($event, p)">
+          }
+        </div>
+      </div>
+      }
+    </div>
+    <div class="veil"></div>
+    <div class="copy">
+      <a class="brand" routerLink="/" tabindex="-1"><img src="logo_kairo.svg" alt="" width="28" height="28"><span>Kairo</span></a>
+      <p class="quote">Tu lista de anime,<br>siempre al día.</p>
+      <p class="quote-sub">Estado, nota y reseñas de cada serie, sobre el catálogo de MyAnimeList.</p>
+    </div>
+  </aside>
+
+  <main class="panel">
+    <header class="panel-top">
+      <a class="brand" routerLink="/" aria-label="Kairo, volver al inicio"><img src="logo_kairo.svg" alt="" width="28" height="28"><span>Kairo</span></a>
+      <a class="back" routerLink="/">← Volver al inicio</a>
+    </header>
+    <div class="panel-body">
+      <ng-content></ng-content>
+    </div>
+  </main>
+</div>

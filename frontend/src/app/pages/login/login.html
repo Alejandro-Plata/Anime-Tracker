@@ -1,88 +1,52 @@
-<main class="login-layout">
+<app-auth-shell>
+    <div class="auth-form-wrap">
+        <h1>Inicia sesión</h1>
+        <p class="auth-sub">Entra para ver tu lista y seguir donde lo dejaste.</p>
 
-    <!-- FONDO AMBIENTAL -->
-    <div class="bg-image"></div>
-    <div class="noise-overlay"></div>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
 
-    <!-- CONTENEDOR LOGIN -->
-    <div class="login-container">
-
-        <!-- TARJETA CON EFECTO CRISTAL (Glassmorphism) -->
-        <div class="login-card ornate-border">
-
-            <div class="card-header">
-                <h1 class="title">Reanudar <span class="gold-text">Odisea</span></h1>
-                <p class="subtitle">Ingresa tus credenciales de viajero</p>
-
-                <!-- Adorno separador -->
-                <div class="separator-ornament">
-                    <span class="diamond">❖</span>
-                </div>
-            </div>
-
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="kairo-form">
-
-                <div class="form-group">
-                    <label for="username">Nombre de Usuario</label>
-                    <input id="username" type="text" formControlName="username" placeholder="Tu nombre de usuario"
-                        [class.invalid]="isFieldInvalid('username')">
-                    <!-- Mensaje de error -->
-                    @if (isFieldInvalid('username')) {
-                    <div class="error-msg">
-                        @if (loginForm.get('username')?.hasError('required')) {
-                        <span>El nombre de usuario es necesario.</span>
-                        }
-                        @if (loginForm.get('username')?.hasError('minlength')) {
-                        <span>Mínimo 3 caracteres.</span>
-                        }
-                    </div>
+            <div class="field">
+                <label for="username">Usuario</label>
+                <input id="username" type="text" formControlName="username" placeholder="Tu nombre de usuario"
+                    autocomplete="username" [class.invalid]="isFieldInvalid('username')"
+                    [attr.aria-invalid]="isFieldInvalid('username')">
+                @if (isFieldInvalid('username')) {
+                <div class="error-msg" role="alert">
+                    @if (loginForm.get('username')?.hasError('required')) {
+                    <span>El nombre de usuario es necesario.</span>
                     }
-                </div>
-                <div class="form-group">
-                    <div class="label-row">
-                        <label for="password">Contraseña</label>
-                        <a routerLink="/forgot-password" class="forgot-link">¿Olvidaste la contraseña?</a>
-                    </div>
-
-                    <input id="password" type="password" formControlName="password" placeholder="••••••••"
-                        [class.invalid]="isFieldInvalid('password')">
-
-                    @if (isFieldInvalid('password')) {
-                    <div class="error-msg">
-                        La contraseña es requerida.
-                    </div>
+                    @if (loginForm.get('username')?.hasError('minlength')) {
+                    <span>Mínimo 3 caracteres.</span>
                     }
-                </div>
-
-                <!-- ERROR MESSAGE -->
-                @if (errorMessage) {
-                <div class="error-alert">
-                    <span class="error-icon">⚠</span>
-                    <span>{{ errorMessage }}</span>
                 </div>
                 }
+            </div>
 
-                <!-- BOTÓN PRINCIPAL -->
-                <div class="form-actions">
-                    <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
-                        @if (!isLoading) {
-                        <span class="btn-content">
-                            Iniciar sesión <span class="icon">➜</span>
-                        </span>
-                        }
-                        @if (isLoading) {
-                        <span class="loader"></span>
-                        }
-                    </button>
+            <div class="field">
+                <div class="label-row">
+                    <label for="password">Contraseña</label>
+                    <a routerLink="/forgot-password">¿Olvidaste la contraseña?</a>
                 </div>
+                <input id="password" type="password" formControlName="password" placeholder="••••••••"
+                    autocomplete="current-password" [class.invalid]="isFieldInvalid('password')"
+                    [attr.aria-invalid]="isFieldInvalid('password')">
+                @if (isFieldInvalid('password')) {
+                <div class="error-msg" role="alert">La contraseña es requerida.</div>
+                }
+            </div>
 
-                <!-- FOOTER -->
-                <div class="form-footer">
-                    <p>¿Aún no tienes cuenta?</p>
-                    <a routerLink="/register" class="register-link">Regístrate aquí.</a>
-                </div>
+            @if (errorMessage) {
+            <div class="error-alert" role="alert">
+                <span aria-hidden="true">⚠</span>
+                <span>{{ errorMessage }}</span>
+            </div>
+            }
 
-            </form>
-        </div>
+            <button type="submit" class="submit" [disabled]="loginForm.invalid || isLoading">
+                @if (isLoading) { <span class="spinner" aria-label="Entrando"></span> } @else { Iniciar sesión }
+            </button>
+        </form>
+
+        <p class="alt">¿Aún no tienes cuenta? <a routerLink="/register">Crea una gratis</a></p>
     </div>
-</main>
+</app-auth-shell>

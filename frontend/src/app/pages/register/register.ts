@@ -1,11 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { AuthShell } from '../../components/auth-shell/auth-shell';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth-service';
 import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, RouterModule, AuthShell],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
@@ -40,7 +41,6 @@ export class Register implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.registerForm.value, this.registerForm.valid);
     if (this.registerForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';

@@ -1,23 +1,15 @@
 import { Routes } from '@angular/router';
-import { Home } from './pages/home/home';
-import { LandingPage } from './pages/landing-page/landing-page';
-import { Descubrir } from './pages/descubrir/descubrir';
-import { BuscadorAvanzado } from './pages/buscador-avanzado/buscador-avanzado';
-import { MiLista } from './pages/mi-lista/mi-lista';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
-import { AnimeDetailPage } from './pages/anime-detail/anime-detail';
-import { ForgotPassword } from './pages/forgot-password/forgot-password';
 import { authGuard } from './guards/auth-guard';
 
+// Cada página se carga bajo demanda para que el paquete inicial solo lleve el marco de la app
 export const routes: Routes = [
-    { path: '', component: Home },
-    { path: 'register', component: Register },
-    { path: 'login', component: Login },
-    { path: 'forgot-password', component: ForgotPassword },
-    { path: 'dashboard', component: LandingPage, canActivate: [authGuard] },
-    { path: 'dashboard/descubrir', component: Descubrir, canActivate: [authGuard] },
-    { path: 'dashboard/buscador', component: BuscadorAvanzado, canActivate: [authGuard] },
-    { path: 'dashboard/mi-lista', component: MiLista, canActivate: [authGuard] },
-    { path: 'dashboard/anime/:id', component: AnimeDetailPage, canActivate: [authGuard] }
+    { path: '', loadComponent: () => import('./pages/home/home').then(m => m.Home) },
+    { path: 'register', loadComponent: () => import('./pages/register/register').then(m => m.Register) },
+    { path: 'login', loadComponent: () => import('./pages/login/login').then(m => m.Login) },
+    { path: 'forgot-password', loadComponent: () => import('./pages/forgot-password/forgot-password').then(m => m.ForgotPassword) },
+    { path: 'dashboard', loadComponent: () => import('./pages/landing-page/landing-page').then(m => m.LandingPage), canActivate: [authGuard] },
+    { path: 'dashboard/descubrir', loadComponent: () => import('./pages/descubrir/descubrir').then(m => m.Descubrir), canActivate: [authGuard] },
+    { path: 'dashboard/buscador', loadComponent: () => import('./pages/buscador-avanzado/buscador-avanzado').then(m => m.BuscadorAvanzado), canActivate: [authGuard] },
+    { path: 'dashboard/mi-lista', loadComponent: () => import('./pages/mi-lista/mi-lista').then(m => m.MiLista), canActivate: [authGuard] },
+    { path: 'dashboard/anime/:id', loadComponent: () => import('./pages/anime-detail/anime-detail').then(m => m.AnimeDetailPage), canActivate: [authGuard] }
 ];

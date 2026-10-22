@@ -6,6 +6,7 @@ import type { AnimeDetail } from '../../types/animeDetail';
 import type { Episode } from '../../types/episode';
 import type { AnimePage } from '../../types/animePage';
 import type { ReviewPage } from '../../types/review';
+import type { Poster } from '../../types/poster';
 
 interface ApiPagination {
   hasNextPage?: boolean;
@@ -33,6 +34,7 @@ interface ApiAnime {
   score?: number | null;
   rating?: string | null;
   rank?: number | null;
+  type?: string | null;
   synopsis?: string | null;
   background?: string | null;
   status?: string | null;
@@ -79,6 +81,8 @@ interface ApiReview {
 export class Endpoints {
   urlBase = 'https://jikan.lucashdo.com/v1/';
   private http = inject(HttpClient);
+  // Las pantallas públicas comparten pósters; se piden una vez por visita
+  private postersCache = new Map<'top' | 'season', Promise<Poster[]>>();
 
   private async request<T>(path: string): Promise<ApiEnvelope<T>> {
     try {
@@ -112,6 +116,53 @@ export class Endpoints {
       score: anime.score ?? undefined,
       rating: anime.rating || 'No disponible',
     };
+  }
+
+  // La API da la versión media (~225 px). La versión grande (sufijo "l", ~425 px) es la que aguanta
+  // mostrarse a pantalla completa; image_url queda como respaldo si esa no existe.
+  private toPoster(anime: ApiAnime): Poster {
+    const medium = anime.images?.medium || anime.imageUrl || anime.images?.large || '';
+    const large = anime.images?.large
+      || medium.replace(/(\.(?:jpe?g|png|webp))(?:[?#].*)?$/i, 'l$1');
+    return {
+      mal_id: anime.malId,
+      title: anime.title || anime.titleEnglish || 'Sin título',
+      image_url: large,
+      fallback_url: medium,
+      score: anime.score ?? undefined,
+      type: anime.type || undefined,
+    };
+  }
+
+  getPosters(kind: 'top' | 'season', count = 24): Promise<Poster[]> {
+    let cached = this.postersCache.get(kind);
+    if (!cached) {
+      cached = this.request<ApiAnime[]>(kind === 'top' ? 'top/anime' : 'seasons/now').then((response) => {
+        if (!Array.isArray(response.data)) {
+          throw new Error('La API de anime devolvió una lista inesperada.');
+        }
+        return response.data
+          .filter((anime) => anime.imageUrl || anime.images?.medium)
+          .slice(0, count)
+          .map((anime) => this.toPoster(anime));
+      });
+      // Si falla no se queda guardado el error: el siguiente intento vuelve a pedirlo
+      cached.catch(() => this.postersCache.delete(kind));
+      this.postersCache.set(kind, cached);
+    }
+    return cached;
+  }
+
+  async searchPosters(query: string, count = 8): Promise<Poster[]> {
+    const params = new URLSearchParams({ q: query, page: '1' });
+    const response = await this.request<ApiAnime[]>(`anime?${params.toString()}`);
+    if (!Array.isArray(response.data)) {
+      throw new Error('La API de anime devolvió una lista inesperada.');
+    }
+    return response.data
+      .filter((anime) => anime.imageUrl || anime.images?.medium)
+      .slice(0, count)
+      .map((anime) => this.toPoster(anime));
   }
 
   private toFullSizeImageUrl(imageUrl: string | null | undefined): string {

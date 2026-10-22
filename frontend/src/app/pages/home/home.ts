@@ -1,29 +1,29 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Endpoints } from '../../services/endpoints/endpoints';
 import { AuthService } from '../../services/auth-service';
-import { Anime } from '../../types/anime';
+import type { Poster } from '../../types/poster';
 
-interface Poster {
-  title: string;
-  image_url: string;
-  score: number;
-  genres: string;
+type Estado = 'TODOS' | 'VIENDO' | 'FINALIZADO' | 'PENDIENTE' | 'ABANDONADO';
+
+interface Entrada {
+  poster: Poster;
+  estado: Exclude<Estado, 'TODOS'>;
+  nota: number;
 }
 
-type Estado = 'VIENDO' | 'FINALIZADO' | 'PENDIENTE' | 'ABANDONADO';
+const ESTADOS: { id: Estado; label: string }[] = [
+  { id: 'TODOS', label: 'Todos' },
+  { id: 'VIENDO', label: 'Viendo' },
+  { id: 'FINALIZADO', label: 'Finalizado' },
+  { id: 'PENDIENTE', label: 'Pendiente' },
+  { id: 'ABANDONADO', label: 'Abandonado' },
+];
 
-// Pósters reales del top de MyAnimeList (datos de la API Jikan); sirven de material para la portada
-// aunque la búsqueda en vivo no responda.
-const POSTERS: Poster[] = [
-  { title: 'Sousou no Frieren', image_url: 'https://cdn.myanimelist.net/images/anime/1015/138006.jpg', score: 9.24, genres: 'Aventura · Drama · Fantasía' },
-  { title: 'Fullmetal Alchemist: Brotherhood', image_url: 'https://cdn.myanimelist.net/images/anime/1208/94745.jpg', score: 9.11, genres: 'Acción · Aventura · Fantasía' },
-  { title: 'Steins;Gate', image_url: 'https://cdn.myanimelist.net/images/anime/1935/127974.jpg', score: 9.07, genres: 'Drama · Suspense · Ciencia ficción' },
-  { title: 'Hunter x Hunter (2011)', image_url: 'https://cdn.myanimelist.net/images/anime/1337/99013.jpg', score: 9.03, genres: 'Acción · Aventura · Fantasía' },
-  { title: 'Shingeki no Kyojin Season 3 Part 2', image_url: 'https://cdn.myanimelist.net/images/anime/1517/100633.jpg', score: 9.05, genres: 'Acción · Drama · Misterio' },
-  { title: 'Steel Ball Run: JoJo no Kimyou na Bouken', image_url: 'https://cdn.myanimelist.net/images/anime/1065/158884.jpg', score: 9.04, genres: 'Acción · Aventura' },
-  { title: 'Chainsaw Man Movie: Reze-hen', image_url: 'https://cdn.myanimelist.net/images/anime/1763/150638.jpg', score: 9.05, genres: 'Acción · Terror' },
-  { title: 'Re:Zero kara Hajimeru Isekai Seikatsu 4th Season', image_url: 'https://cdn.myanimelist.net/images/anime/1540/155824.jpg', score: 9.08, genres: 'Drama · Fantasía · Suspense' },
+// Reparto fijo de estados para que la lista de ejemplo tenga de todo
+const REPARTO: Exclude<Estado, 'TODOS'>[] = [
+  'VIENDO', 'FINALIZADO', 'FINALIZADO', 'PENDIENTE', 'VIENDO', 'FINALIZADO', 'ABANDONADO', 'PENDIENTE',
+  'FINALIZADO', 'VIENDO', 'PENDIENTE', 'FINALIZADO',
 ];
 
 @Component({
@@ -32,116 +32,112 @@ const POSTERS: Poster[] = [
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit, AfterViewInit, OnDestroy {
+export class Home implements OnInit, OnDestroy {
   private endpoints = inject(Endpoints);
-  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   authService = inject(AuthService);
 
-  posters = POSTERS;
-  estados: { id: Estado; label: string }[] = [
-    { id: 'VIENDO', label: 'Viendo' },
-    { id: 'FINALIZADO', label: 'Finalizado' },
-    { id: 'PENDIENTE', label: 'Pendiente' },
-    { id: 'ABANDONADO', label: 'Abandonado' },
-  ];
+  estados = ESTADOS;
   notas = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-  // El monumento: la "I" de KAIRO es un póster que va cambiando
-  indice = signal(0);
+  top = signal<Poster[]>([]);
+  temporada = signal<Poster[]>([]);
+  cargando = signal(true);
+  fallo = signal(false);
 
-  // Demostración en vivo de la lista personal
+  // Mockup de "Mi lista"
+  filtro = signal<Estado>('TODOS');
   query = signal('');
   resultados = signal<Poster[]>([]);
   buscando = signal(false);
   errorBusqueda = signal('');
-  seleccionado = signal<Poster>(POSTERS[0]);
-  estado = signal<Estado>('VIENDO');
-  nota = signal(9);
+  notaDemo = signal(9);
 
-  private timer?: ReturnType<typeof setInterval>;
+  entradas = computed<Entrada[]>(() =>
+    this.top().slice(0, 12).map((poster, i) => ({
+      poster,
+      estado: REPARTO[i % REPARTO.length],
+      nota: Math.max(6, Math.min(10, Math.round(poster.score ?? 8))),
+    }))
+  );
+  visibles = computed(() => {
+    const f = this.filtro();
+    return this.entradas().filter(e => f === 'TODOS' || e.estado === f).slice(0, 8);
+  });
+  fondo = computed(() => this.top().slice(0, 12));
+  destacado = computed(() => this.top()[0]);
+
   private debounce?: ReturnType<typeof setTimeout>;
-  private observer?: IntersectionObserver;
+  private peticion = 0;
 
   ngOnInit() {
-    const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reducido) {
-      this.timer = setInterval(() => this.indice.update(i => (i + 1) % POSTERS.length), 2600);
-    }
-  }
-
-  ngAfterViewInit() {
-    const root = this.host.nativeElement;
-    const elementos = Array.from(root.querySelectorAll<HTMLElement>('[data-reveal]'));
-    if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-    root.classList.add('reveal-ready');
-    this.observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          this.observer?.unobserve(entry.target);
-        }
-      }
-    }, { threshold: 0.15 });
-    elementos.forEach(el => this.observer!.observe(el));
+    this.cargar();
   }
 
   ngOnDestroy() {
-    clearInterval(this.timer);
     clearTimeout(this.debounce);
-    this.observer?.disconnect();
+  }
+
+  cargar() {
+    this.cargando.set(true);
+    this.fallo.set(false);
+    Promise.allSettled([
+      this.endpoints.getPosters('top', 24),
+      this.endpoints.getPosters('season', 18),
+    ]).then(([top, season]) => {
+      if (top.status === 'fulfilled') this.top.set(top.value);
+      if (season.status === 'fulfilled') this.temporada.set(season.value);
+      this.fallo.set(top.status === 'rejected' && season.status === 'rejected');
+    }).finally(() => this.cargando.set(false));
+  }
+
+  cuenta(id: Estado): number {
+    return id === 'TODOS'
+      ? this.entradas().length
+      : this.entradas().filter(e => e.estado === id).length;
+  }
+
+  etiqueta(id: string): string {
+    return ESTADOS.find(e => e.id === id)?.label ?? '';
+  }
+
+  // Si el póster grande no existe en el CDN, se cae al tamaño medio
+  imgError(event: Event, p: Poster) {
+    const img = event.target as HTMLImageElement;
+    if (p.fallback_url && img.src !== p.fallback_url) img.src = p.fallback_url;
   }
 
   onBuscar(event: Event) {
     const valor = (event.target as HTMLInputElement).value;
     this.query.set(valor);
     clearTimeout(this.debounce);
+    const id = ++this.peticion;
     if (valor.trim().length < 2) {
       this.resultados.set([]);
       this.errorBusqueda.set('');
+      this.buscando.set(false);
       return;
     }
-    this.debounce = setTimeout(() => this.buscar(valor.trim()), 450);
+    this.buscando.set(true);
+    this.debounce = setTimeout(() => this.buscar(valor.trim(), id), 500);
   }
 
-  private async buscar(texto: string) {
-    this.buscando.set(true);
+  private async buscar(texto: string, id: number) {
     this.errorBusqueda.set('');
     try {
-      const pagina = await this.endpoints.searchAnime(texto, 1);
-      this.resultados.set(pagina.animes.slice(0, 5).map(a => this.aPoster(a)));
-      if (pagina.animes.length === 0) {
-        this.errorBusqueda.set('Sin resultados para esa búsqueda.');
-      }
+      const encontrados = await this.endpoints.searchPosters(texto, 8);
+      if (id !== this.peticion) return;
+      this.resultados.set(encontrados);
+      if (encontrados.length === 0) this.errorBusqueda.set('Sin resultados para esa búsqueda.');
     } catch {
+      if (id !== this.peticion) return;
       this.resultados.set([]);
       this.errorBusqueda.set('La búsqueda no respondió. Prueba otra vez en unos segundos.');
     } finally {
-      this.buscando.set(false);
+      if (id === this.peticion) this.buscando.set(false);
     }
-  }
-
-  private aPoster(a: Anime): Poster {
-    return {
-      title: a.title,
-      image_url: a.image_url,
-      score: a.score ?? 0,
-      genres: (a.genre ?? []).map(g => g.name).slice(0, 3).join(' · '),
-    };
-  }
-
-  etiqueta() {
-    return this.estados.find(e => e.id === this.estado())?.label ?? '';
   }
 
   scrollTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  elegir(p: Poster) {
-    this.seleccionado.set(p);
-    this.resultados.set([]);
-    this.query.set('');
   }
 }
