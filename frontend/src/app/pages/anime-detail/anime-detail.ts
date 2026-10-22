@@ -236,10 +236,14 @@ export class AnimeDetailPage {
   }
 
 
+  // Cambia con cada aviso para que la animación de la notificación reinicie
+  toastKey = 0;
+
   private showToast(type: ToastType, title: string, message: string) {
     if (this.toastTimeout) {
       clearTimeout(this.toastTimeout)
     }
+    this.toastKey++;
 
     this.toastState = {
       show: true,

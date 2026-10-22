@@ -43,6 +43,10 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+/* El pie queda siempre abajo: la página que pinta el router ocupa el espacio sobrante */
+app-root { display: flex; flex-direction: column; min-height: 100vh; }
+app-root > router-outlet + * { flex: 1 0 auto; }
+
 body {
     margin: 0;
     min-height: 100vh;
@@ -51,6 +55,11 @@ body {
     line-height: 1.5;
     color: var(--ink);
     background-color: var(--canvas);
+    /* Resplandor verde de fondo, común a todas las pantallas */
+    background-image:
+        radial-gradient(70% 420px at 50% 0, rgba(47, 92, 79, .34) 0%, transparent 100%),
+        radial-gradient(30% 360px at 92% 0, rgba(197, 165, 114, .1) 0%, transparent 100%);
+    background-repeat: no-repeat;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -133,7 +142,18 @@ button { font-family: inherit; }
 /* ---------- Páginas internas ---------- */
 .page { max-width: 1200px; margin: 0 auto; padding: 48px 32px 96px; }
 .page-head { margin-bottom: 32px; }
-.page-head h1 { margin: 0; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -1.2px; }
+.page-head .kicker { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--gold); }
+.page-head .kicker::before { content: ''; width: 22px; height: 2px; border-radius: 2px; background: var(--gold); }
+.page-head h1 {
+    margin: 0;
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    background: linear-gradient(180deg, #fff 20%, #cbb98f 120%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 .page-head p { margin: 10px 0 0; color: var(--steel); font-size: 16px; }
 .eyebrow-s { margin: 0 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--gold); }
 .micro { margin: 0 0 10px; font-size: 11px; font-weight: 600; letter-spacing: .5px; text-transform: uppercase; color: var(--stone); }
@@ -176,6 +196,55 @@ button { font-family: inherit; }
 
 .state-msg { padding: 48px 0; text-align: center; color: var(--steel); }
 .state-msg .pill { margin-top: 16px; }
+
+/* ---------- Notificaciones ---------- */
+.toast {
+    --tone: var(--gold);
+    position: fixed;
+    z-index: 100;
+    top: calc(var(--nav-h) + 16px);
+    right: 24px;
+    width: min(360px, calc(100vw - 32px));
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px 16px;
+    border: 1px solid color-mix(in srgb, var(--tone) 45%, transparent);
+    border-radius: var(--r-card);
+    background:
+        linear-gradient(135deg, color-mix(in srgb, var(--tone) 16%, transparent), transparent 60%),
+        #141514;
+    box-shadow: 0 20px 48px -12px rgba(0, 0, 0, .8), 0 0 32px -8px color-mix(in srgb, var(--tone) 55%, transparent);
+    overflow: hidden;
+    animation: toastIn .45s var(--ease);
+}
+.toast[data-type='like'] { --tone: var(--green-hi); }
+.toast[data-type='reject'] { --tone: #e2735a; }
+.toast[data-type='state'] { --tone: var(--gold); }
+.toast-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--tone) 22%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tone) 50%, transparent);
+    color: var(--tone);
+    font-size: 18px;
+    animation: toastPop .5s var(--ease) .1s both;
+}
+.toast-text { min-width: 0; display: flex; flex-direction: column; }
+.toast-text strong { font-size: 15px; font-weight: 600; }
+.toast-text span { font-size: 13px; color: var(--steel); }
+.toast-bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--tone); transform-origin: left; animation: toastBar var(--dur, 2s) linear forwards; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(32px) scale(.96); } }
+@keyframes toastPop { from { transform: scale(.4) rotate(-20deg); opacity: 0; } }
+@keyframes toastBar { to { transform: scaleX(0); } }
+@keyframes toastInM { from { opacity: 0; transform: translate(50%, -16px); } }
+@media (max-width: 599px) {
+    .toast { right: 50%; transform: translateX(50%); animation-name: toastInM; }
+}
 
 @media (max-width: 767px) {
     .page { padding: 32px 20px 72px; }

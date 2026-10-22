@@ -1,8 +1,16 @@
 <main class="page">
 
+    @if (anime) {
+    <!-- Póster difuminado de fondo para dar ambiente -->
+    <div class="backdrop" aria-hidden="true">
+        <img [src]="largeSrc(anime.image_url)" alt="">
+    </div>
+    }
+
     <header class="page-head center">
+        <p class="kicker">Descubrir</p>
         <h1>Descubre joyitas</h1>
-        <p>Una serie al azar cada vez. Si te gusta, va a tu lista.</p>
+        <p>Desliza a la derecha si te interesa y a la izquierda si no.</p>
     </header>
 
     <section class="stage" aria-live="polite">
@@ -19,36 +27,49 @@
 
         @if (anime) {
         <article class="pick">
-            <a class="pick-poster" [routerLink]="`/dashboard/anime/${anime.mal_id}`" [attr.aria-label]="'Ver detalles de ' + anime.title">
-                <img [src]="largeSrc(anime.image_url)" [alt]="'Póster de ' + anime.title" width="425" height="600"
-                    (error)="fallbackSrc($event, anime.image_url)">
-                @if (anime.score) {
-                <span class="score">★ {{ anime.score }}</span>
-                }
-            </a>
+            <!-- La tarjeta se arrastra con el dedo o el ratón -->
+            <div class="deck" [class.dragging]="dragging" [class.flying]="flying"
+                [style.transform]="cardTransform"
+                (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)"
+                (pointerup)="onPointerUp()" (pointercancel)="onPointerUp()">
+                <a class="pick-poster" [routerLink]="`/dashboard/anime/${anime.mal_id}`"
+                    [attr.aria-label]="'Ver detalles de ' + anime.title" draggable="false"
+                    (click)="onPosterClick($event)">
+                    <img [src]="largeSrc(anime.image_url)" [alt]="'Póster de ' + anime.title" width="425" height="600"
+                        draggable="false" (error)="fallbackSrc($event, anime.image_url)">
+                    @if (anime.score) {
+                    <span class="score">★ {{ anime.score }}</span>
+                    }
+                    <!-- Sellos que aparecen según hacia dónde se arrastra -->
+                    <span class="stamp like" [style.opacity]="likeStrength">Me interesa</span>
+                    <span class="stamp nope" [style.opacity]="rejectStrength">No</span>
+                </a>
+            </div>
+
             <h2>{{ anime.title }}</h2>
             <a [routerLink]="`/dashboard/anime/${anime.mal_id}`" class="detail-link">Ver detalles →</a>
 
             <div class="actions">
-                <button type="button" class="pill pill-line pill-lg" (click)="changeAnime('reject')">
-                    Descartar
-                </button>
-                <button type="button" class="pill pill-gold pill-lg" (click)="changeAnime('like')">
-                    Me interesa
-                </button>
+                <button type="button" class="round nope" aria-label="Descartar" title="Descartar (←)"
+                    (click)="swipe('left')">✕</button>
+                <button type="button" class="round like" aria-label="Me interesa" title="Me interesa (→)"
+                    (click)="swipe('right')">♥</button>
             </div>
         </article>
         }
     </section>
 
     @if (toastState.show) {
-    <div class="toast" [attr.data-type]="toastState.type" role="status">
+    @for (key of [toastKey]; track key) {
+    <div class="toast" [attr.data-type]="toastState.type" role="status" style="--dur: 2s">
         <span class="toast-icon" aria-hidden="true">{{ toastState.type === 'like' ? '♥' : '✕' }}</span>
-        <div>
+        <div class="toast-text">
             <strong>{{ toastState.title }}</strong>
             <span>{{ toastState.message }}</span>
         </div>
+        <i class="toast-bar"></i>
     </div>
+    }
     }
 
 </main>

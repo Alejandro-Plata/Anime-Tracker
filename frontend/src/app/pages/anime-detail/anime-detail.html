@@ -1,5 +1,10 @@
 <main class="page detail">
 
+    @if (animeDetail) {
+    <!-- Póster difuminado de fondo para dar ambiente -->
+    <div class="backdrop" aria-hidden="true"><img [src]="animeDetail.large_image_url" alt=""></div>
+    }
+
     @if (isLoading) {
     <app-loader message="Cargando detalles del anime..."></app-loader>
     } @else if (errorMessage) {
@@ -225,12 +230,15 @@
     }
 
     @if (toastState.show) {
-    <div class="toast" [attr.data-type]="toastState.type" role="status">
+    @for (key of [toastKey]; track key) {
+    <div class="toast" [attr.data-type]="toastState.type" role="status" style="--dur: 2.5s">
         <span class="toast-icon" aria-hidden="true">{{ toastState.type === 'like' ? '♥' : toastState.type === 'state' ? '↻' : '✕' }}</span>
-        <div>
+        <div class="toast-text">
             <strong>{{ toastState.title }}</strong>
             <span>{{ toastState.message }}</span>
         </div>
+        <i class="toast-bar"></i>
     </div>
+    }
     }
 </main>

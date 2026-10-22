@@ -1,4 +1,8 @@
-:host { display: block; }
+:host { display: block; position: relative; overflow-x: clip; }
+.detail { position: relative; }
+.backdrop { position: absolute; top: -40px; left: 50%; width: 100vw; margin-left: -50vw; height: 520px; overflow: hidden; pointer-events: none; z-index: 0; -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent); }
+.backdrop img { width: 100%; height: 100%; object-fit: cover; filter: blur(60px) saturate(1.3); opacity: .28; transform: scale(1.4); }
+.layout { position: relative; z-index: 1; }
 
 .layout { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 48px; align-items: start; }
 
@@ -81,15 +85,6 @@
 .review-foot a { color: var(--steel); }
 .review-foot a:hover { color: var(--ink); }
 .more { align-self: center; margin-top: 12px; }
-
-.toast { position: fixed; z-index: 100; left: 50%; bottom: 28px; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 12px 18px; border: 1px solid var(--hair); border-radius: var(--r-card); background: #161716; box-shadow: 0 16px 40px -8px rgba(0, 0, 0, .7); animation: up .3s var(--ease); }
-.toast strong { display: block; font-size: 14px; }
-.toast span:not(.toast-icon) { display: block; font-size: 13px; color: var(--steel); }
-.toast-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-chip); background: var(--surface-2); }
-.toast[data-type='like'] .toast-icon { background: rgba(79, 154, 130, .25); color: var(--green-hi); }
-.toast[data-type='state'] .toast-icon { background: rgba(197, 165, 114, .2); color: var(--gold); }
-.toast[data-type='reject'] .toast-icon { background: rgba(201, 82, 46, .2); color: #e2735a; }
-@keyframes up { from { opacity: 0; transform: translate(-50%, 12px); } }
 
 @media (max-width: 899px) {
     .layout { grid-template-columns: minmax(0, 1fr); gap: 32px; }
