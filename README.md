@@ -6,10 +6,10 @@
 </p>
 
 <p align="center">
-  <a href="https://anime-watchtracker.vercel.app"><b>🌐 Demo</b></a> ·
-  <a href="https://anime-tracker-opal.vercel.app"><b>⚙️ API</b></a> ·
-  <a href="#-capturas">Capturas</a> ·
-  <a href="#-arranque-en-local">Arranque en local</a>
+  <a href="https://anime-watchtracker.vercel.app"><b>Demo</b></a> ·
+  <a href="https://anime-tracker-opal.vercel.app"><b>API</b></a> ·
+  <a href="#capturas">Capturas</a> ·
+  <a href="#arranque-en-local">Arranque en local</a>
 </p>
 
 <p align="center">
@@ -20,7 +20,7 @@
   <img src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white" alt="Sequelize">
   <img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT">
-  <img src="https://img.shields.io/badge/Jikan%20%C2%B7%20MyAnimeList-2E51A2?style=for-the-badge&logo=myanimelist&logoColor=white" alt="Jikan · MyAnimeList">
+  <img src="https://img.shields.io/badge/jikan--edge%20%C2%B7%20MyAnimeList-2E51A2?style=for-the-badge&logo=myanimelist&logoColor=white" alt="jikan-edge · MyAnimeList">
   <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel">
   <img src="https://img.shields.io/badge/Neon-00A67E?style=for-the-badge" alt="Neon">
 </p>
@@ -31,29 +31,29 @@
 
 > La demo corre en el plan gratuito de Vercel: la primera petición tras un rato sin uso puede tardar unos segundos. Puedes crear una cuenta con cualquier usuario y contraseña.
 
-## ✨ Qué hace
+## Qué hace
 
 | | |
 |---|---|
-| 🏠 **Landing pública** | Réplica de «Mi lista» con datos reales de la API y la temporada en emisión, con registro e inicio de sesión a un clic |
-| 🔐 **Cuenta segura** | Registro, inicio de sesión con **JWT** y recuperación de contraseña con un código de 6 dígitos por e-mail (guardado con hash, caduca a los 15 min y con límite de intentos) |
-| 🔎 **Buscar y descubrir** | Buscador simple y avanzado (formato, estado, fechas, puntuación), top de temporada, recomendaciones y **Descubrir** con tarjetas que se deslizan: derecha te interesa, izquierda no |
-| 📺 **Ficha completa** | Sinopsis, géneros, estudios, episodios y reseñas de la comunidad |
-| 📚 **Mi lista** | Cada serie con su estado (*viendo, finalizado, pendiente, abandonado*) y tu nota; filtros con contadores |
-| 👤 **Perfil** | Ver y editar usuario y correo, cambiar contraseña y eliminar la cuenta. Tu imagen de perfil es el póster de tu anime mejor puntuado |
-| 🛡️ **Contenido apto** | Se filtran las series +18 en listas, buscadores y descubrimiento |
+| **Landing pública** | Réplica de «Mi lista» con datos reales de la API y la temporada en emisión, con registro e inicio de sesión a un clic |
+| **Cuenta segura** | Registro, inicio de sesión con **JWT** y recuperación de contraseña con un código de 6 dígitos por e-mail (guardado con hash, caduca a los 15 min y con límite de intentos) |
+| **Buscar y descubrir** | Buscador simple y avanzado (formato, estado, fechas, puntuación), top de temporada, recomendaciones y **Descubrir** con tarjetas que se deslizan: derecha te interesa, izquierda no |
+| **Ficha completa** | Sinopsis, géneros, estudios, episodios y reseñas de la comunidad |
+| **Mi lista** | Cada serie con su estado (*viendo, finalizado, pendiente, abandonado*) y tu nota; filtros con contadores |
+| **Perfil** | Ver y editar usuario y correo, cambiar contraseña y eliminar la cuenta. Tu imagen de perfil es el póster de tu anime mejor puntuado |
+| **Contenido apto** | Se filtran las series +18 en listas, buscadores y descubrimiento |
 
-## 📸 Capturas
+## Capturas
 
 <table>
 <tr><td align="center"><img src="docs/screenshots/mi-lista.jpg" alt="Mi lista" width="440"><br><sub><b>Mi lista</b></sub></td><td align="center"><img src="docs/screenshots/descubrir.jpg" alt="Descubrir (deslizar tarjetas)" width="440"><br><sub><b>Descubrir (deslizar tarjetas)</b></sub></td></tr>
 <tr><td align="center"><img src="docs/screenshots/detalle.jpg" alt="Ficha del anime" width="440"><br><sub><b>Ficha del anime</b></sub></td><td align="center"><img src="docs/screenshots/perfil.jpg" alt="Perfil" width="440"><br><sub><b>Perfil</b></sub></td></tr>
 </table>
 
-## 🏗️ Arquitectura
+## Arquitectura
 
 ```
-┌──────────────┐  Jikan API (catálogo de anime)
+┌──────────────┐  jikan-edge API (catálogo de anime)
 │   frontend   │ ───────────────────────────────►
 │ Angular :4200│
 │              │  HTTP + JWT   ┌─────────────┐  Sequelize  ┌────────────┐
@@ -66,10 +66,10 @@
 |---|---|
 | Cliente | Angular 20 (componentes *standalone*, carga diferida de rutas), TypeScript, CSS propio |
 | API | Node.js, Express 5, TypeScript, Sequelize, JWT, bcrypt, express-validator, rate limiting |
-| Datos | PostgreSQL (Neon) para usuarios y favoritos · API Jikan para el catálogo |
+| Datos | PostgreSQL (Neon) para usuarios y favoritos · [jikan-edge](https://jikan.lucashdo.com) (API no oficial de MyAnimeList) para el catálogo |
 | Despliegue | Vercel (cliente estático y API como función *serverless*) |
 
-## 🚀 Arranque en local
+## Arranque en local
 Necesitas Node.js 20+ y una base de datos PostgreSQL.
 
 ```bash
@@ -94,7 +94,7 @@ El frontend usa `http://localhost:3000/api` cuando se abre desde `localhost` y e
 | `JWT_SECRET` | Firma de tokens |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM` | Envío del código de «olvidé mi contraseña». Sin ellas, en local el código se muestra por consola |
 
-## 🔌 Endpoints principales
+## Endpoints principales
 | Método | Ruta | Acceso |
 |---|---|---|
 | POST | `/api/auth/register`, `/api/auth/login`, `/api/auth/logout` | público |
@@ -107,7 +107,7 @@ El frontend usa `http://localhost:3000/api` cuando se abre desde `localhost` y e
 | PATCH | `/api/user/favorites/:animeId/state` · `/score` | autenticado |
 | GET | `/api/user/favorite/check/:animeId` | autenticado |
 
-## 📁 Estructura
+## Estructura
 ```
 animewatch-tracker/
 ├── frontend/   # Angular 20: páginas (landing, inicio, buscador, descubrir, mi lista, perfil, ficha), componentes y servicios
@@ -116,4 +116,4 @@ animewatch-tracker/
 ```
 
 ---
-<p align="center">Proyecto personal de <a href="https://github.com/Alejandro-Plata">Alejandro Plata Cortés</a> · Datos de series y pósters: MyAnimeList, a través de la API Jikan.</p>
+<p align="center">Proyecto personal de <a href="https://github.com/Alejandro-Plata">Alejandro Plata Cortés</a> · Datos de series y pósters: MyAnimeList, a través de la API <a href="https://jikan.lucashdo.com">jikan-edge</a>.</p>
